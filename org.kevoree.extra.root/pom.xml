@@ -32,6 +32,7 @@
         <module>../org.kevoree.extra.chart2d</module>
         <module>../org.kevoree.extra.jsyntaxpane</module>
         <module>../org.kevoree.extra.finagle</module>
+        <module>../org.kevoree.extra.jna</module>
 	</modules>
 
     <distributionManagement>

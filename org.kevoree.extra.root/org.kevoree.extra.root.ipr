@@ -206,14 +206,19 @@
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.esper/org.kevoree.extra.esper.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.esper/org.kevoree.extra.esper.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.finagle/org.kevoree.extra.finagle.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.finagle/org.kevoree.extra.finagle.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.jaas/org.kevoree.extra.jaas.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.jaas/org.kevoree.extra.jaas.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.jna/org.kevoree.extra.jna.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.jna/org.kevoree.extra.jna.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.jsyntaxpane/org.kevoree.extra.jsyntaxpane.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.jsyntaxpane/org.kevoree.extra.jsyntaxpane.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.marshalling/org.kevoree.extra.marshalling.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.marshalling/org.kevoree.extra.marshalling.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.marshalling/org.kevoree.extra.marshalling.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.marshalling/org.kevoree.extra.marshalling.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.netty/org.kevoree.extra.netty.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.netty/org.kevoree.extra.netty.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.osgi.jmdns/org.kevoree.extra.osgi.jmdns.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.osgi.jmdns/org.kevoree.extra.osgi.jmdns.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.osgi.rxtx/org.kevoree.extra.osgi.rxtx.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.osgi.rxtx/org.kevoree.extra.osgi.rxtx.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.osgi.sysgen/org.kevoree.extra.osgi.sysgen.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.osgi.sysgen/org.kevoree.extra.osgi.sysgen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.osgi.sysgen/org.kevoree.extra.osgi.sysgen.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.osgi.sysgen/org.kevoree.extra.osgi.sysgen.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.osgi.xbee/org.kevoree.extra.osgi.xbee.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.osgi.xbee/org.kevoree.extra.osgi.xbee.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.protobuf/org.kevoree.extra.protobuf.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.protobuf/org.kevoree.extra.protobuf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.protobuf/org.kevoree.extra.protobuf.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.protobuf/org.kevoree.extra.protobuf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.kevoree.extra.root.iml" filepath="$PROJECT_DIR$/org.kevoree.extra.root.iml" />
       <module fileurl="file://$PROJECT_DIR$/org.kevoree.extra.root.iml" filepath="$PROJECT_DIR$/org.kevoree.extra.root.iml" />
     </modules>
   </component>
@@ -390,6 +395,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/mysql/mysql-connector-java/5.1.13/mysql-connector-java-5.1.13-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.java.dev.jna:jna:3.2.3">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/java/dev/jna/jna/3.2.3/jna-3.2.3.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/java/dev/jna/jna/3.2.3/jna-3.2.3-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/java/dev/jna/jna/3.2.3/jna-3.2.3-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.antlr:antlr-runtime:3.2">
