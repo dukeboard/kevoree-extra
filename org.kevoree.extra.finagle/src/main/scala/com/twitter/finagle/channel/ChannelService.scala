@@ -1,0 +1,193 @@
+package com.twitter.finagle.channel
+
+import java.util.concurrent.atomic.AtomicReference
+import java.util.logging.{Logger, Level}
+import org.jboss.netty.bootstrap.ClientBootstrap
+import org.jboss.netty.channel.{
+  ChannelHandlerContext, MessageEvent, Channel, Channels,
+  SimpleChannelUpstreamHandler, ExceptionEvent,
+  ChannelStateEvent}
+
+import com.twitter.util.{Future, Promise, Throw, Try, Time, Return}
+
+import com.twitter.finagle._
+import com.twitter.finagle.stats.{StatsReceiver, NullStatsReceiver}
+import com.twitter.finagle.util.Conversions._
+import com.twitter.finagle.util.{Ok, Error, Cancelled, AsyncLatch}
+
+case class ChannelServiceReply(message: Any, markDead: Boolean)
+
+/**
+ * The ChannelService bridges a finagle service onto a Netty
+ * channel. It is responsible for requests dispatched to a given
+ * (connected) channel during its lifetime.
+ */
+private[finagle] class ChannelService[Req, Rep](
+    channel: Channel,
+    factory: ChannelServiceFactory[Req, Rep],
+    log: Logger)
+  extends Service[Req, Rep]
+{
+  def this(channel: Channel, factory: ChannelServiceFactory[Req, Rep]) =
+    this(channel, factory, Logger.getLogger(classOf[ChannelService[Req, Rep]].getName))
+
+  private[this] val currentReplyFuture = new AtomicReference[Promise[Rep]]
+  @volatile private[this] var isHealthy = true
+  private[this] var wasReleased = false
+
+  private[this] def reply(message: Try[Rep], markDead: Boolean = false) {
+    if (message.isThrow || markDead) {
+      // We consider any channel with a channel-level failure doomed.
+      // Application exceptions should be encoded by the codec itself,
+      // eg. HTTP encodes erroneous replies by reply status codes,
+      // while protocol parse errors would generate channel
+      // exceptions. After such an exception, the channel is
+      // considered unhealthy.
+      isHealthy = false
+    }
+
+    val replyFuture = currentReplyFuture.getAndSet(null)
+    if (replyFuture ne null)
+      replyFuture.updateIfEmpty(message)
+    else  // spurious reply!
+      isHealthy = false
+
+    if (!isHealthy && channel.isOpen) {
+      // This channel is doomed anyway, so proactively close the
+      // connection.
+      Channels.close(channel)
+    }
+  }
+
+  // This bridges the 1:1 codec with this service.
+  channel.getPipeline.addLast("finagleBridge", new SimpleChannelUpstreamHandler {
+    override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
+      e.getMessage match {
+        // kill the cast here-- it's useless and only results in a
+        // compiler error.
+        case ChannelServiceReply(rep, markDead) => reply(Return(rep.asInstanceOf[Rep]), markDead)
+        case rep                                => reply(Return(rep.asInstanceOf[Rep]), false)
+      }
+    }
+
+    override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent) =
+      reply(Throw(ChannelException(e.getCause)), true)
+
+    override def channelClosed(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
+      reply(Throw(new ChannelClosedException), true)
+    }
+  })
+
+  def apply(request: Req) = {
+    val replyFuture = new Promise[Rep]
+    if (currentReplyFuture.compareAndSet(null, replyFuture)) {
+      Channels.write(channel, request) {
+        case Error(cause) =>
+          isHealthy = false
+          replyFuture.updateIfEmpty(Throw(new WriteException(ChannelException(cause))))
+        case _ => ()
+      }
+
+      replyFuture onCancellation {
+        if (currentReplyFuture.compareAndSet(replyFuture, null)) {
+          isHealthy = false
+          if (channel.isOpen) Channels.close(channel)
+          replyFuture() = Throw(new CancelledRequestException)
+        }
+      }
+
+      replyFuture
+    } else {
+      Future.exception(new TooManyConcurrentRequestsException)
+    }
+  }
+
+  override def release() = {
+    val doRelease = synchronized {
+      // This happens only if there's a bug up the stack. We do however want to document
+      // it for diagnostics.
+      if (wasReleased) {
+        val e = new Exception  // in order to get a backtrace.
+        log.log(Level.SEVERE, "more-than-once release for channel!", e)
+        false
+      } else {
+        wasReleased = true
+        true
+      }
+    }
+
+    if (doRelease) {
+      if (channel.isOpen) channel.close()
+      factory.channelReleased(this)
+    }
+  }
+
+  /**
+   * True when the channel has an outstanding request.
+   */
+  private[this] def isBusy = currentReplyFuture.get != null
+
+   // We only handle one request at a time -- don't expose upstream
+   // availability while we're still busy.
+  override def isAvailable = !isBusy && isHealthy && channel.isOpen
+}
+
+/**
+ * A factory for ChannelService instances, given a bootstrap.
+ */
+private[finagle] class ChannelServiceFactory[Req, Rep](
+    bootstrap: ClientBootstrap,
+    prepareChannel: Service[Req, Rep] => Future[Service[Req, Rep]],
+    statsReceiver: StatsReceiver = NullStatsReceiver)
+  extends ServiceFactory[Req, Rep]
+{
+  private[this] val channelLatch = new AsyncLatch
+  private[this] val connectLatencyStat = statsReceiver.stat("connect_latency_ms")
+  private[this] val failedConnectLatencyStat = statsReceiver.stat("failed_connect_latency_ms")
+  private[this] val cancelledConnects = statsReceiver.counter("cancelled_connects")
+  private[this] val gauge = statsReceiver.addGauge("connections") { channelLatch.getCount }
+
+  protected[channel] def channelReleased(channel: ChannelService[Req, Rep]) {
+    channelLatch.decr()
+  }
+
+  def make() = {
+    val begin = Time.now
+
+    val promise = new Promise[Service[Req, Rep]]
+    val connectFuture = bootstrap.connect()
+    promise onCancellation {
+      // propagate cancellations
+      connectFuture.cancel()
+    }
+
+    connectFuture {
+      case Ok(channel) =>
+        channelLatch.incr()
+        connectLatencyStat.add(begin.untilNow.inMilliseconds)
+        prepareChannel(new ChannelService[Req, Rep](channel, this)) proxyTo promise
+
+      case Error(cause) =>
+        failedConnectLatencyStat.add(begin.untilNow.inMilliseconds)
+        promise() = Throw(new WriteException(cause))
+
+      case Cancelled =>
+        cancelledConnects.incr()
+        promise() = Throw(new WriteException(new CancelledConnectionException))
+    }
+
+    promise
+  }
+
+  override def close() {
+    channelLatch await {
+      bootstrap.releaseExternalResources()
+    }
+  }
+
+  override val toString = {
+    val bootstrapHost =
+      Option(bootstrap.getOption("remoteAddress")) getOrElse(bootstrap.toString)
+    "host:%s".format(bootstrapHost)
+  }
+}

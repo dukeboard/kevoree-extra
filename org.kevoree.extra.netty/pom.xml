@@ -16,11 +16,11 @@
     <name>Kevoree :: Extra :: Netty</name>
 
     <dependencies>
+        <!--
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>finagle-core</artifactId>
-            <version>1.7.1</version>
-
+            <version>1.7.3-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <artifactId>scala-library</artifactId>
@@ -29,12 +29,22 @@
             </exclusions>
 
         </dependency>
+        -->
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.finagle</artifactId>
+            <version>1.7.3-SNPASHOT</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
             <version>3.2.4.Final</version>
         </dependency>
+
+
+
     </dependencies>
 
     <build>

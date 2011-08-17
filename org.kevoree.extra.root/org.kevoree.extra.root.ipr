@@ -34,7 +34,9 @@
     <autodetection-disabled>
       <facet-type id="scala">
         <modules>
+          <module name="org.kevoree.extra.finagle" />
           <module name="org.kevoree.extra.marshalling" />
+          <module name="org.kevoree.extra.osgi.rxtx" />
         </modules>
       </facet-type>
     </autodetection-disabled>
@@ -202,6 +204,7 @@
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.emf.genmodel.mavenplugin/org.kevoree.extra.emf.genmodel.mavenplugin.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.emf.genmodel.mavenplugin/org.kevoree.extra.emf.genmodel.mavenplugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.emf.library/org.kevoree.extra.emf.library.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.emf.library/org.kevoree.extra.emf.library.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.esper/org.kevoree.extra.esper.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.esper/org.kevoree.extra.esper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.finagle/org.kevoree.extra.finagle.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.finagle/org.kevoree.extra.finagle.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.jaas/org.kevoree.extra.jaas.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.jaas/org.kevoree.extra.jaas.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.jsyntaxpane/org.kevoree.extra.jsyntaxpane.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.jsyntaxpane/org.kevoree.extra.jsyntaxpane.iml" />
       <module fileurl="file://$PROJECT_DIR$/../org.kevoree.extra.marshalling/org.kevoree.extra.marshalling.iml" filepath="$PROJECT_DIR$/../org.kevoree.extra.marshalling/org.kevoree.extra.marshalling.iml" />
@@ -299,50 +302,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/com/jidesoft/jide-oss/2.4.8/jide-oss-2.4.8-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.twitter:finagle-core:1.7.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/finagle-core/1.7.1/finagle-core-1.7.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/finagle-core/1.7.1/finagle-core-1.7.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/finagle-core/1.7.1/finagle-core-1.7.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.twitter:util-collection:1.10.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/util-collection/1.10.1/util-collection-1.10.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/util-collection/1.10.1/util-collection-1.10.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/util-collection/1.10.1/util-collection-1.10.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.twitter:util-core:1.10.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/util-core/1.10.1/util-core-1.10.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/util-core/1.10.1/util-core-1.10.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/util-core/1.10.1/util-core-1.10.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.twitter:util-hashing:1.10.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/util-hashing/1.10.1/util-hashing-1.10.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/util-hashing/1.10.1/util-hashing-1.10.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/twitter/util-hashing/1.10.1/util-hashing-1.10.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: commons-collections:commons-collections:3.2.1">
