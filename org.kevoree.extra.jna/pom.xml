@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.extra.root</artifactId>
+        <groupId>org.kevoree.extra</groupId>
+        <version>1.2.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.kevoree.extra.jna</artifactId>
+    <packaging>bundle</packaging>
+    <version>3.2.3</version>
+    <name>Kevoree :: Extra :: JNA</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.2.3</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>org.kevoree.extra.jna</Bundle-SymbolicName>
+                        <Bundle-Version>${pom.version}</Bundle-Version>
+                        <!--<Dynamic-Import>*</Dynamic-Import>-->
+                        <Export-Package>com.sun.jna.*;version="3.2.3"
+                        </Export-Package>
+                        <!--<Import-Package>
+                        </Import-Package>-->
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

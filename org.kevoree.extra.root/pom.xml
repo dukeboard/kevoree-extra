@@ -31,7 +31,9 @@
         <module>../org.kevoree.extra.jaas</module>
         <module>../org.kevoree.extra.chart2d</module>
         <module>../org.kevoree.extra.jsyntaxpane</module>
-	</modules>
+        <module>../org.kevoree.extra.jna</module>
+        <module>../org.kevoree.extra.javacv</module>
+    </modules>
 
     <distributionManagement>
         <repository>
