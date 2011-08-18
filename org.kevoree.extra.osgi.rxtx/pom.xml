@@ -119,8 +119,11 @@
                             nativelib/Windows/win32/rxtxSerial.dll;
                             osname=Win32; processor=x86,
                             nativelib/Windows/win64/rxtxSerial.dll;
-                            osname=Win64; processor=x86_64 ; processor=x86-64
-
+                            osname=Win64; processor=x86_64,
+                            nativelib/Windows/win64/rxtxSerial.dll;
+                            osname=Win64; processor=x86-64,
+                            nativelib/Windows/win64/rxtxSerial.dll;
+                            osname=win32; processor=x86-64
                         </Bundle-NativeCode>
                         <!--
                      <Embed-Dependency>rxtx</Embed-Dependency>
