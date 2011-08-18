@@ -7,9 +7,9 @@ target/
 .classpath
 .project
 .settings/
-*.iml
-*.ipr
-*.iws
+/**/*.iml
+/**/*.ipr
+/**/*.iws
 keystore
 /.idea/
 /**/target/

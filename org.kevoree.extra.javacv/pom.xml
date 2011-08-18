@@ -16,7 +16,7 @@
     <name>Kevoree :: Extra :: JavaCV</name>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>javacv</groupId>
             <artifactId>windows-x86_64</artifactId>
             <version>2.3.0</version>
@@ -64,10 +64,10 @@
             <version>2.3.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/javacpp.jar</systemPath>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
-     <build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -94,23 +94,23 @@
                                     <directory>${project.basedir}/libs/javacv-linux-x86.jar</directory>
                                     <outputDirectory>${project.build.directory}/dependency</outputDirectory>
                                 </fileset>
-                                 <fileset>
+                                <fileset>
                                     <directory>${project.basedir}/libs/javacv-linux-x86_64.jar</directory>
                                     <outputDirectory>${project.build.directory}/dependency</outputDirectory>
                                 </fileset>
-                                 <fileset>
+                                <fileset>
                                     <directory>${project.basedir}/libs/javacpp.jar</directory>
                                     <outputDirectory>${project.build.directory}/dependency</outputDirectory>
                                 </fileset>
-                                 <fileset>
+                                <fileset>
                                     <directory>${project.basedir}/libs/javacv-macosx-x86_64.jar</directory>
                                     <outputDirectory>${project.build.directory}/dependency</outputDirectory>
                                 </fileset>
-                                 <fileset>
+                                <fileset>
                                     <directory>>${project.basedir}/libs/javacv-windows-x86.jar</directory>
                                     <outputDirectory>${project.build.directory}/dependency</outputDirectory>
                                 </fileset>
-                                  <fileset>
+                                <fileset>
                                     <directory>${project.basedir}/libs/javacv-windows-x86_64.jar</directory>
                                     <outputDirectory>${project.build.directory}/dependency</outputDirectory>
                                 </fileset>
@@ -131,15 +131,27 @@
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <!--<Dynamic-Import>*</Dynamic-Import>-->
                         <Export-Package>
-                            com.googlecode.javacv.*;version="2.3.0",
-                            com.googlecode.javacpp.*;version="2.3.0"
+                            com.googlecode.javacv.*;version="2.3.0" com.googlecode.javacv.*;version="2.3.0",
+                            com.googlecode.javacpp.*;version="2.3.0" com.googlecode.javacv.*;version="2.3.0",
                         </Export-Package>
                         <!--<Import-Package>
                         </Import-Package>-->
 
                         <Bundle-NativeCode>
-							nativelib/Linux/i686-unknown-linux-gnu/libopencv_core.so.2.3.0;
-							osname=Linux; processor=x86<!--,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_core.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_calib3d.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_contrib.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_features2d.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_flann.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_gpu.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_highgui.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_imgproc.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_legacy.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ml.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_objdetect.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ts.so,
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_video.so;
+                            osname=Linux; processor=x86<!--,
 							nativelib/Linux/ia64-unknown-linux-gnu/libopencv_core.so.2.3.0;
 							osname=Linux; processor=ia64,
 							nativelib/Linux/x86_64-unknown-linux-gnu/libopencv_core.so.2.3.0;
@@ -158,17 +170,21 @@
 							nativelib/Windows/win64/rxtxSerial.dll;
 							osname=Win64; processor=x86_64 ; processor=x86-64-->
 
-						</Bundle-NativeCode>
+                        </Bundle-NativeCode>
 
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
-        <!-- <resources>
+        <resources>
             <resource>
                 <directory>${basedir}/target/dependency/com/googlecode</directory>
                 <targetPath>com/googlecode</targetPath>
             </resource>
-        </resources>-->
+            <resource>
+                <directory>${basedir}/src/main/resources/nativelib</directory>
+                <targetPath>nativelib</targetPath>
+            </resource>
+        </resources>
     </build>
 </project>

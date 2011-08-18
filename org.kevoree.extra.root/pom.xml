@@ -33,6 +33,7 @@
         <module>../org.kevoree.extra.jsyntaxpane</module>
         <module>../org.kevoree.extra.finagle</module>
         <module>../org.kevoree.extra.jna</module>
+        <module>../org.kevoree.extra.javacv</module>
 	</modules>
 
     <distributionManagement>
