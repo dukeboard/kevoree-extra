@@ -92,27 +92,23 @@
                                 </fileset>
                                 <fileset>
                                     <directory>${project.basedir}/libs/javacv-linux-x86.jar</directory>
-                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/dependency/native</outputDirectory>
                                 </fileset>
                                 <fileset>
                                     <directory>${project.basedir}/libs/javacv-linux-x86_64.jar</directory>
-                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
-                                </fileset>
-                                <fileset>
-                                    <directory>${project.basedir}/libs/javacpp.jar</directory>
-                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/dependency/native</outputDirectory>
                                 </fileset>
                                 <fileset>
                                     <directory>${project.basedir}/libs/javacv-macosx-x86_64.jar</directory>
-                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/dependency/native</outputDirectory>
                                 </fileset>
                                 <fileset>
                                     <directory>>${project.basedir}/libs/javacv-windows-x86.jar</directory>
-                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/dependency/native</outputDirectory>
                                 </fileset>
                                 <fileset>
                                     <directory>${project.basedir}/libs/javacv-windows-x86_64.jar</directory>
-                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/dependency/native</outputDirectory>
                                 </fileset>
                             </filesets>
 
@@ -127,51 +123,175 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org.kevoree.extra.javacv</Bundle-SymbolicName>
-                        <Bundle-Version>${pom.version}</Bundle-Version>
-                        <!--<Dynamic-Import>*</Dynamic-Import>-->
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <!--<Dynamic-Import>
+                            com.googlecode.javacv.cpp.linux-x86
+                            com.googlecode.javacv.cpp.linux-x86_64
+                            com.googlecode.javacv.cpp.macosx-x86_64
+                            com.googlecode.javacv.cpp.windows-x86_64
+                        </Dynamic-Import>-->
                         <Export-Package>
-                            com.googlecode.javacv.*;version="2.3.0" com.googlecode.javacv.*;version="2.3.0",
-                            com.googlecode.javacpp.*;version="2.3.0" com.googlecode.javacv.*;version="2.3.0",
+                            com.googlecode.javacv.*;version="2.3.0",
+                            com.googlecode.javacpp.*;version="2.3.0"
                         </Export-Package>
-                        <!--<Import-Package>
-                        </Import-Package>-->
-
+                        <Import-Package>
+                            !com.googlecode.javacv.*,
+                            !com.googlecode.javacpp.*,
+                            *
+                        </Import-Package>
                         <Bundle-NativeCode>
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_core.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_calib3d.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_contrib.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_features2d.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_flann.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_gpu.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_highgui.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_imgproc.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_legacy.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ml.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_objdetect.so,
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ts.so,
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniARToolKitPlus.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniavcodec.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniavdevice.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniavfilter.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniavformat.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniavutil.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjnicvkernels.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjnidc1394.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjnifreenect.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_calib3d.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_contrib.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_core.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_features2d.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_flann.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_highgui.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_imgproc.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_legacy.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_ml.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_objdetect.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_video.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjnipostproc.so;
+                            native/com/googlecode/javacv/cpp/linux-x86/libjniswscale.so;
+                            <!--nativelib/Linux/i686-unknown-linux-gnu/libopencv_core.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_calib3d.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_contrib.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_features2d.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_flann.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_gpu.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_highgui.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_imgproc.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_legacy.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ml.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_objdetect.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ts.so.2.3;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_video.so.2.3;-->
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_core.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_calib3d.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_contrib.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_features2d.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_flann.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_gpu.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_highgui.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_imgproc.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_legacy.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ml.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_objdetect.so;
+                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ts.so;
                             nativelib/Linux/i686-unknown-linux-gnu/libopencv_video.so;
-                            osname=Linux; processor=x86<!--,
-							nativelib/Linux/ia64-unknown-linux-gnu/libopencv_core.so.2.3.0;
-							osname=Linux; processor=ia64,
-							nativelib/Linux/x86_64-unknown-linux-gnu/libopencv_core.so.2.3.0;
-							osname=Linux; processor=x86-64,
-							nativelib/Mac_OS_X/librxtxSerial.jnilib;
-							osname=Mac OS X; processor=x86; processor=PowerPC; processor=x86-64,
-							nativelib/Solaris/sparc-solaris/sparc32-sun-solaris2.8/librxtxSerial-2.1-7.so;
-							nativelib/Solaris/sparc-solaris/sparc32-sun-solaris2.8/librxtxSerial.so;
-							osname=Solaris; processor=Sparc,
-							nativelib/Solaris/sparc-solaris/sparc64-sun-solaris2.8/librxtxSerial-2.1-7.so;
-							nativelib/Solaris/sparc-solaris/sparc64-sun-solaris2.8/librxtxSerial.so;
-							osname=Solaris; processor=Sparc64,
+                            osname=Linux; processor=x86,
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniARToolKitPlus.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniavcodec.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniavdevice.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniavfilter.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniavformat.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniavutil.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjnicvkernels.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjnidc1394.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjnifreenect.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_calib3d.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_contrib.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_core.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_features2d.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_flann.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_highgui.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_imgproc.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_legacy.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_ml.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_objdetect.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniopencv_video.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjnipostproc.so;
+                            native/com/googlecode/javacv/cpp/linux-x86_64/libjniswscale.so;
+                            osname=Linux; processor=x86-64,
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniARToolKitPlus.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavcodec.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavdevice.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavfilter.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavformat.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavutil.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjnicvkernels.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjnidc1394.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjnifreenect.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_calib3d.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_contrib.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_core.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_features2d.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_flann.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_highgui.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_imgproc.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_legacy.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_ml.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_objdetect.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniopencv_video.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjnipostproc.dylib;
+                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniswscale.dylib;
+                            nativelib/Macos/libopencv_calib3d.2.3.dylib;
+                            nativelib/Macos/libopencv_contrib.2.3.dylib;
+                            nativelib/Macos/libopencv_core.2.3.dylib;
+                            nativelib/Macos/libopencv_features2d.2.3.dylib;
+                            nativelib/Macos/libopencv_flann.2.3.dylib;
+                            nativelib/Macos/libopencv_gpu.2.3.dylib;
+                            nativelib/Macos/libopencv_highgui.2.3.dylib;
+                            nativelib/Macos/libopencv_imgproc.2.3.dylib;
+                            nativelib/Macos/libopencv_legacy.2.3.dylib;
+                            nativelib/Macos/libopencv_ml.2.3.dylib;
+                            nativelib/Macos/libopencv_objdetect.2.3.dylib;
+                            nativelib/Macos/libopencv_ts.2.3.dylib;
+                            nativelib/Macos/libopencv_video.2.3.dylib;
+                            osname="Mac OS X"; processor=x86; processor=PowerPC; processor=x86-64,
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniARToolKitPlus.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniavcodec.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniavdevice.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniavformat.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniavutil.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jnicvkernels.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jnifreenect.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_calib3d.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_contrib.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_core.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_features2d.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_flann.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_highgui.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_imgproc.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_legacy.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_ml.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_objdetect.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniopencv_video.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniPGRFlyCapture.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jniswscale.dll;
+                            native/com/googlecode/javacv/cpp/windows-x86_64/jnivideoInputLib.dll;
+                            osname=Win64; processor=x86_64; processor=x86-64
+                            <!--;
+                            osname=Linux; processor=x86,
+                            nativelib/Linux/ia64-unknown-linux-gnu/libopencv_core.so.2.3.0;
+                            osname=Linux; processor=ia64,
+                            nativelib/Linux/x86_64-unknown-linux-gnu/libopencv_core.so.2.3.0;
+                            osname=Linux; processor=x86-64,
+                            nativelib/Mac_OS_X/librxtxSerial.jnilib;
+                            osname=Mac OS X; processor=x86; processor=PowerPC; processor=x86-64,
+                            nativelib/Solaris/sparc-solaris/sparc32-sun-solaris2.8/librxtxSerial-2.1-7.so;
+                            nativelib/Solaris/sparc-solaris/sparc32-sun-solaris2.8/librxtxSerial.so;
+                            osname=Solaris; processor=Sparc,
+                            nativelib/Solaris/sparc-solaris/sparc64-sun-solaris2.8/librxtxSerial-2.1-7.so;
+                            nativelib/Solaris/sparc-solaris/sparc64-sun-solaris2.8/librxtxSerial.so;
+                            osname=Solaris; processor=Sparc64,
 
-							nativelib/Windows/win32/rxtxSerial.dll;
-							osname=Win32; processor=x86,
-							nativelib/Windows/win64/rxtxSerial.dll;
-							osname=Win64; processor=x86_64 ; processor=x86-64-->
+                            nativelib/Windows/win32/rxtxSerial.dll;
+                            osname=Win32; processor=x86,
+                            nativelib/Windows/win64/rxtxSerial.dll;
+                            osname=Win64; processor=x86_64 ; processor=x86-64-->
 
                         </Bundle-NativeCode>
-
                     </instructions>
                 </configuration>
             </plugin>
@@ -180,6 +300,10 @@
             <resource>
                 <directory>${basedir}/target/dependency/com/googlecode</directory>
                 <targetPath>com/googlecode</targetPath>
+            </resource>
+            <resource>
+                <directory>${basedir}/target/dependency/native/com/googlecode</directory>
+                <targetPath>native/com/googlecode</targetPath>
             </resource>
             <resource>
                 <directory>${basedir}/src/main/resources/nativelib</directory>
