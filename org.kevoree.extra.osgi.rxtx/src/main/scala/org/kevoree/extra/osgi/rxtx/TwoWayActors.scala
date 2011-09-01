@@ -2,6 +2,7 @@ package org.kevoree.extra.osgi.rxtx
 
 import actors.{TIMEOUT, DaemonActor}
 import gnu.io._
+import java.lang.Thread
 
 /**
  * User: ffouquet
@@ -23,15 +24,26 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
       serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
       serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
       //serialPort.disableReceiveTimeout();
+      //serialPort.disableReceiveThreshold();
+      //serialPort.disableReceiveFraming();
       //serialPort.enableReceiveThreshold(1);
       serialPort.addEventListener(this)
       serialPort.notifyOnDataAvailable(true);
+
 
     } else {
       System.out.println("Error: Only serial ports are handled by this example.");
     }
   }
-  Thread.sleep(2000)
+//  var continueRead = true
+  //val readThread = new Thread(this)
+  //readThread.setDaemon(true)
+ // readThread.start()
+
+
+
+
+  Thread.sleep(1000)
 
 
   def sendAndWait(msg: String, waitMsg: String, timeout: Long): java.lang.Boolean = {
@@ -48,42 +60,22 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
 
   case class CLOSEPORT()
 
-  case class CONTENTREC(lastChar: Char)
+  case class CONTENTREC(content : String,lastChar: Char)
 
   def killConnection() {
-    readerActor ! CLOSEPORT()
     replyActor ! CLOSEPORT()
     if (serialPort != null) {
       serialPort.close()
     }
   }
 
-  var recString = ""
-  var readerActor = new DaemonActor {
-    def act() {
-      loop {
-        react {
-          case CLOSEPORT() => exit()
-          case _ => {
-            if (serialPort.getInputStream.available() > 0) {
-              recString = recString + (serialPort.getInputStream.read().toChar);
-              replyActor ! CONTENTREC(recString.last)
-            }
-          }
-        }
-      }
-
-    }
-
-  }.start()
   var replyActor = new DaemonActor {
     def act() {
       loop {
         react {
-          case CONTENTREC(last) => {
+          case CONTENTREC(recString,last) => {
             if (last == '\n' && recString != "") {
               KevoreeSharedCom.notifyObservers(portName, recString)
-              recString = ""
             }
           }
           case CLOSEPORT() => exit()
@@ -91,15 +83,14 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
             val originalSender = sender
             serialPort.getOutputStream.write(msg._1.getBytes)
             reactWithin(msg._3) {
-              case CONTENTREC(last) if (recString.contains(msg._2)) => {
+              case CONTENTREC(recString,last) if (recString.contains(msg._2)) => {
                 //if (recString.contains(msg._2)) {
                 //  println("YZPEE")
-                  originalSender ! true
+                originalSender ! true
                 //}
 
                 if (last == '\n' && recString != "") {
                   KevoreeSharedCom.notifyObservers(portName, recString)
-                  recString = ""
                 }
               }
               case TIMEOUT => println("TimeOut internal") //LOST NEXT MESSAGE
@@ -116,12 +107,25 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
   }.start()
 
 
-  def serialEvent(p1: SerialPortEvent) {
-    p1.getEventType match {
-      case SerialPortEvent.DATA_AVAILABLE => {
-        readerActor ! "trigger"
+def serialEvent(p1: SerialPortEvent) {
+  p1.getEventType match {
+    case SerialPortEvent.DATA_AVAILABLE => {
+      val buffer = new StringBuilder(1024)
+      try {
+        var data : Int = 0
+        val input = serialPort.getInputStream
+        data = input.read()
+        while(data != '\n'){
+          buffer += data.toChar
+          data = input.read()
+        }
+        replyActor ! CONTENTREC(buffer.toString(),data.toChar)
+      } catch {
+        case _ @ e => //IGNORE
       }
     }
-
   }
+}
+
+
 }
