@@ -14,59 +14,6 @@
     <packaging>bundle</packaging>
     <version>2.3.0</version>
     <name>Kevoree :: Extra :: JavaCV</name>
-
-    <dependencies>
-        <!--<dependency>
-            <groupId>javacv</groupId>
-            <artifactId>windows-x86_64</artifactId>
-            <version>2.3.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/javacv-windows-x86_64.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>javacv</groupId>
-            <artifactId>windows-x86</artifactId>
-            <version>2.3.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/javacv-windows-x86.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>javacv</groupId>
-            <artifactId>macosx-x86_64</artifactId>
-            <version>2.3.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/javacv-macosx-x86_64.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>javacv</groupId>
-            <artifactId>linux-x86_64</artifactId>
-            <version>2.3.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/javacv-linux-x86_64.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>javacv</groupId>
-            <artifactId>linux-x86</artifactId>
-            <version>2.3.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/javacv-linux-x86.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>javacv</groupId>
-            <artifactId>javacv</artifactId>
-            <version>2.3.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/javacv.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>javacv</groupId>
-            <artifactId>javacpp</artifactId>
-            <version>2.3.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/javacpp.jar</systemPath>
-        </dependency>-->
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -119,18 +66,12 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>1.4.3</version>
+                <version>2.3.5</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <!--<Dynamic-Import>
-                            com.googlecode.javacv.cpp.linux-x86
-                            com.googlecode.javacv.cpp.linux-x86_64
-                            com.googlecode.javacv.cpp.macosx-x86_64
-                            com.googlecode.javacv.cpp.windows-x86_64
-                        </Dynamic-Import>-->
                         <Export-Package>
                             com.googlecode.javacv.*;version="2.3.0",
                             com.googlecode.javacpp.*;version="2.3.0"
@@ -140,7 +81,7 @@
                             !com.googlecode.javacpp.*,
                             *
                         </Import-Package>
-                        <Bundle-NativeCode>
+                        <Bundle-NativeCode><!-- TODO remove useless Bundle-Native code such like freenect (we can also shade some classes) -->
                             native/com/googlecode/javacv/cpp/linux-x86/libjniARToolKitPlus.so;
                             native/com/googlecode/javacv/cpp/linux-x86/libjniavcodec.so;
                             native/com/googlecode/javacv/cpp/linux-x86/libjniavdevice.so;
@@ -163,19 +104,6 @@
                             native/com/googlecode/javacv/cpp/linux-x86/libjniopencv_video.so;
                             native/com/googlecode/javacv/cpp/linux-x86/libjnipostproc.so;
                             native/com/googlecode/javacv/cpp/linux-x86/libjniswscale.so;
-                            <!--nativelib/Linux/i686-unknown-linux-gnu/libopencv_core.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_calib3d.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_contrib.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_features2d.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_flann.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_gpu.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_highgui.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_imgproc.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_legacy.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ml.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_objdetect.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_ts.so.2.3;
-                            nativelib/Linux/i686-unknown-linux-gnu/libopencv_video.so.2.3;-->
                             nativelib/Linux/i686-unknown-linux-gnu/libopencv_core.so;
                             nativelib/Linux/i686-unknown-linux-gnu/libopencv_calib3d.so;
                             nativelib/Linux/i686-unknown-linux-gnu/libopencv_contrib.so;
