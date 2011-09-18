@@ -6,27 +6,35 @@
     <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Extra :: OSGI JmDNS</name>
-    <version>3.4.0</version>
+    <version>3.4.1</version>
 
     <parent>
         <artifactId>org.kevoree.extra.root</artifactId>
         <groupId>org.kevoree.extra</groupId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.0</version>
         <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
     </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>1.4.3</version>
+                <version>2.3.5</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <Export-Package>javax.jmdns.*</Export-Package>
-                        <Import-Package>!javax.jmdns.*</Import-Package>
+                        <Import-Package>!javax.jmdns.*,org.slf4j.*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

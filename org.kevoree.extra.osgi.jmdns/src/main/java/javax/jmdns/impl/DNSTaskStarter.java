@@ -3,12 +3,13 @@
  */
 package javax.jmdns.impl;
 
+import java.util.Date;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.jmdns.JmmDNS;
 import javax.jmdns.impl.tasks.RecordReaper;
 import javax.jmdns.impl.tasks.Responder;
 import javax.jmdns.impl.tasks.resolver.ServiceInfoResolver;
@@ -67,7 +68,7 @@ public interface DNSTaskStarter {
          * @param delegate
          *            The object to set as DNSTaskStarter's class delegate.
          * @see #classDelegate()
-         * @see JmmDNS.Factory.ClassDelegate
+         * @see DNSTaskStarter.Factory.ClassDelegate
          */
         public static void setClassDelegate(Factory.ClassDelegate delegate) {
             _databaseClassDelegate.set(delegate);
@@ -78,7 +79,7 @@ public interface DNSTaskStarter {
          *
          * @return DNSTaskStarter's class delegate.
          * @see #setClassDelegate(ClassDelegate anObject)
-         * @see JmmDNS.Factory.ClassDelegate
+         * @see DNSTaskStarter.Factory.ClassDelegate
          */
         public static Factory.ClassDelegate classDelegate() {
             return _databaseClassDelegate.get();
@@ -148,11 +149,122 @@ public interface DNSTaskStarter {
          */
         private final Timer     _stateTimer;
 
+        public static class StarterTimer extends Timer {
+
+            // This is needed because in some case we cancel the timers before all the task have finished running and in some case they will try to reschedule
+            private volatile boolean _cancelled;
+
+            /**
+             *
+             */
+            public StarterTimer() {
+                super();
+                _cancelled = false;
+            }
+
+            /**
+             * @param isDaemon
+             */
+            public StarterTimer(boolean isDaemon) {
+                super(isDaemon);
+                _cancelled = false;
+            }
+
+            /**
+             * @param name
+             * @param isDaemon
+             */
+            public StarterTimer(String name, boolean isDaemon) {
+                super(name, isDaemon);
+                _cancelled = false;
+            }
+
+            /**
+             * @param name
+             */
+            public StarterTimer(String name) {
+                super(name);
+                _cancelled = false;
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see java.util.Timer#cancel()
+             */
+            @Override
+            public synchronized void cancel() {
+                if (_cancelled) return;
+                _cancelled = true;
+                super.cancel();
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see java.util.Timer#schedule(java.util.TimerTask, long)
+             */
+            @Override
+            public synchronized void schedule(TimerTask task, long delay) {
+                if (_cancelled) return;
+                super.schedule(task, delay);
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see java.util.Timer#schedule(java.util.TimerTask, java.util.Date)
+             */
+            @Override
+            public synchronized void schedule(TimerTask task, Date time) {
+                if (_cancelled) return;
+                super.schedule(task, time);
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see java.util.Timer#schedule(java.util.TimerTask, long, long)
+             */
+            @Override
+            public synchronized void schedule(TimerTask task, long delay, long period) {
+                if (_cancelled) return;
+                super.schedule(task, delay, period);
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see java.util.Timer#schedule(java.util.TimerTask, java.util.Date, long)
+             */
+            @Override
+            public synchronized void schedule(TimerTask task, Date firstTime, long period) {
+                if (_cancelled) return;
+                super.schedule(task, firstTime, period);
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see java.util.Timer#scheduleAtFixedRate(java.util.TimerTask, long, long)
+             */
+            @Override
+            public synchronized void scheduleAtFixedRate(TimerTask task, long delay, long period) {
+                if (_cancelled) return;
+                super.scheduleAtFixedRate(task, delay, period);
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see java.util.Timer#scheduleAtFixedRate(java.util.TimerTask, java.util.Date, long)
+             */
+            @Override
+            public synchronized void scheduleAtFixedRate(TimerTask task, Date firstTime, long period) {
+                if (_cancelled) return;
+                super.scheduleAtFixedRate(task, firstTime, period);
+            }
+
+        }
+
         public DNSTaskStarterImpl(JmDNSImpl jmDNSImpl) {
             super();
             _jmDNSImpl = jmDNSImpl;
-            _timer = new Timer("JmDNS(" + _jmDNSImpl.getName() + ").Timer", true);
-            _stateTimer = new Timer("JmDNS(" + _jmDNSImpl.getName() + ").State.Timer", false);
+            _timer = new StarterTimer("JmDNS(" + _jmDNSImpl.getName() + ").Timer", true);
+            _stateTimer = new StarterTimer("JmDNS(" + _jmDNSImpl.getName() + ").State.Timer", false);
         }
 
         /*

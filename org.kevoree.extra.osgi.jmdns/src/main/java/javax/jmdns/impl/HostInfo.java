@@ -14,10 +14,13 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jmdns.NetworkTopologyDiscovery;
+import javax.jmdns.impl.constants.DNSConstants;
 import javax.jmdns.impl.constants.DNSRecordClass;
 import javax.jmdns.impl.constants.DNSRecordType;
 import javax.jmdns.impl.constants.DNSState;
@@ -29,7 +32,7 @@ import javax.jmdns.impl.tasks.DNSTask;
  * @author Pierre Frisch, Werner Randelshofer
  */
 public class HostInfo implements DNSStatefulObject {
-    private static Logger       logger = Logger.getLogger(HostInfo.class.getName());
+    private static Logger       logger = LoggerFactory.getLogger(HostInfo.class.getName());
 
     protected String            _name;
 
@@ -83,7 +86,7 @@ public class HostInfo implements DNSStatefulObject {
                 }
                 aName = addr.getHostName();
                 if (addr.isLoopbackAddress()) {
-                    logger.warning("Could not find any address beside the loopback.");
+                    logger.warn("Could not find any address beside the loopback.");
                 }
             } else {
                 aName = addr.getHostName();
@@ -92,7 +95,7 @@ public class HostInfo implements DNSStatefulObject {
                 aName = ((jmdnsName != null) && (jmdnsName.length() > 0) ? jmdnsName : addr.getHostAddress());
             }
         } catch (final IOException e) {
-            logger.log(Level.WARNING, "Could not intialize the host network interface on " + address + "because of an error: " + e.getMessage(), e);
+            logger.warn( "Could not intialize the host network interface on " + address + "because of an error: " + e.getMessage(), e);
             // This is only used for running unit test on Debian / Ubuntu
             addr = loopbackAddress();
             aName = ((jmdnsName != null) && (jmdnsName.length() > 0) ? jmdnsName : "computer");
@@ -126,7 +129,7 @@ public class HostInfo implements DNSStatefulObject {
             try {
                 _interfaze = NetworkInterface.getByInetAddress(address);
             } catch (Exception exception) {
-                logger.log(Level.SEVERE, "LocalHostInfo() exception ", exception);
+                logger.warn( "LocalHostInfo() exception ", exception);
             }
         }
     }
@@ -155,6 +158,14 @@ public class HostInfo implements DNSStatefulObject {
 
     public NetworkInterface getInterface() {
         return _interfaze;
+    }
+
+    public boolean conflictWithRecord(DNSRecord.Address record) {
+        DNSRecord.Address hostAddress = this.getDNSAddressRecord(record.getRecordType(), record.isUnique(), DNSConstants.DNS_TTL);
+        if (hostAddress != null) {
+            return hostAddress.sameType(record) && hostAddress.sameName(record) && (!hostAddress.sameValue(record));
+        }
+        return false;
     }
 
     synchronized String incrementHostName() {
