@@ -4,8 +4,10 @@ package javax.jmdns.impl.tasks.state;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jmdns.ServiceInfo;
 import javax.jmdns.impl.DNSOutgoing;
@@ -22,7 +24,7 @@ import javax.jmdns.impl.tasks.DNSTask;
  * @author Pierre Frisch
  */
 public abstract class DNSStateTask extends DNSTask {
-    static Logger      logger1     = Logger.getLogger(DNSStateTask.class.getName());
+    static Logger      logger1     = LoggerFactory.getLogger(DNSStateTask.class.getName());
 
     /**
      * By setting a 0 ttl we effectively expire the record.
@@ -109,7 +111,7 @@ public abstract class DNSStateTask extends DNSTask {
             // send probes for JmDNS itself
             synchronized (this.getDns()) {
                 if (this.getDns().isAssociatedWithTask(this, this.getTaskState())) {
-                    logger1.finer(this.getName() + ".run() JmDNS " + this.getTaskDescription() + " " + this.getDns().getName());
+                    logger1.trace(this.getName() + ".run() JmDNS " + this.getTaskDescription() + " " + this.getDns().getName());
                     stateObjects.add(this.getDns());
                     out = this.buildOutgoingForDNS(out);
                 }
@@ -120,14 +122,14 @@ public abstract class DNSStateTask extends DNSTask {
 
                 synchronized (info) {
                     if (info.isAssociatedWithTask(this, this.getTaskState())) {
-                        logger1.fine(this.getName() + ".run() JmDNS " + this.getTaskDescription() + " " + info.getQualifiedName());
+                        logger1.trace(this.getName() + ".run() JmDNS " + this.getTaskDescription() + " " + info.getQualifiedName());
                         stateObjects.add(info);
                         out = this.buildOutgoingForInfo(info, out);
                     }
                 }
             }
             if (!out.isEmpty()) {
-                logger1.finer(this.getName() + ".run() JmDNS " + this.getTaskDescription() + " #" + this.getTaskState());
+                logger1.trace(this.getName() + ".run() JmDNS " + this.getTaskDescription() + " #" + this.getTaskState());
                 this.getDns().send(out);
 
                 // Advance the state of objects.
@@ -141,7 +143,7 @@ public abstract class DNSStateTask extends DNSTask {
                 return;
             }
         } catch (Throwable e) {
-            logger1.log(Level.WARNING, this.getName() + ".run() exception ", e);
+            logger1.warn( this.getName() + ".run() exception ", e);
             this.recoverTask(e);
         }
 

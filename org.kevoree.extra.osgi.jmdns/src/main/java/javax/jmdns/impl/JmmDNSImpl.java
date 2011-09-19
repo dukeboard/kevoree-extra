@@ -20,8 +20,10 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.JmmDNS;
@@ -39,7 +41,7 @@ import javax.jmdns.impl.constants.DNSConstants;
  * @author C&eacute;drik Lime, Pierre Frisch
  */
 public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoImpl.Delegate {
-    private static Logger                            logger = Logger.getLogger(JmmDNSImpl.class.getName());
+    private static Logger                            logger = LoggerFactory.getLogger(JmmDNSImpl.class.getName());
 
     private final Set<NetworkTopologyListener>       _networkListeners;
 
@@ -79,8 +81,8 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
      */
     @Override
     public void close() throws IOException {
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer("Cancelling JmmDNS: " + this);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Cancelling JmmDNS: " + this);
         }
         _timer.cancel();
         _ListenerExecutor.shutdown();
@@ -105,7 +107,7 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
         try {
             executor.awaitTermination(DNSConstants.CLOSE_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException exception) {
-            logger.log(Level.WARNING, "Exception ", exception);
+            logger.warn( "Exception ", exception);
         }
         _knownMDNS.clear();
     }
@@ -200,7 +202,7 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
         try {
             executor.awaitTermination(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException exception) {
-            logger.log(Level.WARNING, "Exception ", exception);
+            logger.warn( "Exception ", exception);
         }
         return result.toArray(new ServiceInfo[result.size()]);
     }
@@ -308,7 +310,7 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
                 if (info != null) {
                     info.setText(value);
                 } else {
-                    logger.warning("We have a mDNS that does not know about the service info being updated.");
+                    logger.warn("We have a mDNS that does not know about the service info being updated.");
                 }
             }
         }
@@ -403,7 +405,7 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
         try {
             executor.awaitTermination(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException exception) {
-            logger.log(Level.WARNING, "Exception ", exception);
+            logger.warn( "Exception ", exception);
         }
         return result.toArray(new ServiceInfo[result.size()]);
     }
@@ -494,7 +496,7 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
                 }
             }
         } catch (Exception e) {
-            logger.warning("Unexpected unhandled exception: " + e);
+            logger.warn("Unexpected unhandled exception: " + e);
         }
     }
 
@@ -525,7 +527,7 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
                 }
             }
         } catch (Exception e) {
-            logger.warning("Unexpected unhandled exception: " + e);
+            logger.warn("Unexpected unhandled exception: " + e);
         }
     }
 
@@ -534,7 +536,7 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
      * If the network change, this class will reconfigure the list of DNS do adapt to the new configuration.
      */
     static class NetworkChecker extends TimerTask {
-        private static Logger                  logger1 = Logger.getLogger(NetworkChecker.class.getName());
+        private static Logger                  logger1 = LoggerFactory.getLogger(NetworkChecker.class.getName());
 
         private final NetworkTopologyListener  _mmDNS;
 
@@ -576,7 +578,7 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
                 }
                 _knownAddresses = current;
             } catch (Exception e) {
-                logger1.warning("Unexpected unhandled exception: " + e);
+                logger1.warn("Unexpected unhandled exception: " + e);
             }
         }
 

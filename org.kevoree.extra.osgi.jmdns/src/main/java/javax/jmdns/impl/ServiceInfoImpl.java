@@ -21,8 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
@@ -40,7 +42,7 @@ import javax.jmdns.impl.tasks.DNSTask;
  * @author Arthur van Hoff, Jeff Sonstein, Werner Randelshofer
  */
 public class ServiceInfoImpl extends ServiceInfo implements DNSListener, DNSStatefulObject {
-    private static Logger           logger = Logger.getLogger(ServiceInfoImpl.class.getName());
+    private static Logger           logger = LoggerFactory.getLogger(ServiceInfoImpl.class.getName());
 
     private String                  _domain;
     private String                  _protocol;
@@ -465,10 +467,14 @@ public class ServiceInfoImpl extends ServiceInfo implements DNSListener, DNSStat
      */
     @Override
     public String[] getHostAddresses() {
-        InetAddress[] addresses = this.getInetAddresses();
-        String[] names = new String[addresses.length];
-        for (int i = 0; i < addresses.length; i++) {
-            names[i] = addresses[i].getHostAddress();
+        Inet4Address[] ip4Aaddresses = this.getInet4Addresses();
+        Inet6Address[] ip6Aaddresses = this.getInet6Addresses();
+        String[] names = new String[ip4Aaddresses.length + ip6Aaddresses.length];
+        for (int i = 0; i < ip4Aaddresses.length; i++) {
+            names[i] = ip4Aaddresses[i].getHostAddress();
+        }
+        for (int i = 0; i < ip6Aaddresses.length; i++) {
+            names[i + ip4Aaddresses.length] = "[" + ip6Aaddresses[i].getHostAddress() + "]";
         }
         return names;
     }
@@ -843,7 +849,7 @@ public class ServiceInfoImpl extends ServiceInfo implements DNSListener, DNSStat
                 }
             } catch (Exception exception) {
                 // We should get better logging.
-                logger.log(Level.WARNING, "Malformed TXT Field ", exception);
+                logger.warn( "Malformed TXT Field ", exception);
             }
             this._props = properties;
         }

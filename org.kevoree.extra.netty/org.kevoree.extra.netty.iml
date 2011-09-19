@@ -9,8 +9,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="org.kevoree.extra.finagle" />
-    <orderEntry type="library" name="Maven: org.jboss.netty:netty:3.2.4.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.9.0-1" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.netty:netty:3.2.5.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.9.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:r08" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
   </component>
