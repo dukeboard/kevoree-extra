@@ -12,7 +12,7 @@
 
 	<artifactId>org.kevoree.extra.protobuf</artifactId>
 	<packaging>bundle</packaging>
-	<version>2.4.0</version>
+	<version>2.4.1</version>
 	<name>Kevoree :: Extra :: Protobuf</name>
 
 	<dependencies>
@@ -35,7 +35,7 @@
 						<Bundle-SymbolicName>org.kevoree.extra.protobuf</Bundle-SymbolicName>
 						<Bundle-Version>${pom.version}</Bundle-Version>
 						<Dynamic-Import>*</Dynamic-Import>
-						<Export-Package>com.google.protobuf.*;version="2.4.0"</Export-Package>
+						<Export-Package>com.google.protobuf.*;version="2.4.1"</Export-Package>
 						<Import-Package>!com.google.protobuf.*,*</Import-Package>
 					</instructions>
 				</configuration>
