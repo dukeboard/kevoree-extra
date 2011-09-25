@@ -73,7 +73,7 @@ public class GenmodelPlugin extends AbstractMojo {
         }
 
         org.kevoree.tools.ecore.gencode.Generator gen = new org.kevoree.tools.ecore.gencode.Generator(output,rootPackage);//, getLog());
-        gen.generate(ecore);
+        gen.generateModel(ecore);
 
         //Util.createGenModel(ecore, genmodel, output, getLog(),clearOutput);
     }

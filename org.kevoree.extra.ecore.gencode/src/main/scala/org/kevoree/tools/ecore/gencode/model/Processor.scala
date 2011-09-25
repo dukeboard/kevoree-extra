@@ -1,10 +1,9 @@
-package org.kevoree.tools.ecore.gencode.sub
+package org.kevoree.tools.ecore.gencode.model
 
 import scala.collection.JavaConversions._
 import org.kevoree.tools.ecore.gencode.ProcessorHelper
 import org.eclipse.emf.ecore.{EClass, EClassifier, EPackage}
 import scala.None
-import org.apache.maven.plugin.logging.Log
 
 /**
  * Created by IntelliJ IDEA.

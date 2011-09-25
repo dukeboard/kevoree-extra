@@ -1,4 +1,4 @@
-package org.kevoree.tools.ecore.gencode.sub
+package org.kevoree.tools.ecore.gencode.model
 
 import java.io.{File, FileOutputStream, PrintWriter}
 import org.kevoree.tools.ecore.gencode.ProcessorHelper._
@@ -26,12 +26,9 @@ trait ClassGenerator {
 
     pr.print("case class " + cls.getName + "Impl(")
 
-    pr.println(") extends " + cls.getName)
+    pr.println(") extends " + cls.getName + " {")
 
-    pr.println((generateSuperTypes(cls, packElement) match {
-      case None => "{"
-      case Some(s) => s + " {"
-    }))
+    //pr.println("")
 
     pr.println("\n\n}")
 
@@ -50,7 +47,12 @@ trait ClassGenerator {
     pr.println()
     pr.println(generateHeader(packElement))
     //case class name
-    pr.println("trait " + cls.getName + " {\n")
+    pr.print("trait " + cls.getName)
+
+    pr.println((generateSuperTypes(cls, packElement) match {
+      case None => "{"
+      case Some(s) => s + " {"
+    }))
 
 
     cls.getEAttributes.foreach {

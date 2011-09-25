@@ -1,4 +1,4 @@
-package org.kevoree.tools.ecore.gencode.sub
+package org.kevoree.tools.ecore.gencode.model
 
 import org.eclipse.emf.ecore.EPackage
 import java.io.{File, FileOutputStream, PrintWriter}
