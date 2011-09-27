@@ -1,9 +1,9 @@
 package org.kevoree.tools.ecore.gencode.model
 
-import org.eclipse.emf.ecore.EPackage
 import java.io.{File, FileOutputStream, PrintWriter}
 import org.kevoree.tools.ecore.gencode.ProcessorHelper
 import scala.collection.JavaConversions._
+import org.eclipse.emf.ecore.{EClass, EPackage}
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +17,7 @@ trait PackageFactoryGenerator {
 
     def generatePackageFactory(location: String, pack: String, packElement: EPackage) {
     var formatedFactoryName: String = packElement.getName.substring(0, 1).toUpperCase
-    formatedFactoryName += packElement.getName.substring(1).toLowerCase
+    formatedFactoryName += packElement.getName.substring(1)
     formatedFactoryName += "Package"
 
     val pr = new PrintWriter(new FileOutputStream(new File(location + "/" + formatedFactoryName + ".scala")))
@@ -33,7 +33,7 @@ trait PackageFactoryGenerator {
     pr.println()
     pr.println("\t def eInstance = " + formatedFactoryName)
     pr.println()
-    packElement.getEClassifiers.foreach {
+    packElement.getEClassifiers.filter(cls=>cls.isInstanceOf[EClass]).foreach {
       cls =>
         val methodName = "create" + cls.getName
         pr.println("\t def " + methodName + " : " + cls.getName + " = new " + cls.getName + "Impl")

@@ -26,6 +26,7 @@ object ProcessorHelper {
       case "bool" | "boolean" | "java.lang.Boolean" => "java.lang.Boolean"
       case "java.lang.String" | "String" => "java.lang.String"
       case "java.lang.Integer" => "java.lang.Integer"
+      case "java.lang.Object" => "java.lang.Object"
       case _ => throw new UnsupportedOperationException("ProcessorHelper::convertType::No matching found for type: " + theType); null
     }
   }
@@ -41,10 +42,10 @@ object ProcessorHelper {
     var header = "";
     val formateur = new SimpleDateFormat("'Date:' dd MMM yy 'Time:' HH:mm")
     header += "/**\n"
-    header += " * Created by Kevoree Ecore Model Generator.\n"
+    header += " * Created by Ecore Model Generator.\n"
     header += " * @author: Gregory NAIN\n"
     header += " * " + formateur.format(new Date) + "\n"
-    header += " * Kevoree NS_URI: " + packElement.getNsURI + "\n"
+    header += " * Meta-Model:NS_URI=" + packElement.getNsURI + "\n"
     header += " */"
     header
   }

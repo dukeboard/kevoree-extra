@@ -24,7 +24,8 @@ class Generator(rootDir: File, rootPackage: String) {//, log : Log) {
     val location = rootDir.getAbsolutePath + "/" + rootPackage.replace(".","/")
     ProcessorHelper.checkOrCreateFolder(location)
     resource.getContents.foreach {
-      elem => elem match {
+      elem =>
+        elem match {
         case pack:EPackage => Processor.process(location,pack,Some(rootPackage))
         case _ => println("No model generator for root element of class: " + elem.getClass)
       }
