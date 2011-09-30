@@ -41,12 +41,6 @@ class LoaderGenerator(location: String, rootPackage: String, rootXmiPackage: EPa
       }
       case _@e => throw new UnsupportedOperationException("Root container not found. Returned:" + e)
     }
-
-    /*
-      val elemGen = new ElementLoader()
-      elemGen.generateLoader(elementNameInParent: String, elementType: EClass, parentType: EClass)
-      */
-
   }
 
 

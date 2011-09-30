@@ -2,8 +2,8 @@ package org.kevoree.tools.ecore.gencode.loader
 
 import org.kevoree.tools.ecore.gencode.ProcessorHelper
 import java.io.{File, FileOutputStream, PrintWriter}
-import scala.collection.JavaConversions._
 import org.eclipse.emf.ecore.{EPackage, EClass}
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,8 +13,7 @@ import org.eclipse.emf.ecore.{EPackage, EClass}
  */
 
 
-
-class RootLoader(genDir: String, genPackage: String, elementNameInParent: String, elementType: EClass, modelingPackage : EPackage) {
+class RootLoader(genDir: String, genPackage: String, elementNameInParent: String, elementType: EClass, modelingPackage: EPackage) {
 
   def generateLoader() {
     ProcessorHelper.checkOrCreateFolder(genDir)
@@ -22,7 +21,7 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
     //System.out.println("Classifier class:" + cls.getClass)
 
     generateContext()
-    generateSubs(elementType)
+    val subLoaders = generateSubs(elementType)
 
     pr.println("package " + genPackage + ";")
     pr.println()
@@ -33,21 +32,26 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
     pr.println()
 
     pr.print("object " + elementType.getName + "Loader")
-    var extentions : String = ""
-    elementType.getEAllContainments.foreach{ ref =>
-      extentions match {
-        case "" => extentions += "\n\t\t extends " + ref.getEReferenceType.getName + "Loader"
-        case _ =>  extentions += "\n\t\t with " + ref.getEReferenceType.getName + "Loader"
-      }
+
+    if (subLoaders.size > 0) {
+      var stringListSubLoaders = List[String]()
+      subLoaders.foreach(sub => stringListSubLoaders = stringListSubLoaders ++ List(sub.getName + "Loader"))
+      pr.println(stringListSubLoaders.mkString("\n\t\textends ", "\n\t\twith ", " {"))
+    } else {
+      pr.println("{")
     }
-    pr.println(extentions +" {")
 
     pr.println("")
 
-    generateLoadMethod(pr)
-    generateDeserialize(pr)
+    val context = elementType.getName + "LoadContext"
+    val rootContainerName = elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1)
 
-    generateLoadElementsMethod(pr)
+    generateLoadMethod(pr)
+    pr.println("")
+    generateDeserialize(pr,context,rootContainerName)
+    pr.println("")
+    generateLoadElementsMethod(pr,context,rootContainerName)
+    pr.println("")
     generateResolveElementsMethod(pr)
 
     pr.println("")
@@ -62,23 +66,32 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
     el.generateContext()
   }
 
-  private def generateSubs(currentType:EClass) {
+  private def generateSubs(currentType: EClass): List[EClass] = {
     var factory = genPackage.substring(genPackage.lastIndexOf(".") + 1)
-    factory = factory.substring(0,1).toUpperCase + factory.substring(1) +"Package"
-    //modelingPackage.getEClassifiers.filter(cl => !cl.equals(elementType)).foreach{ ref =>
-    currentType.getEAllContainments.foreach{ ref =>
-      val el = new ElementLoader(genDir + "/sub/", genPackage + ".sub", ref.getName, ref.getEReferenceType, currentType, elementType.getName + "LoadContext",factory,modelingPackage)
-      el.generateLoader()
+    factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Package"
 
-      if (ref.getEReferenceType.isInterface) {
-        LoaderGenerator.getConcreteSubTypes(ref.getEReferenceType).foreach {
-          concreteType =>
-            val el = new ElementLoader(genDir + "/sub/", genPackage + ".sub",  ref.getName, concreteType, currentType, elementType.getName + "LoadContext", factory, modelingPackage)
-            el.generateLoader()
+    val context = elementType.getName + "LoadContext"
+    //modelingPackage.getEClassifiers.filter(cl => !cl.equals(elementType)).foreach{ ref =>
+    var listContainedElementsTypes = List[EClass]()
+    currentType.getEAllContainments.foreach {
+      ref =>
+        if (!ref.getEReferenceType.isInterface) {
+          val el = new BasicElementLoader(genDir + "/sub/", genPackage + ".sub", ref.getEReferenceType, context, factory, modelingPackage)
+          el.generateLoader()
+        } else {
+          //System.out.println("ReferenceType of " + ref.getName + " is an interface. Not supported yet.")
+          val el = new InterfaceElementLoader(genDir + "/sub/", genPackage + ".sub", ref.getEReferenceType, context, factory, modelingPackage)
+          el.generateLoader()
         }
-      }
-      generateSubs(ref.getEReferenceType)
+
+          if (!listContainedElementsTypes.contains(ref.getEReferenceType)) {
+            listContainedElementsTypes = listContainedElementsTypes ++ List(ref.getEReferenceType)
+          }
     }
+    System.out.print(currentType.getName + " Uses:{")
+    listContainedElementsTypes.foreach(elem => System.out.print(elem.getName + ","))
+    System.out.println()
+    listContainedElementsTypes
   }
 
   private def generateLoadMethod(pr: PrintWriter) {
@@ -93,47 +106,50 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
   }
 
 
-  private def generateDeserialize(pr: PrintWriter) {
+  private def generateDeserialize(pr: PrintWriter, context : String, rootContainerName : String) {
 
-    val context = elementType.getName + "LoadContext"
-    val rootContainerName = elementType.getName.substring(0,1).toLowerCase + elementType.getName.substring(1)
+
     var factory = genPackage.substring(genPackage.lastIndexOf(".") + 1)
-    factory = factory.substring(0,1).toUpperCase + factory.substring(1) +"Package"
+    factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Package"
 
     pr.println("\t\tprivate def deserialize(rootNode: NodeSeq): ContainerRoot = {")
 
-    pr.println(context + "." + rootContainerName + " = " + factory + ".create"+elementType.getName)
-    pr.println(context + ".xmiContent = rootNode")
-    pr.println(context + ".map = Map[String, Any]()")
-    pr.println(context + ".stats = Map[String, Int]()")
+    pr.println("\t\t\t\t"+context + "." + rootContainerName + " = " + factory + ".create" + elementType.getName)
+    pr.println("\t\t\t\t"+context + ".xmiContent = rootNode")
+    pr.println("\t\t\t\t"+context + ".map = Map[String, Any]()")
+    pr.println("\t\t\t\t"+context + ".stats = Map[String, Int]()")
 
-    pr.println("\t\t\t\tloadElements(rootNode)")
+    pr.println("\t\t\t\tload"+elementType.getName+"(rootNode)")
     pr.println("\t\t\t\tresolveElements(rootNode)")
-    pr.println("\t\t\t\t"+context+"."+rootContainerName)
+    pr.println("\t\t\t\t" + context + "." + rootContainerName)
 
     pr.println("\t\t}")
   }
 
 
-  private def generateLoadElementsMethod(pr: PrintWriter) {
+  private def generateLoadElementsMethod(pr: PrintWriter, context : String, rootContainerName : String) {
 
-    pr.println("\t\tprivate def loadElements(rootNode: NodeSeq) {")
-
-    elementType.getEAllContainments.foreach{ ref =>
-       pr.println("\t\t\t\tload" + ref.getEReferenceType.getName + "s(\"/\", rootNode)")
+    pr.println("\t\tprivate def load"+elementType.getName+"(rootNode: NodeSeq) {")
+    pr.println("")
+    elementType.getEAllContainments.foreach {
+      ref =>
+        pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(\"/\", rootNode, \""+ref.getName+"\")")
+        pr.println("\t\t\t\t" + context + "." + rootContainerName + ".set" + ref.getName.substring(0,1).toUpperCase + ref.getName.substring(1) + "(" +ref.getName+ ")")
+        pr.println("\t\t\t\t" + ref.getName + ".foreach{e=>e.eContainer=" + context + "." + rootContainerName + " }")
+        pr.println("")
     }
     pr.println("\t\t}")
   }
 
   private def generateResolveElementsMethod(pr: PrintWriter) {
     val context = elementType.getName + "LoadContext"
-    val rootContainerName = elementType.getName.substring(0,1).toLowerCase + elementType.getName.substring(1)
+    val rootContainerName = elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1)
     pr.println("\t\tprivate def resolveElements(rootNode: NodeSeq) {")
-    //ProcessingContext.containerRoot.eContainer = ProcessingContext.containerRoot
-    elementType.getEAllContainments.foreach{ ref =>
-       pr.println("\t\t\t\tresolve" + ref.getEReferenceType.getName + "s(\"/\", rootNode,"+context + "." + rootContainerName +")")
+    elementType.getEAllContainments.foreach {
+      ref =>
+        pr.println("\t\t\t\tresolve" + ref.getEReferenceType.getName + "(\"/\", rootNode, \""+ref.getName+"\")")
     }
-   pr.println("\t\t}")
+    pr.println("\t\t}")
   }
 
 }

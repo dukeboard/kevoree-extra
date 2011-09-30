@@ -4,10 +4,8 @@ import java.io.{File, FileOutputStream, PrintWriter}
 import org.kevoree.tools.ecore.gencode.ProcessorHelper._
 import org.kevoree.tools.ecore.gencode.ProcessorHelper
 import scala.collection.JavaConversions._
-import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore._
 import xmi.impl.XMIResourceImpl
-import org.eclipse.emf.common.util.URI
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,7 +38,7 @@ trait ClassGenerator {
 
   }
 
-  private def resolveCrossRefTypeDef(cls:EClass, ref: EReference, pack: String): String = {
+  private def resolveCrossRefTypeDef(cls: EClass, ref: EReference, pack: String): String = {
 
     //TODO : NETOYER :-)
     //URI d'exemple:
@@ -62,7 +60,7 @@ trait ClassGenerator {
     val typName = uriString.substring(uriString.lastIndexOf("#//") + 3)
     //System.out.println("RefTypeInstanceTypeName:" + typName)
     //throw new UnsupportedOperationException("Reference type of ref:" + ref.getName + " in class:" + cls.getName + " is null.\n")
-    pack.substring(0,pack.lastIndexOf(".")) + "." + packa.getName + "." + typName
+    pack.substring(0, pack.lastIndexOf(".")) + "." + packa.getName + "." + typName
   }
 
   def generateClass(location: String, pack: String, cls: EClass, packElement: EPackage) {
@@ -91,7 +89,7 @@ trait ClassGenerator {
           case "java.lang.String" => pr.println("java.lang.String = \"\"\n")
           case "java.lang.Integer" => pr.println("java.lang.Integer = 0\n")
           case "java.lang.Boolean" => pr.println("java.lang.Boolean = false\n")
-            case "java.lang.Object" => pr.println("java.lang.Object = null\n")
+          case "java.lang.Object" => pr.println("java.lang.Object = null\n")
           case _@e => throw new UnsupportedOperationException("ClassGenerator:: Attribute type: " + att.getEAttributeType.getInstanceClassName + " has net been converted in a known type. Can not initialize.")
         }
 
@@ -102,26 +100,19 @@ trait ClassGenerator {
       ref =>
         val typeRefName = (
           if (ref.getEReferenceType.getName == null) {
-            resolveCrossRefTypeDef(cls,ref,pack)
+            resolveCrossRefTypeDef(cls, ref, pack)
           } else {
             ref.getEReferenceType.getName
           }
           )
 
-        if (ref.getLowerBound == 0 && ref.getUpperBound == -1) {
-          //pr.println("\n\t\t@scala.reflect.BeanProperty");
-          pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : Option[List[" + typeRefName + "]] = None\n")
-        } else if (ref.getLowerBound == 0 && ref.getUpperBound != -1) {
-          //pr.println("\n\t\t@scala.reflect.BeanProperty");
-          pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : Option[" + typeRefName + "] = None\n")
-        } else if (ref.getLowerBound == 1 && ref.getUpperBound == -1) {
-          //pr.println("\n\t\t@scala.reflect.BeanProperty");
+        if (ref.getUpperBound == -1) { // multiple values
           pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : List[" + typeRefName + "] = List[" + typeRefName + "]()\n")
-        } else if (ref.getLowerBound == 1 && ref.getUpperBound != -1) {
-          //pr.println("\n\t\t@scala.reflect.BeanProperty");
+        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 0 ) { // optional single ref
+          pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : Option[" + typeRefName + "] = None\n")
+        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 1) { // mandatory single ref
           pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : " + typeRefName + " = new " + typeRefName + "Impl\n")
-        } else if (ref.getLowerBound > 1) {
-          //pr.println("\n\t\t@scala.reflect.BeanProperty");
+        } else if (ref.getLowerBound > 1) { // else
           pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : List[" + typeRefName + "] = List[" + typeRefName + "]()\n")
         } else {
           throw new UnsupportedOperationException("GenDefConsRef::None standard arrity: " + cls.getName + "->" + typeRefName + "[" + ref.getLowerBound + "," + ref.getUpperBound + "]. Not implemented yet !")
@@ -150,21 +141,142 @@ trait ClassGenerator {
       ref =>
         val typeRefName = (
           if (ref.getEReferenceType.getName == null) {
-            resolveCrossRefTypeDef(cls,ref,pack)
+            resolveCrossRefTypeDef(cls, ref, pack)
           } else {
             ref.getEReferenceType.getName
           }
           )
 
+
+        if (ref.getUpperBound == -1) { // multiple values
+          pr.println(generateGetter(ref, typeRefName, false, false))
+          pr.println(generateSetter(ref, typeRefName, false, false))
+          pr.println(generateAddMethod(ref, typeRefName))
+          pr.println(generateRemoveMethod(ref, typeRefName, true))
+        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 0 ) { // optional single ref
+          pr.println(generateGetter(ref, typeRefName, true, true))
+          pr.println(generateSetter(ref, typeRefName, true, true))
+        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 1) { // mandatory single ref
+          pr.println(generateGetter(ref, typeRefName, false, true))
+          pr.println(generateSetter(ref, typeRefName, false, true))
+        } else if (ref.getLowerBound > 1) {
+          pr.println(generateGetter(ref, typeRefName, false, false))
+          pr.println(generateSetter(ref, typeRefName, false, false))
+          pr.println(generateAddMethod(ref, typeRefName))
+          pr.println(generateRemoveMethod(ref, typeRefName, false))
+        } else {
+          throw new UnsupportedOperationException("GenDefConsRef::None standard arrity: " + cls.getName + "->" + typeRefName + "[" + ref.getLowerBound + "," + ref.getUpperBound + "]. Not implemented yet !")
+        }
+
+    }
+
+    pr.println("")
+    pr.println("}")
+
+    pr.flush()
+    pr.close()
+
+  }
+
+
+  private def generateGetter(ref: EReference, typeRefName: String, isOptional: Boolean, isSingleRef: Boolean): String = {
+    //Generate getter
+    val methName = "get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
+    var res = ""
+    res += "\n\t\tdef " + methName + " : "
+
+    //Set return type
+    res += {if (isOptional) {"Option["}else{""}}
+    res += {if (!isSingleRef) {"List["}else{""}}
+    res += typeRefName
+    res += {if (!isSingleRef) {"]"}else{""}}
+    res += {if (isOptional) {"]"}else{""}}
+    res += " = {"
+
+    //Method core
+    res += "\n\t\t\t\t" + protectReservedWords(ref.getName)
+    res += "\n\t\t}"
+    res
+  }
+
+  private def generateSetter(ref: EReference, typeRefName: String, isOptional: Boolean, isSingleRef: Boolean): String = {
+    //generate setter
+    var res = ""
+    res += "\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
+    res += "(" + protectReservedWords(ref.getName) + " : "
+
+    //Set parameter type
+    //res += {if (isOptional) {"Option["}else{""}}
+    res += {if (!isSingleRef) {"List["}else{""}}
+    res += typeRefName
+    res += {if (!isSingleRef) {"]"}else{""}}
+   // res += {if (isOptional) {"]"}else{""}}
+    res += " ) {\n"
+
+    //Method core
+    if(isOptional) {
+      res += "\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n"
+      res += "\t\t\t\t\t\tcase l : " + typeRefName + " => this." + protectReservedWords(ref.getName) + " = Some(" + protectReservedWords(ref.getName) + ")\n"
+      res += "\t\t\t\t\t\tcase _ => this." + protectReservedWords(ref.getName) + " = None\n"
+      res += "\t\t\t\t}\n"
+    } else {
+      res += "\t\t\t\tthis."+ protectReservedWords(ref.getName) + " = " + protectReservedWords(ref.getName)
+    }
+    res += "\n\t\t}"
+    res
+
+  }
+
+  private def generateAddMethod(ref: EReference, typeRefName: String): String = {
+    //generate add
+    var res = ""
+    res += "\n\t\tdef add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
+    res += "(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n"
+    res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + " = this." + protectReservedWords(ref.getName) + " ++ List(" + protectReservedWords(ref.getName) + ")\n"
+    res += "\t\t}"
+    res
+  }
+
+  private def generateRemoveMethod(ref: EReference, typeRefName: String, isOptional: Boolean): String = {
+    //generate remove
+    var res = ""
+    res += "\n\t\tdef remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
+    res += "(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n"
+    if(isOptional) {
+      res += "\t\t\t\tif(this." + protectReservedWords(ref.getName) + ".size != 0 ) {\n"
+    } else {
+      res += "\t\t\t\tif(this." + protectReservedWords(ref.getName) + ".size == " + ref.getLowerBound + ") {\n"
+      res += "\t\t\t\t\t\tthrow new UnsupportedOperationException(\"The list of " + protectReservedWords(ref.getName) + " must contain at least " + ref.getLowerBound + " element. Connot remove sizeof(" + protectReservedWords(ref.getName) + ")=\"+this." + protectReservedWords(ref.getName) + ".size)\n"
+      res += "\t\t\t\t} else {\n"
+    }
+
+    res += "\t\t\t\t\t\tvar nList = List[" + typeRefName + "]()\n"
+    res += "\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach(e => if(!e.equals(" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n"
+    res += "\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = nList\n"
+    res += "\t\t\t\t}\n"
+    res += "\t\t}\n"
+    res
+  }
+
+}
+
+
+
+
+
+/*
+
         if (ref.getLowerBound == 0 && ref.getUpperBound == -1) {
 
-
           //Generate getter
+          pr.println(generateGetter(ref, typeRefName, true, false))
+          /*
           pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print(" : Option[List[" + typeRefName + "]] = {\n")
           pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
-
+          */
           //generate setter
+          pr.println(generateSetter(ref, typeRefName))
           pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print("(" + protectReservedWords(ref.getName) + " : List[" + typeRefName + "]) {\n")
           pr.print("\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n")
@@ -201,9 +313,12 @@ trait ClassGenerator {
 
         } else if (ref.getLowerBound == 0 && ref.getUpperBound != -1) {
           //Generate getter
+          pr.println(generateGetter(ref, typeRefName, true, true))
+          /*
           pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print(" : Option[" + typeRefName + "] = {\n")
           pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
+          */
 
           //generate setter
           pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
@@ -216,11 +331,16 @@ trait ClassGenerator {
 
         } else if (ref.getLowerBound == 1 && ref.getUpperBound == -1) {
           //Generate getter
+          pr.println(generateGetter(ref, typeRefName, false, false))
+          /*
           pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print(" : List[" + typeRefName + "] = {\n")
           pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
+          */
 
           //generate setter
+          pr.println(generateSetter(ref, typeRefName, false, false))
+          /*
           pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print("(" + protectReservedWords(ref.getName) + " : List[" + typeRefName + "]) {\n")
           pr.print("\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n")
@@ -228,33 +348,44 @@ trait ClassGenerator {
           pr.print("\t\t\t\t\t\tcase _ => throw new IllegalArgumentException(\"The parameter " + protectReservedWords(ref.getName) + " : List[" + typeRefName + "] in " + cls.getName + " only admits List[" + typeRefName + "].\")\n")
           pr.print("\t\t\t\t}\n")
           pr.println("\t\t}")
-
+*/
           //generate add
+          pr.println(generateAddMethod(ref, typeRefName, false))
+          /*
           pr.print("\n\t\tdef add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
           pr.print("\t\t\t\tthis." + protectReservedWords(ref.getName) + " = this." + protectReservedWords(ref.getName) + " ++ List(" + protectReservedWords(ref.getName) + ")\n")
           pr.println("\t\t}")
+*/
+
 
           //generate remove
-          pr.print("\n\t\tdef remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
-          pr.print("\t\t\t\tif(this." + protectReservedWords(ref.getName) + ".size == 1) {\n")
-          pr.print("\t\t\t\t\t\tthrow new UnsupportedOperationException(\"The list of " + protectReservedWords(ref.getName) + " must contain at least " + ref.getLowerBound + " element. Connot remove sizeof(" + protectReservedWords(ref.getName) + ")=\"+this." + protectReservedWords(ref.getName) + ".size)\n")
-          pr.print("\t\t\t\t} else {\n")
-          pr.print("\t\t\t\t\t\tvar nList = List[" + typeRefName + "]()\n")
-          pr.print("\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach(e => if(!e.equals(" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n")
-          pr.print("\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = nList\n")
-          pr.print("\t\t\t\t}\n")
-          pr.println("\t\t}\n")
-
+          pr.println(generateRemoveMethod(ref, typeRefName, false))
+          /*
+                    pr.print("\n\t\tdef remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
+                    pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
+                    pr.print("\t\t\t\tif(this." + protectReservedWords(ref.getName) + ".size == 1) {\n")
+                    pr.print("\t\t\t\t\t\tthrow new UnsupportedOperationException(\"The list of " + protectReservedWords(ref.getName) + " must contain at least " + ref.getLowerBound + " element. Connot remove sizeof(" + protectReservedWords(ref.getName) + ")=\"+this." + protectReservedWords(ref.getName) + ".size)\n")
+                    pr.print("\t\t\t\t} else {\n")
+                    pr.print("\t\t\t\t\t\tvar nList = List[" + typeRefName + "]()\n")
+                    pr.print("\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach(e => if(!e.equals(" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n")
+                    pr.print("\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = nList\n")
+                    pr.print("\t\t\t\t}\n")
+                    pr.println("\t\t}\n")
+          */
         } else if (ref.getLowerBound == 1 && ref.getUpperBound != -1) {
 
           //Generate getter
+          pr.println(generateGetter(ref, typeRefName, false, true))
+          /*
           pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print(" : " + typeRefName + " = {\n")
           pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
+          */
 
           //generate setter
+          pr.println(generateSetter(ref, typeRefName, false, true))
+          /*
           pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
           pr.print("\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n")
@@ -262,14 +393,21 @@ trait ClassGenerator {
           pr.print("\t\t\t\t\t\tcase _ => throw new IllegalArgumentException(\"The parameter " + protectReservedWords(ref.getName) + " : " + typeRefName + " in " + cls.getName + " only admits " + typeRefName + ".\")\n")
           pr.print("\t\t\t\t}\n")
           pr.println("\t\t}\n")
+          */
 
         } else if (ref.getLowerBound > 1) {
+
+
           //Generate getter
+          pr.println(generateGetter(ref, typeRefName, false, false))
+          /*
           pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print(" : List[" + typeRefName + "] = {\n")
           pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
-
+          */
           //generate setter
+          pr.println(generateSetter(ref, typeRefName, false, false))
+          /*
           pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print("(" + protectReservedWords(ref.getName) + " : List[" + typeRefName + "]) {\n")
           pr.print("\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n")
@@ -277,15 +415,20 @@ trait ClassGenerator {
           pr.print("\t\t\t\t\t\tcase _ => throw new IllegalArgumentException(\"The parameter " + protectReservedWords(ref.getName) + " : List[" + typeRefName + "] in " + cls.getName + " only admits List[" + typeRefName + "].\")\n")
           pr.print("\t\t\t\t}\n")
           pr.println("\t\t}")
+          */
 
           //generate add
+          pr.println(generateAddMethod(ref, typeRefName, false))
+          /*
           pr.print("\n\t\tdef add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
           pr.print("\t\t\t\tthis." + protectReservedWords(ref.getName) + " = this." + protectReservedWords(ref.getName) + " ++ List(" + protectReservedWords(ref.getName) + ")\n")
           pr.println("\t\t}")
-
+          */
 
           //generate remove
+          pr.println(generateRemoveMethod(ref, typeRefName, false))
+          /*
           pr.print("\n\t\tdef remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
           pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
 
@@ -298,22 +441,8 @@ trait ClassGenerator {
           pr.print("\t\t\t\t}\n")
 
           pr.println("\t\t}\n")
-
+          */
         } else {
           throw new UnsupportedOperationException("GenDefConsRef::None standard arrity: " + cls.getName + "->" + typeRefName + "[" + ref.getLowerBound + "," + ref.getUpperBound + "]. Not implemented yet !")
         }
-    }
-
-
-
-
-    pr.println("")
-    pr.println("}")
-
-    pr.flush()
-    pr.close()
-
-  }
-
-
-}
+        */

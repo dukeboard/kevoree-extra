@@ -1,7 +1,7 @@
 package org.kevoree.extra.model.loader.processor.sub
 
 import org.kevoree.extra.model.loader.processor.ProcessingContext
-import tdp._
+
 /**
  * Created by IntelliJ IDEA.
  * User: Gregory NAIN
