@@ -8,6 +8,7 @@ import org.eclipse.emf.ecore.EPackage
 import scala.collection.JavaConversions._
 
 import model.Processor
+import serializer.SerializerGenerator
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,33 +17,51 @@ import model.Processor
  * Time: 23:05
  */
 
-class Generator(rootDir: File, rootPackage: String) {//, log : Log) {
+class Generator(rootDir: File, rootPackage: String) {
+  //, log : Log) {
 
   def generateModel(ecoreFile: File) {
     val resource = new XMIResourceImpl(URI.createFileURI(ecoreFile.getAbsolutePath));
     resource.load(null);
-    val location = rootDir.getAbsolutePath + "/" + rootPackage.replace(".","/")
+    val location = rootDir.getAbsolutePath + "/" + rootPackage.replace(".", "/")
     ProcessorHelper.checkOrCreateFolder(location)
     resource.getContents.foreach {
       elem =>
         elem match {
-        case pack:EPackage => Processor.process(location,pack,Some(rootPackage))
-        case _ => println("No model generator for root element of class: " + elem.getClass)
-      }
+          case pack: EPackage => Processor.process(location, pack, Some(rootPackage))
+          case _ => println("No model generator for root element of class: " + elem.getClass)
+        }
     }
   }
 
   def generateLoader(ecoreFile: File) {
     val resource = new XMIResourceImpl(URI.createFileURI(ecoreFile.getAbsolutePath));
     resource.load(null);
-    val location = rootDir.getAbsolutePath + "/" + rootPackage.replace(".","/")
+    val location = rootDir.getAbsolutePath + "/" + rootPackage.replace(".", "/")
     ProcessorHelper.checkOrCreateFolder(location)
     System.out.println("Launching loader generation in:" + location)
     resource.getContents.foreach {
       elem => elem match {
-        case pack:EPackage => {
-          val loaderGenerator = new LoaderGenerator(location,rootPackage, pack)
+        case pack: EPackage => {
+          val loaderGenerator = new LoaderGenerator(location, rootPackage, pack)
           loaderGenerator.generateLoader()
+        }
+        case _ => println("No loader generator for root element of class: " + elem.getClass)
+      }
+    }
+  }
+
+  def generateSerializer(ecoreFile: File) {
+    val resource = new XMIResourceImpl(URI.createFileURI(ecoreFile.getAbsolutePath));
+    resource.load(null);
+    val location = rootDir.getAbsolutePath + "/" + rootPackage.replace(".", "/")
+    ProcessorHelper.checkOrCreateFolder(location)
+    System.out.println("Launching serializer generation in:" + location)
+    resource.getContents.foreach {
+      elem => elem match {
+        case pack: EPackage => {
+          val serializerGenerator = new SerializerGenerator(location, rootPackage, pack)
+          serializerGenerator.generateSerializer()
         }
         case _ => println("No loader generator for root element of class: " + elem.getClass)
       }

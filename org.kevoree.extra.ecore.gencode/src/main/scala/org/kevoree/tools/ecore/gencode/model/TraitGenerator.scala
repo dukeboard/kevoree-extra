@@ -45,7 +45,7 @@ trait TraitGenerator {
   }
 
 
-
+       /*
    def generateMutableTrait(location: String, pack: String, packElement: EPackage) {
     var formatedFactoryName: String = packElement.getName.substring(0, 1).toUpperCase
     formatedFactoryName += packElement.getName.substring(1).toLowerCase
@@ -77,6 +77,6 @@ trait TraitGenerator {
     pr.flush()
     pr.close()
   }
-
+    */
 
 }
