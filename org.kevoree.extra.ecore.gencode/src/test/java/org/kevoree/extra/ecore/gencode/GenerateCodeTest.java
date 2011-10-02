@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class GenerateCodeTest {
 
-    @Test
+   // @Test
     public void generate() {
         File rootDir = new File("target/generated-sources/kevoree");
         String rootPackage = "org";

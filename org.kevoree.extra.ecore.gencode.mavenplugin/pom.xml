@@ -7,7 +7,7 @@
     <artifactId>org.kevoree.extra.ecore.gencode.mavenplugin</artifactId>
     <version>2.7.0</version>
     <packaging>maven-plugin</packaging>
-        <name>Kevoree :: Extra :: EcoreGenModelPlugin</name>
+    <name>Kevoree :: Extra :: EcoreGenModelPlugin</name>
     <parent>
         <artifactId>org.kevoree.extra.root</artifactId>
         <groupId>org.kevoree.extra</groupId>

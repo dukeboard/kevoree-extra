@@ -10,6 +10,14 @@
 
     <name>Kevoree :: Extra :: EcoreModelGenerator</name>
 
+    <parent>
+        <artifactId>org.kevoree.extra.root</artifactId>
+        <groupId>org.kevoree.extra</groupId>
+        <version>1.0</version>
+        <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
+    </parent>
+
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -35,7 +43,7 @@
     </dependencies>
 
     <build>
-         <plugins>
+        <plugins>
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
@@ -55,7 +63,7 @@
                     </jvmArgs>
                 </configuration>
             </plugin>
-             <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
@@ -78,24 +86,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
             </plugin>
-             
+
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </repository>
-        <repository>
-            <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/release</url>
-        </repository>
-        <repository>
-            <id>kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
-        </repository>
-    </repositories>
 
 </project>
