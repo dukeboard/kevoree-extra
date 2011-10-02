@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class GenerateCodeTest {
 
-   // @Test
+    @Test
     public void generate() {
         File rootDir = new File("target/generated-sources/kevoree");
         String rootPackage = "org";
@@ -23,7 +23,7 @@ public class GenerateCodeTest {
 
     }
 
-    @Test
+    //@Test
     public void generateLoader() {
         File rootDir = new File("../org.kevoree.extra.ecore.loader.test/src/main/scala/");
         

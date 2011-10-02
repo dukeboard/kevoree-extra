@@ -69,8 +69,8 @@ trait ClassGenerator {
 
     pr.println("package " + pack + ";")
     pr.println()
-    pr.println("import " + pack + ".impl._;")
-    pr.println()
+    //pr.println("import " + pack + ".impl._;")
+    //pr.println()
     pr.println(generateHeader(packElement))
     //case class name
     pr.print("trait " + cls.getName)
@@ -111,7 +111,7 @@ trait ClassGenerator {
         } else if (ref.getUpperBound == 1 && ref.getLowerBound == 0 ) { // optional single ref
           pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : Option[" + typeRefName + "] = None\n")
         } else if (ref.getUpperBound == 1 && ref.getLowerBound == 1) { // mandatory single ref
-          pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : " + typeRefName + " = new " + typeRefName + "Impl\n")
+          pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : " + typeRefName + " = _\n")
         } else if (ref.getLowerBound > 1) { // else
           pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : List[" + typeRefName + "] = List[" + typeRefName + "]()\n")
         } else {
