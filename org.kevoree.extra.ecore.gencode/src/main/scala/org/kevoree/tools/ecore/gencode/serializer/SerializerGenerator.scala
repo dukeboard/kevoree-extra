@@ -141,8 +141,8 @@ private def generateGetAddrMethod(cls: EClass, buffer: PrintWriter, refNameInPar
 
     }
 
-    buffer.println("      subresult                                      ")
-    buffer.println("    }                                                ")
+    buffer.println("      subresult    ")
+    buffer.println("    }              ")
 
 
     if (cls.getEAllAttributes.size() > 0 || cls.getEAllReferences.filter(eref => !cls.getEAllContainments.contains(eref)).size > 0) {
