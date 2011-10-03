@@ -41,12 +41,4 @@ class ContextGenerator(genDir: String, genPackage: String, elementType: EClass) 
     pr.close()
   }
 
-  /*
-
-
-
-
-
-   */
-
 }

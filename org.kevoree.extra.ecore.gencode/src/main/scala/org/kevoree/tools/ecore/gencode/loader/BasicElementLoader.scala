@@ -96,11 +96,11 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
     listContainedElementsTypes
   }
 
-  private def generateCollectionLoadingMethod(pr : PrintWriter) {
-    pr.println("\t\tdef load" + elementType.getName + "(parentId: String, parentNode: NodeSeq, refNameInParent : String) : List["+elementType.getName+"] = {")
-    pr.println("\t\t\t\tvar loadedElements = List["+elementType.getName+"]()")
+  private def generateCollectionLoadingMethod(pr: PrintWriter) {
+    pr.println("\t\tdef load" + elementType.getName + "(parentId: String, parentNode: NodeSeq, refNameInParent : String) : List[" + elementType.getName + "] = {")
+    pr.println("\t\t\t\tvar loadedElements = List[" + elementType.getName + "]()")
     pr.println("\t\t\t\tvar i = 0")
-    pr.println("\t\t\t\tval " + elementType.getName.substring(0,1).toLowerCase + elementType.getName.substring(1) + "List = (parentNode \\\\ refNameInParent)")//\"" + elementNameInParent + "\")")
+    pr.println("\t\t\t\tval " + elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1) + "List = (parentNode \\\\ refNameInParent)") //\"" + elementNameInParent + "\")")
     pr.println("\t\t\t\t" + elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1) + "List.foreach { xmiElem =>")
     pr.println("\t\t\t\t\t\tval currentElementId = parentId + \"/@\" + refNameInParent + \".\" + i")
     pr.println("\t\t\t\t\t\tloadedElements = loadedElements ++ List(load" + elementType.getName + "Element(currentElementId,xmiElem))")
@@ -110,23 +110,25 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
     pr.println("\t\t}")
   }
 
-  private def generateElementLoadingMethod(pr : PrintWriter) {
-    pr.println("\t\tdef load" + elementType.getName + "Element(elementId: String, elementNode: NodeSeq) : "+elementType.getName+" = {")
+  private def generateElementLoadingMethod(pr: PrintWriter) {
+    pr.println("\t\tdef load" + elementType.getName + "Element(elementId: String, elementNode: NodeSeq) : " + elementType.getName + " = {")
     pr.println("\t\t")
     pr.println("\t\t\t\tval modelElem = " + factory + ".create" + elementType.getName)
-      pr.println("\t\t\t\t" + context + ".map += elementId -> modelElem")
+    pr.println("\t\t\t\t" + context + ".map += elementId -> modelElem")
     pr.println("")
     elementType.getEAllContainments.foreach {
       ref =>
-        pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(elementId, elementNode, \""+ref.getName+"\")")
-        if( ref.getUpperBound == 1) {
-          pr.println("\t\t\t\tif("+ref.getName+ ".size == 1) {")
-          pr.println("\t\t\t\t\t\tval lm = "+ref.getName+ ".get(0)")
-          pr.println("\t\t\t\t\t\tmodelElem.set" + ref.getName.substring(0,1).toUpperCase + ref.getName.substring(1) + "(lm)")
-          pr.println("\t\t\t\t\t\tlm.eContainer = modelElem")
+
+        if (ref.getUpperBound == 1) {
+          pr.println("\t\t\t\t(elementNode \\ \"" + ref.getName + "\").headOption.map{head =>")
+          pr.println("\t\t\t\t\t\tval " + ref.getName + "ElementId = elementId + \"/@" + ref.getName + "\"")
+          pr.println("\t\t\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "Element(" + ref.getName + "ElementId, head)")
+          pr.println("\t\t\t\t\t\tmodelElem.set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
+          pr.println("\t\t\t\t\t\t" + ref.getName + ".eContainer = modelElem")
           pr.println("\t\t\t\t}")
         } else {
-          pr.println("\t\t\t\tmodelElem.set" + ref.getName.substring(0,1).toUpperCase + ref.getName.substring(1) + "(" +ref.getName+ ")")
+          pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(elementId, elementNode, \"" + ref.getName + "\")")
+          pr.println("\t\t\t\tmodelElem.set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
           pr.println("\t\t\t\t" + ref.getName + ".foreach{ e => e.eContainer = modelElem }")
         }
         pr.println("")
@@ -136,10 +138,10 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
   }
 
 
-  private def generateCollectionResolutionMethod(pr : PrintWriter) {
+  private def generateCollectionResolutionMethod(pr: PrintWriter) {
     pr.println("\t\tdef resolve" + elementType.getName + "(parentId: String, parentNode: NodeSeq, refNameInParent : String) {")
     pr.println("\t\t\t\tvar i = 0")
-    pr.println("\t\t\t\tval " + elementType.getName.substring(0,1).toLowerCase + elementType.getName.substring(1) + "List = (parentNode \\\\ refNameInParent)")//\"" + elementNameInParent + "\")")
+    pr.println("\t\t\t\tval " + elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1) + "List = (parentNode \\\\ refNameInParent)") //\"" + elementNameInParent + "\")")
     pr.println("\t\t\t\t" + elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1) + "List.foreach { xmiElem =>")
     pr.println("\t\t\t\t\t\tval currentElementId = parentId + \"/@\" + refNameInParent + \".\" + i")
     pr.println("\t\t\t\t\t\tresolve" + elementType.getName + "Element(currentElementId,xmiElem)")
@@ -149,7 +151,7 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
   }
 
 
-  private def generateElementResolutionMethod(pr : PrintWriter) {
+  private def generateElementResolutionMethod(pr: PrintWriter) {
     pr.println("\t\tdef resolve" + elementType.getName + "Element(elementId: String, elementNode: NodeSeq) {")
     pr.println("")
     pr.println("\t\tval modelElem = " + context + ".map(elementId).asInstanceOf[" + elementType.getName + "]")
@@ -157,18 +159,24 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
     elementType.getEAllAttributes.foreach {
       att =>
         val methName = "set" + att.getName.substring(0, 1).toUpperCase + att.getName.substring(1)
-        pr.println("\t\tval "+att.getName+"Val = (elementNode \\ \"@" + att.getName + "\").text")
-        pr.println("\t\tif(!"+att.getName+"Val.equals(\"\")){")
-        pr.println("\t\t\t\tmodelElem." + methName + "(" + ProcessorHelper.convertType(att.getEAttributeType.getInstanceClassName) + ".valueOf("+att.getName+"Val))")
+        pr.println("\t\tval " + att.getName + "Val = (elementNode \\ \"@" + att.getName + "\").text")
+        pr.println("\t\tif(!" + att.getName + "Val.equals(\"\")){")
+        pr.println("\t\t\t\tmodelElem." + methName + "(" + ProcessorHelper.convertType(att.getEAttributeType.getInstanceClassName) + ".valueOf(" + att.getName + "Val))")
         pr.println("\t\t}")
-      pr.println("")
+        pr.println("")
     }
     pr.println("")
 
     elementType.getEAllContainments.foreach {
       ref =>
-        pr.println("\t\t\t\tresolve" + ref.getEReferenceType.getName + "(elementId, elementNode, \""+ref.getName+"\")")
-      pr.println("")
+        if (ref.getUpperBound == 1) {
+          pr.println("\t\t\t\t(elementNode \\ \"@" + ref.getName + "\").headOption.map{head => ")
+          pr.println("\t\t\t\t\t\tresolve" + ref.getEReferenceType.getName + "Element(elementId + \"/@" + ref.getName + "\", head)")
+          pr.println("\t\t\t\t}")
+        } else {
+          pr.println("\t\t\t\tresolve" + ref.getEReferenceType.getName + "(elementId, elementNode, \"" + ref.getName + "\")")
+        }
+        pr.println("")
     }
 
 
