@@ -14,7 +14,17 @@ new scala.xml.Node {
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,new scala.xml.UnprefixedAttribute("value",selfObject.getValue.toString,new scala.xml.UnprefixedAttribute("lastCheck",selfObject.getLastCheck.toString,scala.xml.Null)))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+if(selfObject.getName.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,scala.xml.Null))
+}
+if(selfObject.getValue.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("value",selfObject.getValue.toString,scala.xml.Null))
+}
+if(selfObject.getLastCheck.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("lastCheck",selfObject.getLastCheck.toString,scala.xml.Null))
+}
+subAtts}
   }                                                  
 }
 }

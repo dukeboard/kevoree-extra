@@ -35,7 +35,18 @@ subresult = subresult ++ List(PorttoXmi(so,"required",addrs))
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,new scala.xml.UnprefixedAttribute("metaData",selfObject.getMetaData.toString,new scala.xml.UnprefixedAttribute("typeDefinition",addrs.get(selfObject.getTypeDefinition).getOrElse{"wtf"},new scala.xml.UnprefixedAttribute("namespace",addrs.get(selfObject.getNamespace).getOrElse{"wtf"},scala.xml.Null))))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+if(selfObject.getName.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,scala.xml.Null))
+}
+if(selfObject.getMetaData.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("metaData",selfObject.getMetaData.toString,scala.xml.Null))
+}
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("typeDefinition",addrs.get(selfObject.getTypeDefinition).getOrElse{"wtf"},scala.xml.Null))
+selfObject.getNamespace.map{sub =>
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("namespace",addrs.get(sub).getOrElse{"wtf"},scala.xml.Null))
+}
+subAtts}
   }                                                  
 }
 }

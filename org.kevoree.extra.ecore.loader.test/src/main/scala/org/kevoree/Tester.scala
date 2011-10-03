@@ -2,6 +2,7 @@ package org.kevoree
 
 import java.io.File
 import org.kevoree.serializer.ModelSerializer
+import xml.PrettyPrinter
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,13 +13,14 @@ import org.kevoree.serializer.ModelSerializer
  */
 
 object Tester extends App {
-  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-extra/org.kevoree.extra.ecore.loader.test/src/test/resources/defaultlibs.kev")));
+  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-extra/org.kevoree.extra.ecore.loader.test/src/test/resources/defaultLibrary.kev")));
   localModel match {
     case Some(m) => {
 
       val serializer = new ModelSerializer
-
-      println(serializer.serialize(m))
+      val pp = new PrettyPrinter(3000,1)
+      val result = serializer.serialize(m)
+      println(pp.format(result))
     }
     case None =>
   }

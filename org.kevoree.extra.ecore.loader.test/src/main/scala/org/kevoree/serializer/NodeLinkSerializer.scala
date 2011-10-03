@@ -21,7 +21,17 @@ subresult = subresult ++ List(NetworkPropertytoXmi(so,"networkProperties",addrs)
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("networkType",selfObject.getNetworkType.toString,new scala.xml.UnprefixedAttribute("estimatedRate",selfObject.getEstimatedRate.toString,new scala.xml.UnprefixedAttribute("lastCheck",selfObject.getLastCheck.toString,scala.xml.Null)))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+if(selfObject.getNetworkType.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("networkType",selfObject.getNetworkType.toString,scala.xml.Null))
+}
+if(selfObject.getEstimatedRate.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("estimatedRate",selfObject.getEstimatedRate.toString,scala.xml.Null))
+}
+if(selfObject.getLastCheck.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("lastCheck",selfObject.getLastCheck.toString,scala.xml.Null))
+}
+subAtts}
   }                                                  
 }
 }

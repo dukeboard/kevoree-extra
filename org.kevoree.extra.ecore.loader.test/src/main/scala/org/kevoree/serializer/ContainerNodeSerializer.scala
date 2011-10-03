@@ -28,7 +28,22 @@ subresult = subresult ++ List(ComponentInstancetoXmi(so,"components",addrs))
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,new scala.xml.UnprefixedAttribute("metaData",selfObject.getMetaData.toString,new scala.xml.UnprefixedAttribute("typeDefinition",addrs.get(selfObject.getTypeDefinition).getOrElse{"wtf"},new scala.xml.UnprefixedAttribute("hosts",addrs.get(selfObject.getHosts).getOrElse{"wtf"},scala.xml.Null))))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+if(selfObject.getName.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,scala.xml.Null))
+}
+if(selfObject.getMetaData.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("metaData",selfObject.getMetaData.toString,scala.xml.Null))
+}
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("typeDefinition",addrs.get(selfObject.getTypeDefinition).getOrElse{"wtf"},scala.xml.Null))
+var subadrshosts : List[String] = List()
+selfObject.getHosts.foreach{sub =>
+subadrshosts = subadrshosts ++ List(addrs.get(sub).getOrElse{"wtf"})
+}
+if(subadrshosts.size > 0){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("hosts",subadrshosts.mkString(" "),scala.xml.Null))
+}
+subAtts}
   }                                                  
 }
 }

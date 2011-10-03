@@ -14,7 +14,10 @@ new scala.xml.Node {
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("port",addrs.get(selfObject.getPort).getOrElse{"wtf"},new scala.xml.UnprefixedAttribute("hub",addrs.get(selfObject.getHub).getOrElse{"wtf"},scala.xml.Null))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("port",addrs.get(selfObject.getPort).getOrElse{"wtf"},scala.xml.Null))
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("hub",addrs.get(selfObject.getHub).getOrElse{"wtf"},scala.xml.Null))
+subAtts}
   }                                                  
 }
 }

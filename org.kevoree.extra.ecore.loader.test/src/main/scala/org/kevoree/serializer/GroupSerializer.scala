@@ -21,7 +21,22 @@ subresult = subresult ++ List(DictionarytoXmi(so,"dictionary",addrs))
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,new scala.xml.UnprefixedAttribute("metaData",selfObject.getMetaData.toString,new scala.xml.UnprefixedAttribute("typeDefinition",addrs.get(selfObject.getTypeDefinition).getOrElse{"wtf"},new scala.xml.UnprefixedAttribute("subNodes",addrs.get(selfObject.getSubNodes).getOrElse{"wtf"},scala.xml.Null))))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+if(selfObject.getName.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,scala.xml.Null))
+}
+if(selfObject.getMetaData.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("metaData",selfObject.getMetaData.toString,scala.xml.Null))
+}
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("typeDefinition",addrs.get(selfObject.getTypeDefinition).getOrElse{"wtf"},scala.xml.Null))
+var subadrssubNodes : List[String] = List()
+selfObject.getSubNodes.foreach{sub =>
+subadrssubNodes = subadrssubNodes ++ List(addrs.get(sub).getOrElse{"wtf"})
+}
+if(subadrssubNodes.size > 0){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("subNodes",subadrssubNodes.mkString(" "),scala.xml.Null))
+}
+subAtts}
   }                                                  
 }
 }

@@ -21,7 +21,31 @@ subresult = subresult ++ List(DictionaryTypetoXmi(so,"dictionaryType",addrs))
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,new scala.xml.UnprefixedAttribute("factoryBean",selfObject.getFactoryBean.toString,new scala.xml.UnprefixedAttribute("bean",selfObject.getBean.toString,new scala.xml.UnprefixedAttribute("deployUnits",addrs.get(selfObject.getDeployUnits).getOrElse{"wtf"},new scala.xml.UnprefixedAttribute("superTypes",addrs.get(selfObject.getSuperTypes).getOrElse{"wtf"},scala.xml.Null)))))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+if(selfObject.getName.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,scala.xml.Null))
+}
+if(selfObject.getFactoryBean.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("factoryBean",selfObject.getFactoryBean.toString,scala.xml.Null))
+}
+if(selfObject.getBean.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("bean",selfObject.getBean.toString,scala.xml.Null))
+}
+var subadrsdeployUnits : List[String] = List()
+selfObject.getDeployUnits.foreach{sub =>
+subadrsdeployUnits = subadrsdeployUnits ++ List(addrs.get(sub).getOrElse{"wtf"})
+}
+if(subadrsdeployUnits.size > 0){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("deployUnits",subadrsdeployUnits.mkString(" "),scala.xml.Null))
+}
+var subadrssuperTypes : List[String] = List()
+selfObject.getSuperTypes.foreach{sub =>
+subadrssuperTypes = subadrssuperTypes ++ List(addrs.get(sub).getOrElse{"wtf"})
+}
+if(subadrssuperTypes.size > 0){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("superTypes",subadrssuperTypes.mkString(" "),scala.xml.Null))
+}
+subAtts}
   }                                                  
 }
 }

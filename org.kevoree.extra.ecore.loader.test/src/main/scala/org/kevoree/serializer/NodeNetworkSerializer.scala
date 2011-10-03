@@ -21,7 +21,12 @@ subresult = subresult ++ List(NodeLinktoXmi(so,"link",addrs))
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("initBy",addrs.get(selfObject.getInitBy).getOrElse{"wtf"},new scala.xml.UnprefixedAttribute("target",addrs.get(selfObject.getTarget).getOrElse{"wtf"},scala.xml.Null))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+selfObject.getInitBy.map{sub =>
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("initBy",addrs.get(sub).getOrElse{"wtf"},scala.xml.Null))
+}
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("target",addrs.get(selfObject.getTarget).getOrElse{"wtf"},scala.xml.Null))
+subAtts}
   }                                                  
 }
 }

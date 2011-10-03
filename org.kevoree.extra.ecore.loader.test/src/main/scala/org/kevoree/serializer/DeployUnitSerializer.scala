@@ -14,7 +14,36 @@ new scala.xml.Node {
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,new scala.xml.UnprefixedAttribute("groupName",selfObject.getGroupName.toString,new scala.xml.UnprefixedAttribute("unitName",selfObject.getUnitName.toString,new scala.xml.UnprefixedAttribute("version",selfObject.getVersion.toString,new scala.xml.UnprefixedAttribute("url",selfObject.getUrl.toString,new scala.xml.UnprefixedAttribute("hashcode",selfObject.getHashcode.toString,new scala.xml.UnprefixedAttribute("requiredLibs",addrs.get(selfObject.getRequiredLibs).getOrElse{"wtf"},new scala.xml.UnprefixedAttribute("targetNodeType",addrs.get(selfObject.getTargetNodeType).getOrElse{"wtf"},scala.xml.Null))))))))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+if(selfObject.getName.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,scala.xml.Null))
+}
+if(selfObject.getGroupName.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("groupName",selfObject.getGroupName.toString,scala.xml.Null))
+}
+if(selfObject.getUnitName.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("unitName",selfObject.getUnitName.toString,scala.xml.Null))
+}
+if(selfObject.getVersion.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("version",selfObject.getVersion.toString,scala.xml.Null))
+}
+if(selfObject.getUrl.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("url",selfObject.getUrl.toString,scala.xml.Null))
+}
+if(selfObject.getHashcode.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("hashcode",selfObject.getHashcode.toString,scala.xml.Null))
+}
+var subadrsrequiredLibs : List[String] = List()
+selfObject.getRequiredLibs.foreach{sub =>
+subadrsrequiredLibs = subadrsrequiredLibs ++ List(addrs.get(sub).getOrElse{"wtf"})
+}
+if(subadrsrequiredLibs.size > 0){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("requiredLibs",subadrsrequiredLibs.mkString(" "),scala.xml.Null))
+}
+selfObject.getTargetNodeType.map{sub =>
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("targetNodeType",addrs.get(sub).getOrElse{"wtf"},scala.xml.Null))
+}
+subAtts}
   }                                                  
 }
 }

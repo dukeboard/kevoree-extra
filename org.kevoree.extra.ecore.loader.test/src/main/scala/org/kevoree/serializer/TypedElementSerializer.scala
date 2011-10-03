@@ -14,7 +14,18 @@ new scala.xml.Node {
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,new scala.xml.UnprefixedAttribute("genericTypes",addrs.get(selfObject.getGenericTypes).getOrElse{"wtf"},scala.xml.Null))}
+var subAtts : scala.xml.MetaData = scala.xml.Null
+if(selfObject.getName.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,scala.xml.Null))
+}
+var subadrsgenericTypes : List[String] = List()
+selfObject.getGenericTypes.foreach{sub =>
+subadrsgenericTypes = subadrsgenericTypes ++ List(addrs.get(sub).getOrElse{"wtf"})
+}
+if(subadrsgenericTypes.size > 0){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("genericTypes",subadrsgenericTypes.mkString(" "),scala.xml.Null))
+}
+subAtts}
   }                                                  
 }
 }
