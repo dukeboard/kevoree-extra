@@ -6,9 +6,13 @@ def DictionaryTypetoXmi(selfObject : DictionaryType,refNameInParent : String) : 
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        
-       var subresult: List[scala.xml.Elem] = List()  
-subresult = subresult ++ List(selfObject.getAttributes.DictionaryAttributetoXmi(attributes))
-subresult = subresult ++ List(selfObject.getDefaultValues.DictionaryValuetoXmi(defaultValues))
+       var subresult: List[scala.xml.Node] = List()  
+selfObject.getAttributes.foreach { so => 
+subresult = subresult ++ List(DictionaryAttributetoXmi(so,"attributes"))
+}
+selfObject.getDefaultValues.foreach { so => 
+subresult = subresult ++ List(DictionaryValuetoXmi(so,"defaultValues"))
+}
       subresult                                      
     }                                                
   }                                                  

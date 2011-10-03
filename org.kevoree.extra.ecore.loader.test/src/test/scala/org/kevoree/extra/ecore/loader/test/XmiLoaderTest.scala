@@ -2,8 +2,10 @@ package org.kevoree.extra.ecore.loader.test
 
 import java.io.File
 import org.junit.{BeforeClass, Test}
-import org.kevoree.{ContainerRootLoader, ComponentType, ContainerRoot}
+import org.kevoree.{ ComponentType, ContainerRoot}
 import org.junit.Assert._
+import org.kevoree.ContainerRootLoader
+import org.kevoree.serializer.ModelSerializer
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +32,15 @@ object XmiLoaderTest {
 
 class XmiLoaderTest {
 
+     @Test
+  def testSave() {
+        val serializer = new ModelSerializer
+
+       println(serializer.serialize(XmiLoaderTest.model))
+     }
+
+
+  /*
   @Test
   def checkRepositories() {
     val repList = XmiLoaderTest.model.getRepositories
@@ -107,6 +118,6 @@ class XmiLoaderTest {
         }
 
     }
-  }
+  }    */
 
 }

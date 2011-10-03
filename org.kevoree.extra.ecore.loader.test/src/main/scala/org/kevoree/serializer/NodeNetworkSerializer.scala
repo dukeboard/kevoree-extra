@@ -6,10 +6,14 @@ def NodeNetworktoXmi(selfObject : NodeNetwork,refNameInParent : String) : scala.
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        
-       var subresult: List[scala.xml.Elem] = List()  
-subresult = subresult ++ List(selfObject.getLink.NodeLinktoXmi(link))
+       var subresult: List[scala.xml.Node] = List()  
+selfObject.getLink.foreach { so => 
+subresult = subresult ++ List(NodeLinktoXmi(so,"link"))
+}
       subresult                                      
     }                                                
+override def attributes  : scala.xml.MetaData =  { 
+new scala.xml.UnprefixedAttribute("initBy","//HELLO",new scala.xml.UnprefixedAttribute("target","//HELLO",scala.xml.Null))}
   }                                                  
 }
 }

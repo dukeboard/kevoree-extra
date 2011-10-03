@@ -6,8 +6,10 @@ def DictionarytoXmi(selfObject : Dictionary,refNameInParent : String) : scala.xm
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        
-       var subresult: List[scala.xml.Elem] = List()  
-subresult = subresult ++ List(selfObject.getValues.DictionaryValuetoXmi(values))
+       var subresult: List[scala.xml.Node] = List()  
+selfObject.getValues.foreach { so => 
+subresult = subresult ++ List(DictionaryValuetoXmi(so,"values"))
+}
       subresult                                      
     }                                                
   }                                                  

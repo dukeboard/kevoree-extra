@@ -24,7 +24,7 @@ public class GenerateCodeTest {
 
     }
 
-    //@Test
+    @Test
     public void generateLoader() {
         File rootDir = new File("../org.kevoree.extra.ecore.loader.test/src/main/scala/");
 

@@ -6,9 +6,11 @@ def TypeLibrarytoXmi(selfObject : TypeLibrary,refNameInParent : String) : scala.
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        
-       var subresult: List[scala.xml.Elem] = List()  
+       var subresult: List[scala.xml.Node] = List()  
       subresult                                      
     }                                                
+override def attributes  : scala.xml.MetaData =  { 
+new scala.xml.UnprefixedAttribute("name",selfObject.getName.toString,new scala.xml.UnprefixedAttribute("subTypes","//HELLO",scala.xml.Null))}
   }                                                  
 }
 }

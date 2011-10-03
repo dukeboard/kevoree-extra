@@ -6,9 +6,11 @@ def MBindingtoXmi(selfObject : MBinding,refNameInParent : String) : scala.xml.No
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        
-       var subresult: List[scala.xml.Elem] = List()  
+       var subresult: List[scala.xml.Node] = List()  
       subresult                                      
     }                                                
+override def attributes  : scala.xml.MetaData =  { 
+new scala.xml.UnprefixedAttribute("port","//HELLO",new scala.xml.UnprefixedAttribute("hub","//HELLO",scala.xml.Null))}
   }                                                  
 }
 }
