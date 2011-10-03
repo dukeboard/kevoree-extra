@@ -23,11 +23,11 @@ trait GroupLoader extends DictionaryLoader {
 				val modelElem = KevoreePackage.createGroup
 				ContainerRootLoadContext.map += elementId -> modelElem
 
-				val dictionary = loadDictionary(elementId, elementNode, "dictionary")
-				if(dictionary.size == 1) {
-						val lm = dictionary.get(0)
-						modelElem.setDictionary(lm)
-						lm.eContainer = modelElem
+				(elementNode \ "dictionary").headOption.map{head =>
+						val dictionaryElementId = elementId + "/@dictionary"
+						val dictionary = loadDictionaryElement(dictionaryElementId, head)
+						modelElem.setDictionary(dictionary)
+						dictionary.eContainer = modelElem
 				}
 
 				modelElem
@@ -58,7 +58,9 @@ trait GroupLoader extends DictionaryLoader {
 		}
 
 
-				resolveDictionary(elementId, elementNode, "dictionary")
+				(elementNode \ "@dictionary").headOption.map{head => 
+						resolveDictionaryElement(elementId + "/@dictionary", head)
+				}
 
 				(elementNode \ "@typeDefinition").headOption match {
 						case Some(head) => {

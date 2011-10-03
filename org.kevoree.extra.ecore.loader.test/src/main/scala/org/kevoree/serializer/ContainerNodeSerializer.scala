@@ -40,9 +40,7 @@ var subadrshosts : List[String] = List()
 selfObject.getHosts.foreach{sub =>
 subadrshosts = subadrshosts ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
-if(subadrshosts.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("hosts",subadrshosts.mkString(" "),scala.xml.Null))
-}
 subAtts}
   }                                                  
 }

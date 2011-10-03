@@ -35,16 +35,12 @@ var subadrsdeployUnits : List[String] = List()
 selfObject.getDeployUnits.foreach{sub =>
 subadrsdeployUnits = subadrsdeployUnits ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
-if(subadrsdeployUnits.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("deployUnits",subadrsdeployUnits.mkString(" "),scala.xml.Null))
-}
 var subadrssuperTypes : List[String] = List()
 selfObject.getSuperTypes.foreach{sub =>
 subadrssuperTypes = subadrssuperTypes ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
-if(subadrssuperTypes.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("superTypes",subadrssuperTypes.mkString(" "),scala.xml.Null))
-}
 subAtts}
   }                                                  
 }

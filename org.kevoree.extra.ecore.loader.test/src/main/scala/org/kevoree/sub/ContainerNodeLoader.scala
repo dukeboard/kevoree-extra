@@ -23,11 +23,11 @@ trait ContainerNodeLoader extends DictionaryLoader with ComponentInstanceLoader 
 				val modelElem = KevoreePackage.createContainerNode
 				ContainerRootLoadContext.map += elementId -> modelElem
 
-				val dictionary = loadDictionary(elementId, elementNode, "dictionary")
-				if(dictionary.size == 1) {
-						val lm = dictionary.get(0)
-						modelElem.setDictionary(lm)
-						lm.eContainer = modelElem
+				(elementNode \ "dictionary").headOption.map{head =>
+						val dictionaryElementId = elementId + "/@dictionary"
+						val dictionary = loadDictionaryElement(dictionaryElementId, head)
+						modelElem.setDictionary(dictionary)
+						dictionary.eContainer = modelElem
 				}
 
 				val components = loadComponentInstance(elementId, elementNode, "components")
@@ -62,7 +62,9 @@ trait ContainerNodeLoader extends DictionaryLoader with ComponentInstanceLoader 
 		}
 
 
-				resolveDictionary(elementId, elementNode, "dictionary")
+				(elementNode \ "@dictionary").headOption.map{head => 
+						resolveDictionaryElement(elementId + "/@dictionary", head)
+				}
 
 				resolveComponentInstance(elementId, elementNode, "components")
 

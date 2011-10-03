@@ -37,9 +37,7 @@ var subadrsrequiredLibs : List[String] = List()
 selfObject.getRequiredLibs.foreach{sub =>
 subadrsrequiredLibs = subadrsrequiredLibs ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
-if(subadrsrequiredLibs.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("requiredLibs",subadrsrequiredLibs.mkString(" "),scala.xml.Null))
-}
 selfObject.getTargetNodeType.map{sub =>
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("targetNodeType",addrs.get(sub).getOrElse{"wtf"},scala.xml.Null))
 }

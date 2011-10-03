@@ -23,11 +23,11 @@ trait ComponentInstanceLoader extends DictionaryLoader with PortLoader {
 				val modelElem = KevoreePackage.createComponentInstance
 				ContainerRootLoadContext.map += elementId -> modelElem
 
-				val dictionary = loadDictionary(elementId, elementNode, "dictionary")
-				if(dictionary.size == 1) {
-						val lm = dictionary.get(0)
-						modelElem.setDictionary(lm)
-						lm.eContainer = modelElem
+				(elementNode \ "dictionary").headOption.map{head =>
+						val dictionaryElementId = elementId + "/@dictionary"
+						val dictionary = loadDictionaryElement(dictionaryElementId, head)
+						modelElem.setDictionary(dictionary)
+						dictionary.eContainer = modelElem
 				}
 
 				val provided = loadPort(elementId, elementNode, "provided")
@@ -66,7 +66,9 @@ trait ComponentInstanceLoader extends DictionaryLoader with PortLoader {
 		}
 
 
-				resolveDictionary(elementId, elementNode, "dictionary")
+				(elementNode \ "@dictionary").headOption.map{head => 
+						resolveDictionaryElement(elementId + "/@dictionary", head)
+				}
 
 				resolvePort(elementId, elementNode, "provided")
 

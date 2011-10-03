@@ -23,11 +23,11 @@ trait ServicePortTypeLoader extends DictionaryTypeLoader with OperationLoader {
 				val modelElem = KevoreePackage.createServicePortType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
-				val dictionaryType = loadDictionaryType(elementId, elementNode, "dictionaryType")
-				if(dictionaryType.size == 1) {
-						val lm = dictionaryType.get(0)
-						modelElem.setDictionaryType(lm)
-						lm.eContainer = modelElem
+				(elementNode \ "dictionaryType").headOption.map{head =>
+						val dictionaryTypeElementId = elementId + "/@dictionaryType"
+						val dictionaryType = loadDictionaryTypeElement(dictionaryTypeElementId, head)
+						modelElem.setDictionaryType(dictionaryType)
+						dictionaryType.eContainer = modelElem
 				}
 
 				val operations = loadOperation(elementId, elementNode, "operations")
@@ -77,7 +77,9 @@ trait ServicePortTypeLoader extends DictionaryTypeLoader with OperationLoader {
 		}
 
 
-				resolveDictionaryType(elementId, elementNode, "dictionaryType")
+				(elementNode \ "@dictionaryType").headOption.map{head => 
+						resolveDictionaryTypeElement(elementId + "/@dictionaryType", head)
+				}
 
 				resolveOperation(elementId, elementNode, "operations")
 

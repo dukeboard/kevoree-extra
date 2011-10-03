@@ -33,9 +33,7 @@ var subadrssubNodes : List[String] = List()
 selfObject.getSubNodes.foreach{sub =>
 subadrssubNodes = subadrssubNodes ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
-if(subadrssubNodes.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("subNodes",subadrssubNodes.mkString(" "),scala.xml.Null))
-}
 subAtts}
   }                                                  
 }

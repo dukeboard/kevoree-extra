@@ -23,11 +23,11 @@ trait ComponentTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 				val modelElem = KevoreePackage.createComponentType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
-				val dictionaryType = loadDictionaryType(elementId, elementNode, "dictionaryType")
-				if(dictionaryType.size == 1) {
-						val lm = dictionaryType.get(0)
-						modelElem.setDictionaryType(lm)
-						lm.eContainer = modelElem
+				(elementNode \ "dictionaryType").headOption.map{head =>
+						val dictionaryTypeElementId = elementId + "/@dictionaryType"
+						val dictionaryType = loadDictionaryTypeElement(dictionaryTypeElementId, head)
+						modelElem.setDictionaryType(dictionaryType)
+						dictionaryType.eContainer = modelElem
 				}
 
 				val required = loadPortTypeRef(elementId, elementNode, "required")
@@ -38,11 +38,11 @@ trait ComponentTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 				modelElem.setIntegrationPatterns(integrationPatterns)
 				integrationPatterns.foreach{ e => e.eContainer = modelElem }
 
-				val extraFonctionalProperties = loadExtraFonctionalProperty(elementId, elementNode, "extraFonctionalProperties")
-				if(extraFonctionalProperties.size == 1) {
-						val lm = extraFonctionalProperties.get(0)
-						modelElem.setExtraFonctionalProperties(lm)
-						lm.eContainer = modelElem
+				(elementNode \ "extraFonctionalProperties").headOption.map{head =>
+						val extraFonctionalPropertiesElementId = elementId + "/@extraFonctionalProperties"
+						val extraFonctionalProperties = loadExtraFonctionalPropertyElement(extraFonctionalPropertiesElementId, head)
+						modelElem.setExtraFonctionalProperties(extraFonctionalProperties)
+						extraFonctionalProperties.eContainer = modelElem
 				}
 
 				val provided = loadPortTypeRef(elementId, elementNode, "provided")
@@ -97,13 +97,17 @@ trait ComponentTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 		}
 
 
-				resolveDictionaryType(elementId, elementNode, "dictionaryType")
+				(elementNode \ "@dictionaryType").headOption.map{head => 
+						resolveDictionaryTypeElement(elementId + "/@dictionaryType", head)
+				}
 
 				resolvePortTypeRef(elementId, elementNode, "required")
 
 				resolveIntegrationPattern(elementId, elementNode, "integrationPatterns")
 
-				resolveExtraFonctionalProperty(elementId, elementNode, "extraFonctionalProperties")
+				(elementNode \ "@extraFonctionalProperties").headOption.map{head => 
+						resolveExtraFonctionalPropertyElement(elementId + "/@extraFonctionalProperties", head)
+				}
 
 				resolvePortTypeRef(elementId, elementNode, "provided")
 

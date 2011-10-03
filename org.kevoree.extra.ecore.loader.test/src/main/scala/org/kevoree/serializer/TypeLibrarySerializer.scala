@@ -22,9 +22,7 @@ var subadrssubTypes : List[String] = List()
 selfObject.getSubTypes.foreach{sub =>
 subadrssubTypes = subadrssubTypes ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
-if(subadrssubTypes.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("subTypes",subadrssubTypes.mkString(" "),scala.xml.Null))
-}
 subAtts}
   }                                                  
 }

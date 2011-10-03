@@ -25,9 +25,7 @@ var subadrsunits : List[String] = List()
 selfObject.getUnits.foreach{sub =>
 subadrsunits = subadrsunits ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
-if(subadrsunits.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("units",subadrsunits.mkString(" "),scala.xml.Null))
-}
 subAtts}
   }                                                  
 }

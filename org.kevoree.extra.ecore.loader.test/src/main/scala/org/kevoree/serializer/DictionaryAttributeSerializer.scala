@@ -31,9 +31,7 @@ var subadrsgenericTypes : List[String] = List()
 selfObject.getGenericTypes.foreach{sub =>
 subadrsgenericTypes = subadrsgenericTypes ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
-if(subadrsgenericTypes.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("genericTypes",subadrsgenericTypes.mkString(" "),scala.xml.Null))
-}
 subAtts}
   }                                                  
 }

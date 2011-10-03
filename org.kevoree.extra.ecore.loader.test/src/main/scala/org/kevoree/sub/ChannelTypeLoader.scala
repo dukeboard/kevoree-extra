@@ -23,11 +23,11 @@ trait ChannelTypeLoader extends DictionaryTypeLoader {
 				val modelElem = KevoreePackage.createChannelType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
-				val dictionaryType = loadDictionaryType(elementId, elementNode, "dictionaryType")
-				if(dictionaryType.size == 1) {
-						val lm = dictionaryType.get(0)
-						modelElem.setDictionaryType(lm)
-						lm.eContainer = modelElem
+				(elementNode \ "dictionaryType").headOption.map{head =>
+						val dictionaryTypeElementId = elementId + "/@dictionaryType"
+						val dictionaryType = loadDictionaryTypeElement(dictionaryTypeElementId, head)
+						modelElem.setDictionaryType(dictionaryType)
+						dictionaryType.eContainer = modelElem
 				}
 
 				modelElem
@@ -98,7 +98,9 @@ trait ChannelTypeLoader extends DictionaryTypeLoader {
 		}
 
 
-				resolveDictionaryType(elementId, elementNode, "dictionaryType")
+				(elementNode \ "@dictionaryType").headOption.map{head => 
+						resolveDictionaryTypeElement(elementId + "/@dictionaryType", head)
+				}
 
 				(elementNode \ "@deployUnits").headOption match {
 						case Some(head) => {
