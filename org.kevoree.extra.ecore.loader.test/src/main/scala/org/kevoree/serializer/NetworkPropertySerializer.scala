@@ -2,7 +2,11 @@ package org.kevoree.serializer
 import org.kevoree._
 trait NetworkPropertySerializer 
 {
-def NetworkPropertytoXmi(selfObject : NetworkProperty,refNameInParent : String) : scala.xml.Node = {
+def getNetworkPropertyXmiAddr(selfObject : NetworkProperty,previousAddr : String): Map[Object,String] = {
+var subResult = Map[Object,String]()
+subResult
+}
+def NetworkPropertytoXmi(selfObject : NetworkProperty,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        

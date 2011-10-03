@@ -2,7 +2,11 @@ package org.kevoree.serializer
 import org.kevoree._
 trait MBindingSerializer 
 {
-def MBindingtoXmi(selfObject : MBinding,refNameInParent : String) : scala.xml.Node = {
+def getMBindingXmiAddr(selfObject : MBinding,previousAddr : String): Map[Object,String] = {
+var subResult = Map[Object,String]()
+subResult
+}
+def MBindingtoXmi(selfObject : MBinding,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        
@@ -10,7 +14,7 @@ new scala.xml.Node {
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("port","//HELLO",new scala.xml.UnprefixedAttribute("hub","//HELLO",scala.xml.Null))}
+new scala.xml.UnprefixedAttribute("port",addrs.get(selfObject.getPort).getOrElse{"wtf"},new scala.xml.UnprefixedAttribute("hub",addrs.get(selfObject.getHub).getOrElse{"wtf"},scala.xml.Null))}
   }                                                  
 }
 }

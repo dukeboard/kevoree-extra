@@ -2,7 +2,11 @@ package org.kevoree.serializer
 import org.kevoree._
 trait DictionaryValueSerializer 
 {
-def DictionaryValuetoXmi(selfObject : DictionaryValue,refNameInParent : String) : scala.xml.Node = {
+def getDictionaryValueXmiAddr(selfObject : DictionaryValue,previousAddr : String): Map[Object,String] = {
+var subResult = Map[Object,String]()
+subResult
+}
+def DictionaryValuetoXmi(selfObject : DictionaryValue,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        
@@ -10,7 +14,7 @@ new scala.xml.Node {
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("value",selfObject.getValue.toString,new scala.xml.UnprefixedAttribute("attribute","//HELLO",scala.xml.Null))}
+new scala.xml.UnprefixedAttribute("value",selfObject.getValue.toString,new scala.xml.UnprefixedAttribute("attribute",addrs.get(selfObject.getAttribute).getOrElse{"wtf"},scala.xml.Null))}
   }                                                  
 }
 }

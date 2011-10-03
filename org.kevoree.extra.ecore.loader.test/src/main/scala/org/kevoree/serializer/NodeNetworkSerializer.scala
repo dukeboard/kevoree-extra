@@ -2,18 +2,26 @@ package org.kevoree.serializer
 import org.kevoree._
 trait NodeNetworkSerializer 
  extends NodeLinkSerializer {
-def NodeNetworktoXmi(selfObject : NodeNetwork,refNameInParent : String) : scala.xml.Node = {
+def getNodeNetworkXmiAddr(selfObject : NodeNetwork,previousAddr : String): Map[Object,String] = {
+var subResult = Map[Object,String]()
+selfObject.getLink.foreach{ sub => 
+subResult +=  sub -> (previousAddr+"/@link."+selfObject.getLink.indexOf(sub) ) 
+subResult = subResult ++ getNodeLinkXmiAddr(sub,previousAddr+"/@link."+selfObject.getLink.indexOf(sub))
+}
+subResult
+}
+def NodeNetworktoXmi(selfObject : NodeNetwork,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        
        var subresult: List[scala.xml.Node] = List()  
 selfObject.getLink.foreach { so => 
-subresult = subresult ++ List(NodeLinktoXmi(so,"link"))
+subresult = subresult ++ List(NodeLinktoXmi(so,"link",addrs))
 }
       subresult    
     }              
 override def attributes  : scala.xml.MetaData =  { 
-new scala.xml.UnprefixedAttribute("initBy","//HELLO",new scala.xml.UnprefixedAttribute("target","//HELLO",scala.xml.Null))}
+new scala.xml.UnprefixedAttribute("initBy",addrs.get(selfObject.getInitBy).getOrElse{"wtf"},new scala.xml.UnprefixedAttribute("target",addrs.get(selfObject.getTarget).getOrElse{"wtf"},scala.xml.Null))}
   }                                                  
 }
 }

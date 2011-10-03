@@ -27,10 +27,6 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
     }
   }
 
-
-//  def generateXmiAddrHelper
-
-
   def generateDefaultSerializer(genDir: String, packageName: String, root: EClass, rootXmiPackage: EPackage) {
     ProcessorHelper.checkOrCreateFolder(genDir + "/serializer")
     val pr = new PrintWriter(new FileOutputStream(new File(genDir + "/serializer/" + "ModelSerializer.scala")))
@@ -40,7 +36,10 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
     pr.println("def serialize(o : Object) : String = {")
 
     pr.println("o match {")
-    pr.println("case o : "+packageName+"."+root.getName+" => "+root.getName+"toXmi(o).toString()")
+    pr.println("case o : "+packageName+"."+root.getName+" => {")
+    pr.println("val context = get"+root.getName+"XmiAddr(o,\"/\")")
+    pr.println(root.getName+"toXmi(o,context).toString()")
+    pr.println("}")
     pr.println("case _ => null")
     pr.println("}") //END MATCH
     pr.println("}") //END serialize method
@@ -80,23 +79,6 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
     "get" + name.charAt(0).toUpper + name.substring(1)
   }
 
-  /*
-private def generateGetAddrMethod(cls: EClass, buffer: PrintWriter, refNameInParent: String, parentClassName : String) {
- buffer.println("def get"+cls.getName+"Addr(selfObject : "+cls.getName+",refNameInParent: String) : String = {")
- buffer.println("val buffer = new StringBuffer")
-
- //CALL PARENT
- buffer.println("buffer.append(getAddr(selfObject.eContainer))")
-
-
- buffer.println("getAddr(selfObject.eContainer)")
- buffer.println("buffer.append(\"/@\")")
- buffer.println("buffer.append(\""+refNameInParent+"\")")
- buffer.println("selfObject.eContainer."+refNameInParent+".indexOf(selfObject)")
-
- buffer.println("buffer.toString")
- buffer.println("}")
-}   */
 
   private def generateToXmiMethod(cls: EClass, buffer: PrintWriter, refNameInParent: String, isRoot: Boolean = false) = {
     buffer.println("import org.kevoree._")
@@ -109,11 +91,36 @@ private def generateGetAddrMethod(cls: EClass, buffer: PrintWriter, refNameInPar
 
     buffer.println("{")
 
+    
+    //GENERATE GET XMI ADDR
+    buffer.println("def get"+cls.getName+"XmiAddr(selfObject : " + cls.getName + ",previousAddr : String): Map[Object,String] = {")
+    buffer.println("var subResult = Map[Object,String]()")
+    cls.getEAllContainments.foreach {
+      subClass =>
+        subClass.getUpperBound match {
+          case 1 => {
+            buffer.println("selfObject."+getGetter(subClass.getName)+".map{ sub =>")
+            buffer.println("subResult +=  sub -> (previousAddr+\"/@"+subClass.getName+"\" ) ")
+            buffer.println("subResult = subResult ++ get"+subClass.getEReferenceType.getName+"XmiAddr(sub,previousAddr+\"/@"+subClass.getName+"\")")
+            buffer.println("}")
+          }
+          case -1 => {
+            buffer.println("selfObject."+getGetter(subClass.getName)+".foreach{ sub => ")
+            buffer.println("subResult +=  sub -> (previousAddr+\"/@"+subClass.getName+".\"+selfObject."+getGetter(subClass.getName)+".indexOf(sub) ) ")
+            buffer.println("subResult = subResult ++ get"+subClass.getEReferenceType.getName+"XmiAddr(sub,previousAddr+\"/@"+subClass.getName+".\"+selfObject."+getGetter(subClass.getName)+".indexOf(sub))")
+            buffer.println("}")
+          }
+        }
+    }
+    buffer.println("subResult")
+    buffer.println("}")
+    
+    
     // generateGetAddrMethod(cls,buffer,refNameInParent)
     if (isRoot) {
-      buffer.println("def " + cls.getName + "toXmi(selfObject : " + cls.getName + ") : scala.xml.Node = {")
+      buffer.println("def " + cls.getName + "toXmi(selfObject : " + cls.getName + ", addrs : Map[Object,String]) : scala.xml.Node = {")
     } else {
-      buffer.println("def " + cls.getName + "toXmi(selfObject : " + cls.getName + ",refNameInParent : String) : scala.xml.Node = {")
+      buffer.println("def " + cls.getName + "toXmi(selfObject : " + cls.getName + ",refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {")
     }
 
     buffer.println("new scala.xml.Node {")
@@ -133,12 +140,12 @@ private def generateGetAddrMethod(cls: EClass, buffer: PrintWriter, refNameInPar
         subClass.getUpperBound match {
           case 1 => {
             buffer.println("selfObject." + getGetter(subClass.getName) + ".map { so => ")
-            buffer.println("subresult = subresult ++ List(" + subClass.getEReferenceType.getName + "toXmi(so,\"" + subClass.getName + "\"))")
+            buffer.println("subresult = subresult ++ List(" + subClass.getEReferenceType.getName + "toXmi(so,\"" + subClass.getName + "\",addrs))")
             buffer.println("}")
           }
           case -1 => {
             buffer.println("selfObject." + getGetter(subClass.getName) + ".foreach { so => ")
-            buffer.println("subresult = subresult ++ List(" + subClass.getEReferenceType.getName + "toXmi(so,\"" + subClass.getName + "\"))")
+            buffer.println("subresult = subresult ++ List(" + subClass.getEReferenceType.getName + "toXmi(so,\"" + subClass.getName + "\",addrs))")
             buffer.println("}")
           }
 
@@ -158,7 +165,7 @@ private def generateGetAddrMethod(cls: EClass, buffer: PrintWriter, refNameInPar
       }
       cls.getEAllReferences.filter(eref => !cls.getEAllContainments.contains(eref)).foreach {
         ref =>
-          buffer.print("new scala.xml.UnprefixedAttribute(\"" + ref.getName + "\",\"//HELLO\",")
+          buffer.print("new scala.xml.UnprefixedAttribute(\"" + ref.getName + "\",addrs.get(selfObject."+getGetter(ref.getName)+").getOrElse{\"wtf\"},")
       }
       buffer.print("scala.xml.Null")
       for (i <- 0 until cls.getEAllAttributes.size() + cls.getEAllReferences.filter(eref => !cls.getEAllContainments.contains(eref)).size) {

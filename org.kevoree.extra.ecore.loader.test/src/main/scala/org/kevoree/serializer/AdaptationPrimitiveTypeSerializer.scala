@@ -2,7 +2,11 @@ package org.kevoree.serializer
 import org.kevoree._
 trait AdaptationPrimitiveTypeSerializer 
 {
-def AdaptationPrimitiveTypetoXmi(selfObject : AdaptationPrimitiveType,refNameInParent : String) : scala.xml.Node = {
+def getAdaptationPrimitiveTypeXmiAddr(selfObject : AdaptationPrimitiveType,previousAddr : String): Map[Object,String] = {
+var subResult = Map[Object,String]()
+subResult
+}
+def AdaptationPrimitiveTypetoXmi(selfObject : AdaptationPrimitiveType,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {
 new scala.xml.Node {
   def label = refNameInParent
     def child = {        
