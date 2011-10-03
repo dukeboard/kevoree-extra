@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.{EReference, EAttribute, EPackage, EClass}
 
 class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage: EPackage) {
 
+
   def generateSerializer() {
     ProcessorHelper.lookForRootElement(rootXmiPackage) match {
       case cls: EClass => {
@@ -25,6 +26,9 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
       case _@e => throw new UnsupportedOperationException("Root container not found. Returned:" + e)
     }
   }
+
+
+  def generateXmiAddrHelper
 
 
   def generateDefaultSerializer(genDir: String, packageName: String, root: EClass, rootXmiPackage: EPackage) {
@@ -70,6 +74,7 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
 
 
   }
+
 
   private def getGetter(name: String): String = {
     "get" + name.charAt(0).toUpper + name.substring(1)

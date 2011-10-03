@@ -19,7 +19,11 @@ object Tester extends App {
     case Some(m) => {
       
       m.getTypeDefinitions.foreach{ td =>
-                                         println(td.getName)
+                                         td.getDictionaryType.map{ dt =>
+                                             dt.getAttributes.foreach{ att =>
+                                                 println("=>"+att.getName)
+                                             }
+                                         }
       }
       
       val serializer = new ModelSerializer
