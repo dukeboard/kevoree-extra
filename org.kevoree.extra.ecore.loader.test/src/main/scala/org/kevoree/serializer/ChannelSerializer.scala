@@ -4,6 +4,7 @@ trait ChannelSerializer
  extends DictionarySerializer {
 def getChannelXmiAddr(selfObject : Channel,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 selfObject.getDictionary.map{ sub =>
 subResult +=  sub -> (previousAddr+"/@dictionary" ) 
 subResult = subResult ++ getDictionaryXmiAddr(sub,previousAddr+"/@dictionary")

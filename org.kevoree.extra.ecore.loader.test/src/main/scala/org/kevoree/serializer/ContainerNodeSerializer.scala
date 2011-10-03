@@ -4,13 +4,16 @@ trait ContainerNodeSerializer
  extends DictionarySerializer with ComponentInstanceSerializer {
 def getContainerNodeXmiAddr(selfObject : ContainerNode,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 selfObject.getDictionary.map{ sub =>
 subResult +=  sub -> (previousAddr+"/@dictionary" ) 
 subResult = subResult ++ getDictionaryXmiAddr(sub,previousAddr+"/@dictionary")
 }
+i=0
 selfObject.getComponents.foreach{ sub => 
-subResult +=  sub -> (previousAddr+"/@components."+selfObject.getComponents.indexOf(sub) ) 
-subResult = subResult ++ getComponentInstanceXmiAddr(sub,previousAddr+"/@components."+selfObject.getComponents.indexOf(sub))
+subResult +=  sub -> (previousAddr+"/@components."+i) 
+subResult = subResult ++ getComponentInstanceXmiAddr(sub,previousAddr+"/@components."+i)
+i=i+1
 }
 subResult
 }
@@ -40,7 +43,9 @@ var subadrshosts : List[String] = List()
 selfObject.getHosts.foreach{sub =>
 subadrshosts = subadrshosts ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
+if(subadrshosts.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("hosts",subadrshosts.mkString(" "),scala.xml.Null))
+}
 subAtts}
   }                                                  
 }

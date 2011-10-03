@@ -4,6 +4,7 @@ trait GroupSerializer
  extends DictionarySerializer {
 def getGroupXmiAddr(selfObject : Group,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 selfObject.getDictionary.map{ sub =>
 subResult +=  sub -> (previousAddr+"/@dictionary" ) 
 subResult = subResult ++ getDictionaryXmiAddr(sub,previousAddr+"/@dictionary")
@@ -33,7 +34,9 @@ var subadrssubNodes : List[String] = List()
 selfObject.getSubNodes.foreach{sub =>
 subadrssubNodes = subadrssubNodes ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
+if(subadrssubNodes.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("subNodes",subadrssubNodes.mkString(" "),scala.xml.Null))
+}
 subAtts}
   }                                                  
 }

@@ -4,6 +4,7 @@ trait DictionaryValueSerializer
 {
 def getDictionaryValueXmiAddr(selfObject : DictionaryValue,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 subResult
 }
 def DictionaryValuetoXmi(selfObject : DictionaryValue,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {

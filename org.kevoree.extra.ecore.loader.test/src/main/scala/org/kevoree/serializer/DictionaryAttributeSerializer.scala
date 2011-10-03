@@ -4,6 +4,7 @@ trait DictionaryAttributeSerializer
 {
 def getDictionaryAttributeXmiAddr(selfObject : DictionaryAttribute,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 subResult
 }
 def DictionaryAttributetoXmi(selfObject : DictionaryAttribute,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {
@@ -31,7 +32,9 @@ var subadrsgenericTypes : List[String] = List()
 selfObject.getGenericTypes.foreach{sub =>
 subadrsgenericTypes = subadrsgenericTypes ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
+if(subadrsgenericTypes.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("genericTypes",subadrsgenericTypes.mkString(" "),scala.xml.Null))
+}
 subAtts}
   }                                                  
 }

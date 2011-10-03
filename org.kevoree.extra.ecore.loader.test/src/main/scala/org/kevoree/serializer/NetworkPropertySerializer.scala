@@ -4,6 +4,7 @@ trait NetworkPropertySerializer
 {
 def getNetworkPropertyXmiAddr(selfObject : NetworkProperty,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 subResult
 }
 def NetworkPropertytoXmi(selfObject : NetworkProperty,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {

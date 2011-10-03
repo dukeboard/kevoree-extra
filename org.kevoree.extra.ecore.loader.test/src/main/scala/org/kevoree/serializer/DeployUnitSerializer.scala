@@ -4,6 +4,7 @@ trait DeployUnitSerializer
 {
 def getDeployUnitXmiAddr(selfObject : DeployUnit,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 subResult
 }
 def DeployUnittoXmi(selfObject : DeployUnit,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {
@@ -37,7 +38,9 @@ var subadrsrequiredLibs : List[String] = List()
 selfObject.getRequiredLibs.foreach{sub =>
 subadrsrequiredLibs = subadrsrequiredLibs ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
+if(subadrsrequiredLibs.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("requiredLibs",subadrsrequiredLibs.mkString(" "),scala.xml.Null))
+}
 selfObject.getTargetNodeType.map{sub =>
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("targetNodeType",addrs.get(sub).getOrElse{"wtf"},scala.xml.Null))
 }

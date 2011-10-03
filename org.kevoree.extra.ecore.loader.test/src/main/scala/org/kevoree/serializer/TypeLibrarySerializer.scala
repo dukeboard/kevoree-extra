@@ -4,6 +4,7 @@ trait TypeLibrarySerializer
 {
 def getTypeLibraryXmiAddr(selfObject : TypeLibrary,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 subResult
 }
 def TypeLibrarytoXmi(selfObject : TypeLibrary,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {
@@ -22,7 +23,9 @@ var subadrssubTypes : List[String] = List()
 selfObject.getSubTypes.foreach{sub =>
 subadrssubTypes = subadrssubTypes ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
+if(subadrssubTypes.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("subTypes",subadrssubTypes.mkString(" "),scala.xml.Null))
+}
 subAtts}
   }                                                  
 }

@@ -17,6 +17,12 @@ object Tester extends App {
   localModel match {
     case Some(m) => {
 
+      m.getTypeDefinitions.foreach{
+        td => td.getDeployUnits.foreach{td =>
+           println(td.hashCode())
+        }
+      }
+      
       val serializer = new ModelSerializer
       val pp = new PrettyPrinter(3000,1)
       val result = serializer.serialize(m)

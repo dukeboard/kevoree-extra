@@ -4,13 +4,18 @@ trait DictionaryTypeSerializer
  extends DictionaryAttributeSerializer with DictionaryValueSerializer {
 def getDictionaryTypeXmiAddr(selfObject : DictionaryType,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
+i=0
 selfObject.getAttributes.foreach{ sub => 
-subResult +=  sub -> (previousAddr+"/@attributes."+selfObject.getAttributes.indexOf(sub) ) 
-subResult = subResult ++ getDictionaryAttributeXmiAddr(sub,previousAddr+"/@attributes."+selfObject.getAttributes.indexOf(sub))
+subResult +=  sub -> (previousAddr+"/@attributes."+i) 
+subResult = subResult ++ getDictionaryAttributeXmiAddr(sub,previousAddr+"/@attributes."+i)
+i=i+1
 }
+i=0
 selfObject.getDefaultValues.foreach{ sub => 
-subResult +=  sub -> (previousAddr+"/@defaultValues."+selfObject.getDefaultValues.indexOf(sub) ) 
-subResult = subResult ++ getDictionaryValueXmiAddr(sub,previousAddr+"/@defaultValues."+selfObject.getDefaultValues.indexOf(sub))
+subResult +=  sub -> (previousAddr+"/@defaultValues."+i) 
+subResult = subResult ++ getDictionaryValueXmiAddr(sub,previousAddr+"/@defaultValues."+i)
+i=i+1
 }
 subResult
 }

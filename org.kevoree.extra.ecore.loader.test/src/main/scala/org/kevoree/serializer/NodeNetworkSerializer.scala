@@ -4,9 +4,12 @@ trait NodeNetworkSerializer
  extends NodeLinkSerializer {
 def getNodeNetworkXmiAddr(selfObject : NodeNetwork,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
+i=0
 selfObject.getLink.foreach{ sub => 
-subResult +=  sub -> (previousAddr+"/@link."+selfObject.getLink.indexOf(sub) ) 
-subResult = subResult ++ getNodeLinkXmiAddr(sub,previousAddr+"/@link."+selfObject.getLink.indexOf(sub))
+subResult +=  sub -> (previousAddr+"/@link."+i) 
+subResult = subResult ++ getNodeLinkXmiAddr(sub,previousAddr+"/@link."+i)
+i=i+1
 }
 subResult
 }

@@ -4,6 +4,7 @@ trait MBindingSerializer
 {
 def getMBindingXmiAddr(selfObject : MBinding,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 subResult
 }
 def MBindingtoXmi(selfObject : MBinding,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {

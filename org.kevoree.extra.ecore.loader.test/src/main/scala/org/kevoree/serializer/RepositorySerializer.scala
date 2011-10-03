@@ -4,6 +4,7 @@ trait RepositorySerializer
 {
 def getRepositoryXmiAddr(selfObject : Repository,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 subResult
 }
 def RepositorytoXmi(selfObject : Repository,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {
@@ -25,7 +26,9 @@ var subadrsunits : List[String] = List()
 selfObject.getUnits.foreach{sub =>
 subadrsunits = subadrsunits ++ List(addrs.get(sub).getOrElse{"wtf"})
 }
+if(subadrsunits.size > 0){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("units",subadrsunits.mkString(" "),scala.xml.Null))
+}
 subAtts}
   }                                                  
 }

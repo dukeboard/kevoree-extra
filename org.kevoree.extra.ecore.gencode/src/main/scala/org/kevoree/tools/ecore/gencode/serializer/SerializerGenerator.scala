@@ -95,6 +95,7 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
     //GENERATE GET XMI ADDR
     buffer.println("def get" + cls.getName + "XmiAddr(selfObject : " + cls.getName + ",previousAddr : String): Map[Object,String] = {")
     buffer.println("var subResult = Map[Object,String]()")
+    buffer.println("var i = 0")
     cls.getEAllContainments.foreach {
       subClass =>
         subClass.getUpperBound match {
@@ -105,9 +106,11 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
             buffer.println("}")
           }
           case -1 => {
+            buffer.println("i=0")
             buffer.println("selfObject." + getGetter(subClass.getName) + ".foreach{ sub => ")
-            buffer.println("subResult +=  sub -> (previousAddr+\"/@" + subClass.getName + ".\"+selfObject." + getGetter(subClass.getName) + ".indexOf(sub) ) ")
-            buffer.println("subResult = subResult ++ get" + subClass.getEReferenceType.getName + "XmiAddr(sub,previousAddr+\"/@" + subClass.getName + ".\"+selfObject." + getGetter(subClass.getName) + ".indexOf(sub))")
+            buffer.println("subResult +=  sub -> (previousAddr+\"/@" + subClass.getName + ".\"+i) ")
+            buffer.println("subResult = subResult ++ get" + subClass.getEReferenceType.getName + "XmiAddr(sub,previousAddr+\"/@" + subClass.getName + ".\"+i)")
+            buffer.println("i=i+1")
             buffer.println("}")
           }
         }

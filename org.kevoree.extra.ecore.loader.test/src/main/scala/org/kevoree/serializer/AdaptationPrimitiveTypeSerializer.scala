@@ -4,6 +4,7 @@ trait AdaptationPrimitiveTypeSerializer
 {
 def getAdaptationPrimitiveTypeXmiAddr(selfObject : AdaptationPrimitiveType,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 subResult
 }
 def AdaptationPrimitiveTypetoXmi(selfObject : AdaptationPrimitiveType,refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {

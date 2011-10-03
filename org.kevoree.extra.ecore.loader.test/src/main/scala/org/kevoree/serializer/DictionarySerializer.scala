@@ -4,9 +4,12 @@ trait DictionarySerializer
  extends DictionaryValueSerializer {
 def getDictionaryXmiAddr(selfObject : Dictionary,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
+i=0
 selfObject.getValues.foreach{ sub => 
-subResult +=  sub -> (previousAddr+"/@values."+selfObject.getValues.indexOf(sub) ) 
-subResult = subResult ++ getDictionaryValueXmiAddr(sub,previousAddr+"/@values."+selfObject.getValues.indexOf(sub))
+subResult +=  sub -> (previousAddr+"/@values."+i) 
+subResult = subResult ++ getDictionaryValueXmiAddr(sub,previousAddr+"/@values."+i)
+i=i+1
 }
 subResult
 }

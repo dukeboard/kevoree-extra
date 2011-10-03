@@ -4,17 +4,22 @@ trait ComponentInstanceSerializer
  extends DictionarySerializer with PortSerializer {
 def getComponentInstanceXmiAddr(selfObject : ComponentInstance,previousAddr : String): Map[Object,String] = {
 var subResult = Map[Object,String]()
+var i = 0
 selfObject.getDictionary.map{ sub =>
 subResult +=  sub -> (previousAddr+"/@dictionary" ) 
 subResult = subResult ++ getDictionaryXmiAddr(sub,previousAddr+"/@dictionary")
 }
+i=0
 selfObject.getProvided.foreach{ sub => 
-subResult +=  sub -> (previousAddr+"/@provided."+selfObject.getProvided.indexOf(sub) ) 
-subResult = subResult ++ getPortXmiAddr(sub,previousAddr+"/@provided."+selfObject.getProvided.indexOf(sub))
+subResult +=  sub -> (previousAddr+"/@provided."+i) 
+subResult = subResult ++ getPortXmiAddr(sub,previousAddr+"/@provided."+i)
+i=i+1
 }
+i=0
 selfObject.getRequired.foreach{ sub => 
-subResult +=  sub -> (previousAddr+"/@required."+selfObject.getRequired.indexOf(sub) ) 
-subResult = subResult ++ getPortXmiAddr(sub,previousAddr+"/@required."+selfObject.getRequired.indexOf(sub))
+subResult +=  sub -> (previousAddr+"/@required."+i) 
+subResult = subResult ++ getPortXmiAddr(sub,previousAddr+"/@required."+i)
+i=i+1
 }
 subResult
 }
