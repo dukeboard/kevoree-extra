@@ -50,18 +50,8 @@ trait OperationLoader extends ParameterLoader {
 		}
 
 
-				(elementNode \ "@parameters").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: Parameter) => modelElem.addParameters(s)
-														case None => System.out.println("Parameter not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
+				resolveParameter(elementId, elementNode, "parameters")
+
 				(elementNode \ "@returnType").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {

@@ -97,6 +97,16 @@ trait ComponentTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 		}
 
 
+				resolveDictionaryType(elementId, elementNode, "dictionaryType")
+
+				resolvePortTypeRef(elementId, elementNode, "required")
+
+				resolveIntegrationPattern(elementId, elementNode, "integrationPatterns")
+
+				resolveExtraFonctionalProperty(elementId, elementNode, "extraFonctionalProperties")
+
+				resolvePortTypeRef(elementId, elementNode, "provided")
+
 				(elementNode \ "@deployUnits").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {
@@ -109,18 +119,6 @@ trait ComponentTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 								}
 						case None => //No subtype for this library
 				}
-				(elementNode \ "@dictionaryType").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: DictionaryType) => modelElem.setDictionaryType(s)
-														case None => System.out.println("DictionaryType not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
 				(elementNode \ "@superTypes").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {
@@ -128,54 +126,6 @@ trait ComponentTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 												ContainerRootLoadContext.map.get(xmiRef) match {
 														case Some(s: TypeDefinition) => modelElem.addSuperTypes(s)
 														case None => System.out.println("TypeDefinition not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@required").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: PortTypeRef) => modelElem.addRequired(s)
-														case None => System.out.println("PortTypeRef not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@integrationPatterns").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: IntegrationPattern) => modelElem.addIntegrationPatterns(s)
-														case None => System.out.println("IntegrationPattern not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@extraFonctionalProperties").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: ExtraFonctionalProperty) => modelElem.setExtraFonctionalProperties(s)
-														case None => System.out.println("ExtraFonctionalProperty not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@provided").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: PortTypeRef) => modelElem.addProvided(s)
-														case None => System.out.println("PortTypeRef not found in map ! xmiRef:" + xmiRef)
 												}
 										}
 								}

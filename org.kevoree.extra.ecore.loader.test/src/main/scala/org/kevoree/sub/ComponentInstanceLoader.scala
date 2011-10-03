@@ -66,6 +66,12 @@ trait ComponentInstanceLoader extends DictionaryLoader with PortLoader {
 		}
 
 
+				resolveDictionary(elementId, elementNode, "dictionary")
+
+				resolvePort(elementId, elementNode, "provided")
+
+				resolvePort(elementId, elementNode, "required")
+
 				(elementNode \ "@typeDefinition").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {
@@ -73,42 +79,6 @@ trait ComponentInstanceLoader extends DictionaryLoader with PortLoader {
 												ContainerRootLoadContext.map.get(xmiRef) match {
 														case Some(s: TypeDefinition) => modelElem.setTypeDefinition(s)
 														case None => System.out.println("TypeDefinition not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@dictionary").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: Dictionary) => modelElem.setDictionary(s)
-														case None => System.out.println("Dictionary not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@provided").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: Port) => modelElem.addProvided(s)
-														case None => System.out.println("Port not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@required").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: Port) => modelElem.addRequired(s)
-														case None => System.out.println("Port not found in map ! xmiRef:" + xmiRef)
 												}
 										}
 								}

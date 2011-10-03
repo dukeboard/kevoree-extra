@@ -58,6 +58,8 @@ trait ChannelLoader extends DictionaryLoader {
 		}
 
 
+				resolveDictionary(elementId, elementNode, "dictionary")
+
 				(elementNode \ "@typeDefinition").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {
@@ -65,18 +67,6 @@ trait ChannelLoader extends DictionaryLoader {
 												ContainerRootLoadContext.map.get(xmiRef) match {
 														case Some(s: TypeDefinition) => modelElem.setTypeDefinition(s)
 														case None => System.out.println("TypeDefinition not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@dictionary").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: Dictionary) => modelElem.setDictionary(s)
-														case None => System.out.println("Dictionary not found in map ! xmiRef:" + xmiRef)
 												}
 										}
 								}

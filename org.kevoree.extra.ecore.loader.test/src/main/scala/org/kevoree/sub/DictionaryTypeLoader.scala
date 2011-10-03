@@ -49,30 +49,10 @@ trait DictionaryTypeLoader extends DictionaryAttributeLoader with DictionaryValu
 		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[DictionaryType]
 
 
-				(elementNode \ "@attributes").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: DictionaryAttribute) => modelElem.addAttributes(s)
-														case None => System.out.println("DictionaryAttribute not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@defaultValues").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: DictionaryValue) => modelElem.addDefaultValues(s)
-														case None => System.out.println("DictionaryValue not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
+				resolveDictionaryAttribute(elementId, elementNode, "attributes")
+
+				resolveDictionaryValue(elementId, elementNode, "defaultValues")
+
 		}
 
 }

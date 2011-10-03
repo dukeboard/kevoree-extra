@@ -60,18 +60,8 @@ trait NodeLinkLoader extends NetworkPropertyLoader {
 		}
 
 
-				(elementNode \ "@networkProperties").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: NetworkProperty) => modelElem.addNetworkProperties(s)
-														case None => System.out.println("NetworkProperty not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
+				resolveNetworkProperty(elementId, elementNode, "networkProperties")
+
 		}
 
 }

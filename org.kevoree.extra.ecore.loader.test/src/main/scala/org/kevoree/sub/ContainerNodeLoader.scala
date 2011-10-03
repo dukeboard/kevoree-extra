@@ -62,6 +62,10 @@ trait ContainerNodeLoader extends DictionaryLoader with ComponentInstanceLoader 
 		}
 
 
+				resolveDictionary(elementId, elementNode, "dictionary")
+
+				resolveComponentInstance(elementId, elementNode, "components")
+
 				(elementNode \ "@typeDefinition").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {
@@ -69,30 +73,6 @@ trait ContainerNodeLoader extends DictionaryLoader with ComponentInstanceLoader 
 												ContainerRootLoadContext.map.get(xmiRef) match {
 														case Some(s: TypeDefinition) => modelElem.setTypeDefinition(s)
 														case None => System.out.println("TypeDefinition not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@dictionary").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: Dictionary) => modelElem.setDictionary(s)
-														case None => System.out.println("Dictionary not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@components").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: ComponentInstance) => modelElem.addComponents(s)
-														case None => System.out.println("ComponentInstance not found in map ! xmiRef:" + xmiRef)
 												}
 										}
 								}

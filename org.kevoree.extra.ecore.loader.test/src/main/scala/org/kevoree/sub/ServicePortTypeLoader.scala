@@ -77,6 +77,10 @@ trait ServicePortTypeLoader extends DictionaryTypeLoader with OperationLoader {
 		}
 
 
+				resolveDictionaryType(elementId, elementNode, "dictionaryType")
+
+				resolveOperation(elementId, elementNode, "operations")
+
 				(elementNode \ "@deployUnits").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {
@@ -89,18 +93,6 @@ trait ServicePortTypeLoader extends DictionaryTypeLoader with OperationLoader {
 								}
 						case None => //No subtype for this library
 				}
-				(elementNode \ "@dictionaryType").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: DictionaryType) => modelElem.setDictionaryType(s)
-														case None => System.out.println("DictionaryType not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
 				(elementNode \ "@superTypes").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {
@@ -108,18 +100,6 @@ trait ServicePortTypeLoader extends DictionaryTypeLoader with OperationLoader {
 												ContainerRootLoadContext.map.get(xmiRef) match {
 														case Some(s: TypeDefinition) => modelElem.addSuperTypes(s)
 														case None => System.out.println("TypeDefinition not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@operations").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: Operation) => modelElem.addOperations(s)
-														case None => System.out.println("Operation not found in map ! xmiRef:" + xmiRef)
 												}
 										}
 								}
