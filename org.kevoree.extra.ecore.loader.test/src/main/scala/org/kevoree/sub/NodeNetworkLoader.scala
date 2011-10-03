@@ -45,18 +45,8 @@ trait NodeNetworkLoader extends NodeLinkLoader {
 		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[NodeNetwork]
 
 
-				(elementNode \ "@link").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: NodeLink) => modelElem.addLink(s)
-														case None => System.out.println("NodeLink not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
+				resolveNodeLink(elementId, elementNode, "link")
+
 				(elementNode \ "@initBy").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {

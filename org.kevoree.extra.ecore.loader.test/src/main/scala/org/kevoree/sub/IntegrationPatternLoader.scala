@@ -50,18 +50,8 @@ trait IntegrationPatternLoader extends ExtraFonctionalPropertyLoader {
 		}
 
 
-				(elementNode \ "@extraFonctionalProperties").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: ExtraFonctionalProperty) => modelElem.addExtraFonctionalProperties(s)
-														case None => System.out.println("ExtraFonctionalProperty not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
+				resolveExtraFonctionalProperty(elementId, elementNode, "extraFonctionalProperties")
+
 				(elementNode \ "@portTypes").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {

@@ -68,6 +68,8 @@ trait MessagePortTypeLoader extends DictionaryTypeLoader {
 		}
 
 
+				resolveDictionaryType(elementId, elementNode, "dictionaryType")
+
 				(elementNode \ "@deployUnits").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {
@@ -75,18 +77,6 @@ trait MessagePortTypeLoader extends DictionaryTypeLoader {
 												ContainerRootLoadContext.map.get(xmiRef) match {
 														case Some(s: DeployUnit) => modelElem.addDeployUnits(s)
 														case None => System.out.println("DeployUnit not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@dictionaryType").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: DictionaryType) => modelElem.setDictionaryType(s)
-														case None => System.out.println("DictionaryType not found in map ! xmiRef:" + xmiRef)
 												}
 										}
 								}

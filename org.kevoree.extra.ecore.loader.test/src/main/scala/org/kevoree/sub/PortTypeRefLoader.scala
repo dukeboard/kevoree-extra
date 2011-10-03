@@ -60,6 +60,8 @@ trait PortTypeRefLoader extends PortTypeMappingLoader {
 		}
 
 
+				resolvePortTypeMapping(elementId, elementNode, "mappings")
+
 				(elementNode \ "@ref").headOption match {
 						case Some(head) => {
 								head.text.split(" ").foreach {
@@ -67,18 +69,6 @@ trait PortTypeRefLoader extends PortTypeMappingLoader {
 												ContainerRootLoadContext.map.get(xmiRef) match {
 														case Some(s: PortType) => modelElem.setRef(s)
 														case None => System.out.println("PortType not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
-				(elementNode \ "@mappings").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: PortTypeMapping) => modelElem.addMappings(s)
-														case None => System.out.println("PortTypeMapping not found in map ! xmiRef:" + xmiRef)
 												}
 										}
 								}

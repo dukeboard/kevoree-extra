@@ -45,18 +45,8 @@ trait DictionaryLoader extends DictionaryValueLoader {
 		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Dictionary]
 
 
-				(elementNode \ "@values").headOption match {
-						case Some(head) => {
-								head.text.split(" ").foreach {
-										xmiRef =>
-												ContainerRootLoadContext.map.get(xmiRef) match {
-														case Some(s: DictionaryValue) => modelElem.addValues(s)
-														case None => System.out.println("DictionaryValue not found in map ! xmiRef:" + xmiRef)
-												}
-										}
-								}
-						case None => //No subtype for this library
-				}
+				resolveDictionaryValue(elementId, elementNode, "values")
+
 		}
 
 }
