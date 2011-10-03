@@ -34,7 +34,8 @@
         <module>../org.kevoree.extra.finagle</module>
         <module>../org.kevoree.extra.jna</module>
         <module>../org.kevoree.extra.javacv</module>
-	</modules>
+        <module>../org.kevoree.extra.vlcj</module>
+    </modules>
 
     <distributionManagement>
         <repository>
