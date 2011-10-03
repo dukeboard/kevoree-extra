@@ -157,7 +157,7 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
     elementType.getEAllAttributes.foreach {
       att =>
         val methName = "set" + att.getName.substring(0, 1).toUpperCase + att.getName.substring(1)
-        pr.println("\t\tval "+att.getName+"Val = (elementNode \\\\ \"@" + att.getName + "\").text")
+        pr.println("\t\tval "+att.getName+"Val = (elementNode \\ \"@" + att.getName + "\").text")
         pr.println("\t\tif(!"+att.getName+"Val.equals(\"\")){")
         pr.println("\t\t\t\tmodelElem." + methName + "(" + ProcessorHelper.convertType(att.getEAttributeType.getInstanceClassName) + ".valueOf("+att.getName+"Val))")
         pr.println("\t\t}")
