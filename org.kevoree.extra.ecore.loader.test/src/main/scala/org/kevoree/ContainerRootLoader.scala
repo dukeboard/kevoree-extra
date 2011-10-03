@@ -69,6 +69,10 @@ object ContainerRootLoader
 				mBindings.foreach{e=>e.eContainer=ContainerRootLoadContext.containerRoot }
 
 				val deployUnits = loadDeployUnit("/", rootNode, "deployUnits")
+deployUnits.foreach{  du =>
+      println(du.hashCode())
+      println("f"+du.getUnitName)
+}
 				ContainerRootLoadContext.containerRoot.setDeployUnits(deployUnits)
 				deployUnits.foreach{e=>e.eContainer=ContainerRootLoadContext.containerRoot }
 
