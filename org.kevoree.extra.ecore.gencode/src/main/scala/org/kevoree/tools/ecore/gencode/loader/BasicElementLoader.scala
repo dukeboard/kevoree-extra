@@ -165,7 +165,14 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
     }
     pr.println("")
 
-    elementType.getEAllReferences.foreach {
+    elementType.getEAllContainments.foreach {
+      ref =>
+        pr.println("\t\t\t\tresolve" + ref.getEReferenceType.getName + "(elementId, elementNode, \""+ref.getName+"\")")
+      pr.println("")
+    }
+
+
+    elementType.getEAllReferences.filter(ref => !elementType.getEAllContainments.contains(ref)).foreach {
       ref =>
         pr.println("\t\t\t\t(elementNode \\ \"@" + ref.getName + "\").headOption match {")
         pr.println("\t\t\t\t\t\tcase Some(head) => {")

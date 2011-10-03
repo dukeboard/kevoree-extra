@@ -28,7 +28,7 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
   }
 
 
-  def generateXmiAddrHelper
+//  def generateXmiAddrHelper
 
 
   def generateDefaultSerializer(genDir: String, packageName: String, root: EClass, rootXmiPackage: EPackage) {
