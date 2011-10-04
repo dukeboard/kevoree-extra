@@ -16,18 +16,6 @@ import org.kevoree.tools.ecore.gencode.ProcessorHelper
 
 object LoaderGenerator {
   var rootXmiPackage : EPackage = null
-
-  def getConcreteSubTypes(iface : EClass) : List[EClass] = {
-    var res = List[EClass]()
-    rootXmiPackage.getEClassifiers.filter(cl => cl.isInstanceOf[EClass]).foreach{cls=>
-      if(!cls.asInstanceOf[EClass].isInterface
-        && !cls.asInstanceOf[EClass].isAbstract
-        && cls.asInstanceOf[EClass].getEAllSuperTypes.contains(iface)) {
-        res = res ++ List(cls.asInstanceOf[EClass])
-      }
-    }
-    res
-  }
 }
 
 class LoaderGenerator(location: String, rootPackage: String, rootXmiPackage: EPackage) {

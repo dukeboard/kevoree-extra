@@ -64,7 +64,7 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
   private def generateSubs(): List[EClass] = {
 
     var listContainedElementsTypes = List[EClass]()
-    LoaderGenerator.getConcreteSubTypes(elementType).foreach {
+    ProcessorHelper.getConcreteSubTypes(elementType).foreach {
       concreteType =>
         if (!concreteType.isInterface) {
           val el = new BasicElementLoader(genDir, genPackage, concreteType, context, factory, modelingPackage,modelPackage)
