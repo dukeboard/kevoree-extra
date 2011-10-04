@@ -143,7 +143,7 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
       ref =>
         pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(\"/\", rootNode, \"" + ref.getName + "\")")
         pr.println("\t\t\t\t" + context + "." + rootContainerName + ".set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
-        pr.println("\t\t\t\t" + ref.getName + ".foreach{e=>e.eContainer=" + context + "." + rootContainerName + " }")
+//        pr.println("\t\t\t\t" + ref.getName + ".foreach{e=>e.eContainer=" + context + "." + rootContainerName + " }")
         pr.println("")
     }
     pr.println("\t\t}")

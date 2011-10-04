@@ -218,11 +218,18 @@ trait ClassGenerator {
     //Method core
     if(isOptional) {
       res += "\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n"
-      res += "\t\t\t\t\t\tcase l : " + typeRefName + " => this." + protectReservedWords(ref.getName) + " = Some(" + protectReservedWords(ref.getName) + ")\n"
+      res += "\t\t\t\t\t\tcase l : " + typeRefName + " => {\n"
+      res += "\t\t\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = Some(" + protectReservedWords(ref.getName) + ")\n"
+      res += "\t\t\t\t\t\t}\n"
       res += "\t\t\t\t\t\tcase _ => this." + protectReservedWords(ref.getName) + " = None\n"
       res += "\t\t\t\t}\n"
     } else {
-      res += "\t\t\t\tthis."+ protectReservedWords(ref.getName) + " = " + protectReservedWords(ref.getName)
+      res += "\t\t\t\tthis."+ protectReservedWords(ref.getName) + " = " + protectReservedWords(ref.getName) + "\n"
+    }
+    if(isSingleRef) {
+      res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".eContainer = this\n"
+    } else {
+      res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".foreach{e=>e.eContainer = this}\n"
     }
     res += "\n\t\t}"
     res
@@ -234,6 +241,7 @@ trait ClassGenerator {
     var res = ""
     res += "\n\t\tdef add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
     res += "(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n"
+    res += "\t\t\t\t"+protectReservedWords(ref.getName)+".eContainer = this\n"
     res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + " = this." + protectReservedWords(ref.getName) + " ++ List(" + protectReservedWords(ref.getName) + ")\n"
     res += "\t\t}"
     res += "\n"
@@ -248,6 +256,7 @@ trait ClassGenerator {
   private def generateRemoveMethod(ref: EReference, typeRefName: String, isOptional: Boolean): String = {
     //generate remove
     var res = ""
+
     res += "\n\t\tdef remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
     res += "(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n"
     if(isOptional) {
@@ -257,11 +266,14 @@ trait ClassGenerator {
       res += "\t\t\t\t\t\tthrow new UnsupportedOperationException(\"The list of " + protectReservedWords(ref.getName) + " must contain at least " + ref.getLowerBound + " element. Connot remove sizeof(" + protectReservedWords(ref.getName) + ")=\"+this." + protectReservedWords(ref.getName) + ".size)\n"
       res += "\t\t\t\t} else {\n"
     }
-
     res += "\t\t\t\t\t\tvar nList = List[" + typeRefName + "]()\n"
     res += "\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach(e => if(!e.equals(" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n"
     res += "\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = nList\n"
     res += "\t\t\t\t}\n"
+    res += "\t\t}\n"
+
+    res += "\n\t\tdef removeAll" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "() {\n"
+    res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + " = List[" + typeRefName + "]()\n"
     res += "\t\t}\n"
     res
   }

@@ -125,12 +125,12 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
           pr.println("\t\t\t\t\t\tval " + ref.getName + "ElementId = elementId + \"/@" + ref.getName + "\"")
           pr.println("\t\t\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "Element(" + ref.getName + "ElementId, head)")
           pr.println("\t\t\t\t\t\tmodelElem.set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
-          pr.println("\t\t\t\t\t\t" + ref.getName + ".eContainer = modelElem")
+//          pr.println("\t\t\t\t\t\t" + ref.getName + ".eContainer = modelElem")
           pr.println("\t\t\t\t}")
         } else {
           pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(elementId, elementNode, \"" + ref.getName + "\")")
           pr.println("\t\t\t\tmodelElem.set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
-          pr.println("\t\t\t\t" + ref.getName + ".foreach{ e => e.eContainer = modelElem }")
+ //         pr.println("\t\t\t\t" + ref.getName + ".foreach{ e => e.eContainer = modelElem }")
         }
         pr.println("")
     }
