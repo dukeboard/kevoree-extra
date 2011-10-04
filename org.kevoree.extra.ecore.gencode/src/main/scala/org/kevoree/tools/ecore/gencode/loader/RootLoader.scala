@@ -97,6 +97,15 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
 
   private def generateLoadMethod(pr: PrintWriter) {
 
+    pr.println("\t\tdef loadModel(str: String) : Option[" + elementType.getName + "] = {")
+    pr.println("\t\t\t\tval xmlStream = XML.loadString(str)")
+    pr.println("\t\t\t\tval document = NodeSeq fromSeq xmlStream")
+    pr.println("\t\t\t\tdocument.headOption match {")
+    pr.println("\t\t\t\t\t\tcase Some(rootNode) => Some(deserialize(rootNode))")
+    pr.println("\t\t\t\t\t\tcase None => System.out.println(\"" + elementType.getName + "Loader::Noting at the root !\");None")
+    pr.println("\t\t\t\t}")
+    pr.println("\t\t}")
+
     pr.println("\t\tdef loadModel(file: File) : Option[" + elementType.getName + "] = {")
     pr.println("\t\t\t\tloadModel(new FileInputStream(file))")
     pr.println("\t\t}")
