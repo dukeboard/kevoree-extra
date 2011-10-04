@@ -46,15 +46,17 @@ trait ClassGenerator {
     //    System.out.println("RefType:" + ref.getEReferenceType.eIsProxy())
     val uri = ref.getEReferenceType.asInstanceOf[InternalEObject].eProxyURI()
     val uriString = uri.toString
+    /*
     System.out.println("Tricky part")
     System.out.println("Uri:" + uriString)
     System.out.println("Trying to load URI:" + uriString)
+    */
     val resource = new XMIResourceImpl(uri);
     resource.load(null);
 
     //System.out.println("Resolved Ref:" + resolvedRef)
     val packa = resource.getAllContents.next().asInstanceOf[EPackage]
-    System.out.println("Package Name:" + packa.getName)
+    //System.out.println("Package Name:" + packa.getName)
 
     //System.out.println("RefTypeInstanceTypeUri:" + uri)
     val typName = uriString.substring(uriString.lastIndexOf("#//") + 3)
@@ -65,7 +67,7 @@ trait ClassGenerator {
 
   def generateClass(location: String, pack: String, cls: EClass, packElement: EPackage) {
     val pr = new PrintWriter(new FileOutputStream(new File(location + "/" + cls.getName + ".scala")))
-    System.out.println("Generating class:" + cls.getName)
+    //System.out.println("Generating class:" + cls.getName)
 
     pr.println("package " + pack + ";")
     pr.println()
@@ -259,190 +261,3 @@ trait ClassGenerator {
   }
 
 }
-
-
-
-
-
-/*
-
-        if (ref.getLowerBound == 0 && ref.getUpperBound == -1) {
-
-          //Generate getter
-          pr.println(generateGetter(ref, typeRefName, true, false))
-          /*
-          pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print(" : Option[List[" + typeRefName + "]] = {\n")
-          pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
-          */
-          //generate setter
-          pr.println(generateSetter(ref, typeRefName))
-          pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : List[" + typeRefName + "]) {\n")
-          pr.print("\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n")
-          pr.print("\t\t\t\t\t\tcase l : List[" + typeRefName + "] => this." + protectReservedWords(ref.getName) + " = Some(" + protectReservedWords(ref.getName) + ")\n")
-          pr.print("\t\t\t\t\t\tcase _ => this." + protectReservedWords(ref.getName) + " = None\n")
-          pr.print("\t\t\t\t}\n")
-          pr.println("\t\t}")
-
-          //generate add
-          pr.print("\n\t\tdef add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
-          pr.print("\t\t\t\tthis." + protectReservedWords(ref.getName) + " match {\n")
-          pr.print("\t\t\t\t\t\tcase Some(l) => this." + protectReservedWords(ref.getName) + " = Some(l ++ List(" + protectReservedWords(ref.getName) + "))\n")
-          pr.print("\t\t\t\t\t\tcase None => this." + protectReservedWords(ref.getName) + " = Some(List(" + protectReservedWords(ref.getName) + "))\n")
-          pr.print("\t\t\t\t}\n")
-          pr.println("\t\t}")
-
-          //generate remove
-          pr.print("\n\t\tdef remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
-          pr.print("\t\t\t\tthis." + protectReservedWords(ref.getName) + " match {\n")
-          pr.print("\t\t\t\t\t\tcase Some(l) => {\n")
-          pr.print("\t\t\t\t\t\t\t\tif(l.size == 1) {\n")
-          pr.print("\t\t\t\t\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = None\n")
-          pr.print("\t\t\t\t\t\t\t\t} else {\n")
-          pr.print("\t\t\t\t\t\t\t\t\t\tvar nList = List[" + typeRefName + "]()\n")
-          pr.print("\t\t\t\t\t\t\t\t\t\tl.foreach(e => if(!e.equals(" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n")
-          pr.print("\t\t\t\t\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = Some(nList)\n")
-          pr.print("\t\t\t\t\t\t\t\t}\n")
-          pr.print("\t\t\t\t\t\t}\n")
-          pr.print("\t\t\t\t\t\tcase None => \n")
-          pr.print("\t\t\t\t}\n")
-          pr.println("\t\t}\n")
-
-        } else if (ref.getLowerBound == 0 && ref.getUpperBound != -1) {
-          //Generate getter
-          pr.println(generateGetter(ref, typeRefName, true, true))
-          /*
-          pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print(" : Option[" + typeRefName + "] = {\n")
-          pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
-          */
-
-          //generate setter
-          pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
-          pr.print("\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n")
-          pr.print("\t\t\t\t\t\tcase l : " + typeRefName + " => this." + protectReservedWords(ref.getName) + " = Some(" + protectReservedWords(ref.getName) + ")\n")
-          pr.print("\t\t\t\t\t\tcase _ => this." + protectReservedWords(ref.getName) + " = None\n")
-          pr.print("\t\t\t\t}\n")
-          pr.println("\t\t}")
-
-        } else if (ref.getLowerBound == 1 && ref.getUpperBound == -1) {
-          //Generate getter
-          pr.println(generateGetter(ref, typeRefName, false, false))
-          /*
-          pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print(" : List[" + typeRefName + "] = {\n")
-          pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
-          */
-
-          //generate setter
-          pr.println(generateSetter(ref, typeRefName, false, false))
-          /*
-          pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : List[" + typeRefName + "]) {\n")
-          pr.print("\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n")
-          pr.print("\t\t\t\t\t\tcase l : List[" + ref.getEReferenceType.getName + "] => this." + protectReservedWords(ref.getName) + " = " + protectReservedWords(ref.getName) + "\n")
-          pr.print("\t\t\t\t\t\tcase _ => throw new IllegalArgumentException(\"The parameter " + protectReservedWords(ref.getName) + " : List[" + typeRefName + "] in " + cls.getName + " only admits List[" + typeRefName + "].\")\n")
-          pr.print("\t\t\t\t}\n")
-          pr.println("\t\t}")
-*/
-          //generate add
-          pr.println(generateAddMethod(ref, typeRefName, false))
-          /*
-          pr.print("\n\t\tdef add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
-          pr.print("\t\t\t\tthis." + protectReservedWords(ref.getName) + " = this." + protectReservedWords(ref.getName) + " ++ List(" + protectReservedWords(ref.getName) + ")\n")
-          pr.println("\t\t}")
-*/
-
-
-          //generate remove
-          pr.println(generateRemoveMethod(ref, typeRefName, false))
-          /*
-                    pr.print("\n\t\tdef remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-                    pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
-                    pr.print("\t\t\t\tif(this." + protectReservedWords(ref.getName) + ".size == 1) {\n")
-                    pr.print("\t\t\t\t\t\tthrow new UnsupportedOperationException(\"The list of " + protectReservedWords(ref.getName) + " must contain at least " + ref.getLowerBound + " element. Connot remove sizeof(" + protectReservedWords(ref.getName) + ")=\"+this." + protectReservedWords(ref.getName) + ".size)\n")
-                    pr.print("\t\t\t\t} else {\n")
-                    pr.print("\t\t\t\t\t\tvar nList = List[" + typeRefName + "]()\n")
-                    pr.print("\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach(e => if(!e.equals(" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n")
-                    pr.print("\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = nList\n")
-                    pr.print("\t\t\t\t}\n")
-                    pr.println("\t\t}\n")
-          */
-        } else if (ref.getLowerBound == 1 && ref.getUpperBound != -1) {
-
-          //Generate getter
-          pr.println(generateGetter(ref, typeRefName, false, true))
-          /*
-          pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print(" : " + typeRefName + " = {\n")
-          pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
-          */
-
-          //generate setter
-          pr.println(generateSetter(ref, typeRefName, false, true))
-          /*
-          pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
-          pr.print("\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n")
-          pr.print("\t\t\t\t\t\tcase l : " + typeRefName + " => this." + protectReservedWords(ref.getName) + " = " + protectReservedWords(ref.getName) + "\n")
-          pr.print("\t\t\t\t\t\tcase _ => throw new IllegalArgumentException(\"The parameter " + protectReservedWords(ref.getName) + " : " + typeRefName + " in " + cls.getName + " only admits " + typeRefName + ".\")\n")
-          pr.print("\t\t\t\t}\n")
-          pr.println("\t\t}\n")
-          */
-
-        } else if (ref.getLowerBound > 1) {
-
-
-          //Generate getter
-          pr.println(generateGetter(ref, typeRefName, false, false))
-          /*
-          pr.print("\n\t\tdef get" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print(" : List[" + typeRefName + "] = {\n")
-          pr.println("\t\t\t\t" + protectReservedWords(ref.getName) + "\n\t\t}")
-          */
-          //generate setter
-          pr.println(generateSetter(ref, typeRefName, false, false))
-          /*
-          pr.print("\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : List[" + typeRefName + "]) {\n")
-          pr.print("\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n")
-          pr.print("\t\t\t\t\t\tcase l : List[" + typeRefName + "] => this." + protectReservedWords(ref.getName) + " = " + protectReservedWords(ref.getName) + "\n")
-          pr.print("\t\t\t\t\t\tcase _ => throw new IllegalArgumentException(\"The parameter " + protectReservedWords(ref.getName) + " : List[" + typeRefName + "] in " + cls.getName + " only admits List[" + typeRefName + "].\")\n")
-          pr.print("\t\t\t\t}\n")
-          pr.println("\t\t}")
-          */
-
-          //generate add
-          pr.println(generateAddMethod(ref, typeRefName, false))
-          /*
-          pr.print("\n\t\tdef add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
-          pr.print("\t\t\t\tthis." + protectReservedWords(ref.getName) + " = this." + protectReservedWords(ref.getName) + " ++ List(" + protectReservedWords(ref.getName) + ")\n")
-          pr.println("\t\t}")
-          */
-
-          //generate remove
-          pr.println(generateRemoveMethod(ref, typeRefName, false))
-          /*
-          pr.print("\n\t\tdef remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1))
-          pr.print("(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n")
-
-          pr.print("\t\t\t\tif(this." + protectReservedWords(ref.getName) + ".size == " + ref.getLowerBound + ") {\n")
-          pr.print("\t\t\t\t\t\tthrow new UnsupportedOperationException(\"The list of " + protectReservedWords(ref.getName) + " must contain at least " + ref.getLowerBound + " element. Connot remove sizeof(" + protectReservedWords(ref.getName) + ")=\"+this." + protectReservedWords(ref.getName) + ".size)\n")
-          pr.print("\t\t\t\t} else {\n")
-          pr.print("\t\t\t\t\t\tvar nList = List[" + typeRefName + "]()\n")
-          pr.print("\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach(e => if(!e.equals(" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n")
-          pr.print("\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = nList\n")
-          pr.print("\t\t\t\t}\n")
-
-          pr.println("\t\t}\n")
-          */
-        } else {
-          throw new UnsupportedOperationException("GenDefConsRef::None standard arrity: " + cls.getName + "->" + typeRefName + "[" + ref.getLowerBound + "," + ref.getUpperBound + "]. Not implemented yet !")
-        }
-        */

@@ -37,7 +37,7 @@ class LoaderGenerator(location: String, rootPackage: String, rootXmiPackage: EPa
   def generateLoader() {
     ProcessorHelper.lookForRootElement(rootXmiPackage) match {
       case cls : EClass => {
-        val el = new RootLoader(location+ "/"+ rootXmiPackage.getName, rootPackage + "."+ rootXmiPackage.getName, rootXmiPackage.getName+ ":" + cls.getName, cls,rootXmiPackage)
+        val el = new RootLoader(location+ "/"+ rootXmiPackage.getName + "/loader", rootPackage + "."+ rootXmiPackage.getName + ".loader", rootXmiPackage.getName+ ":" + cls.getName, cls, rootXmiPackage, rootPackage)
         el.generateLoader()
       }
       case _@e => throw new UnsupportedOperationException("Root container not found. Returned:" + e)

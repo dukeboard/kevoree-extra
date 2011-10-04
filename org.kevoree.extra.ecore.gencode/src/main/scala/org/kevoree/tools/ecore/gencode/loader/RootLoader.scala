@@ -13,7 +13,7 @@ import scala.collection.JavaConversions._
  */
 
 
-class RootLoader(genDir: String, genPackage: String, elementNameInParent: String, elementType: EClass, modelingPackage: EPackage) {
+class RootLoader(genDir: String, genPackage: String, elementNameInParent: String, elementType: EClass, modelingPackage: EPackage, packagePrefix : String) {
 
   def generateLoader() {
     ProcessorHelper.checkOrCreateFolder(genDir)
@@ -27,7 +27,7 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
     pr.println()
     pr.println("import xml.{XML,NodeSeq}")
     pr.println("import java.io.File")
-    pr.println("import " + genPackage + "._")
+    pr.println("import " + packagePrefix + "." + modelingPackage.getName + "._")
     pr.println("import " + genPackage + ".sub._")
     pr.println()
 
@@ -48,9 +48,9 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
 
     generateLoadMethod(pr)
     pr.println("")
-    generateDeserialize(pr,context,rootContainerName)
+    generateDeserialize(pr, context, rootContainerName)
     pr.println("")
-    generateLoadElementsMethod(pr,context,rootContainerName)
+    generateLoadElementsMethod(pr, context, rootContainerName)
     pr.println("")
     generateResolveElementsMethod(pr)
 
@@ -62,12 +62,12 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
   }
 
   private def generateContext() {
-    val el = new ContextGenerator(genDir, genPackage, elementType)
+    val el = new ContextGenerator(genDir, genPackage, elementType, packagePrefix + "." + modelingPackage.getName)
     el.generateContext()
   }
 
   private def generateSubs(currentType: EClass): List[EClass] = {
-    var factory = genPackage.substring(genPackage.lastIndexOf(".") + 1)
+    var factory = modelingPackage.getName
     factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Factory"
 
     val context = elementType.getName + "LoadContext"
@@ -76,21 +76,21 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
     currentType.getEAllContainments.foreach {
       ref =>
         if (!ref.getEReferenceType.isInterface) {
-          val el = new BasicElementLoader(genDir + "/sub/", genPackage + ".sub", ref.getEReferenceType, context, factory, modelingPackage)
+          val el = new BasicElementLoader(genDir + "/sub/", genPackage + ".sub", ref.getEReferenceType, context, factory, modelingPackage, packagePrefix + "." + modelingPackage.getName)
           el.generateLoader()
         } else {
           //System.out.println("ReferenceType of " + ref.getName + " is an interface. Not supported yet.")
-          val el = new InterfaceElementLoader(genDir + "/sub/", genPackage + ".sub", ref.getEReferenceType, context, factory, modelingPackage)
+          val el = new InterfaceElementLoader(genDir + "/sub/", genPackage + ".sub", ref.getEReferenceType, context, factory, modelingPackage, packagePrefix + "." + modelingPackage.getName)
           el.generateLoader()
         }
 
-          if (!listContainedElementsTypes.contains(ref.getEReferenceType)) {
-            listContainedElementsTypes = listContainedElementsTypes ++ List(ref.getEReferenceType)
-          }
+        if (!listContainedElementsTypes.contains(ref.getEReferenceType)) {
+          listContainedElementsTypes = listContainedElementsTypes ++ List(ref.getEReferenceType)
+        }
     }
-    System.out.print(currentType.getName + " Uses:{")
-    listContainedElementsTypes.foreach(elem => System.out.print(elem.getName + ","))
-    System.out.println()
+
+    //listContainedElementsTypes.foreach(elem => System.out.print(elem.getName + ","))
+
     listContainedElementsTypes
   }
 
@@ -106,20 +106,20 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
   }
 
 
-  private def generateDeserialize(pr: PrintWriter, context : String, rootContainerName : String) {
+  private def generateDeserialize(pr: PrintWriter, context: String, rootContainerName: String) {
 
 
-    var factory = genPackage.substring(genPackage.lastIndexOf(".") + 1)
+    var factory = modelingPackage.getName
     factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Factory"
 
     pr.println("\t\tprivate def deserialize(rootNode: NodeSeq): ContainerRoot = {")
 
-    pr.println("\t\t\t\t"+context + "." + rootContainerName + " = " + factory + ".create" + elementType.getName)
-    pr.println("\t\t\t\t"+context + ".xmiContent = rootNode")
-    pr.println("\t\t\t\t"+context + ".map = Map[String, Any]()")
-    pr.println("\t\t\t\t"+context + ".stats = Map[String, Int]()")
+    pr.println("\t\t\t\t" + context + "." + rootContainerName + " = " + factory + ".create" + elementType.getName)
+    pr.println("\t\t\t\t" + context + ".xmiContent = rootNode")
+    pr.println("\t\t\t\t" + context + ".map = Map[String, Any]()")
+    pr.println("\t\t\t\t" + context + ".stats = Map[String, Int]()")
 
-    pr.println("\t\t\t\tload"+elementType.getName+"(rootNode)")
+    pr.println("\t\t\t\tload" + elementType.getName + "(rootNode)")
     pr.println("\t\t\t\tresolveElements(rootNode)")
     pr.println("\t\t\t\t" + context + "." + rootContainerName)
 
@@ -127,14 +127,14 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
   }
 
 
-  private def generateLoadElementsMethod(pr: PrintWriter, context : String, rootContainerName : String) {
+  private def generateLoadElementsMethod(pr: PrintWriter, context: String, rootContainerName: String) {
 
-    pr.println("\t\tprivate def load"+elementType.getName+"(rootNode: NodeSeq) {")
+    pr.println("\t\tprivate def load" + elementType.getName + "(rootNode: NodeSeq) {")
     pr.println("")
     elementType.getEAllContainments.foreach {
       ref =>
-        pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(\"/\", rootNode, \""+ref.getName+"\")")
-        pr.println("\t\t\t\t" + context + "." + rootContainerName + ".set" + ref.getName.substring(0,1).toUpperCase + ref.getName.substring(1) + "(" +ref.getName+ ")")
+        pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(\"/\", rootNode, \"" + ref.getName + "\")")
+        pr.println("\t\t\t\t" + context + "." + rootContainerName + ".set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
         pr.println("\t\t\t\t" + ref.getName + ".foreach{e=>e.eContainer=" + context + "." + rootContainerName + " }")
         pr.println("")
     }
@@ -142,12 +142,12 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
   }
 
   private def generateResolveElementsMethod(pr: PrintWriter) {
-    val context = elementType.getName + "LoadContext"
-    val rootContainerName = elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1)
+    //val context = elementType.getName + "LoadContext"
+    //val rootContainerName = elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1)
     pr.println("\t\tprivate def resolveElements(rootNode: NodeSeq) {")
     elementType.getEAllContainments.foreach {
       ref =>
-        pr.println("\t\t\t\tresolve" + ref.getEReferenceType.getName + "(\"/\", rootNode, \""+ref.getName+"\")")
+        pr.println("\t\t\t\tresolve" + ref.getEReferenceType.getName + "(\"/\", rootNode, \"" + ref.getName + "\")")
     }
     pr.println("\t\t}")
   }

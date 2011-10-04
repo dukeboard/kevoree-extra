@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.EClass
  * Time: 15:25
  */
 
-class ContextGenerator(genDir: String, genPackage: String, elementType: EClass) {
+class ContextGenerator(genDir: String, genPackage: String, elementType: EClass, modelPackage : String) {
 
 
   def generateContext() {
@@ -20,7 +20,7 @@ class ContextGenerator(genDir: String, genPackage: String, elementType: EClass) 
     pr.println("package " + genPackage + ";")
     pr.println()
     pr.println("import xml.NodeSeq")
-    pr.println("import " + genPackage + "._")
+    pr.println("import " + modelPackage + "._")
     pr.println()
 
     pr.println("object " + elementType.getName + "LoadContext {")

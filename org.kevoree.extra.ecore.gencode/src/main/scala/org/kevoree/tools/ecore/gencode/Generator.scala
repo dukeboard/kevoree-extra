@@ -25,6 +25,7 @@ class Generator(rootDir: File, rootPackage: String) {
     resource.load(null);
     val location = rootDir.getAbsolutePath + "/" + rootPackage.replace(".", "/")
     ProcessorHelper.checkOrCreateFolder(location)
+    System.out.println("Launching model generation in:" + location)
     resource.getContents.foreach {
       elem =>
         elem match {
@@ -63,7 +64,7 @@ class Generator(rootDir: File, rootPackage: String) {
           val serializerGenerator = new SerializerGenerator(location, rootPackage, pack)
           serializerGenerator.generateSerializer()
         }
-        case _ => println("No loader generator for root element of class: " + elem.getClass)
+        case _ => println("No serializer generator for root element of class: " + elem.getClass)
       }
     }
   }

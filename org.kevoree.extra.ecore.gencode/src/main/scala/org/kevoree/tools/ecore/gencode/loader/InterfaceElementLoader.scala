@@ -11,7 +11,7 @@ import java.io.{FileOutputStream, PrintWriter, File}
  * Time: 17:53
  */
 
-class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EClass, context: String, factory: String, modelingPackage: EPackage) {
+class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EClass, context: String, factory: String, modelingPackage: EPackage, modelPackage : String) {
 
 
   def generateLoader() {
@@ -20,9 +20,8 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
     ProcessorHelper.checkOrCreateFolder(genDir)
     val file = new File(genDir + "/" + elementType.getName + "Loader.scala")
 
-    if (!file.exists()) {
-      //Does not override existing file. Should have been removed before if required.
-      System.out.println("Generation of loader for " + elementType.getName)
+    if (!file.exists()) { //Does not override existing file. Should have been removed before if required.
+      //System.out.println("Generation of loader for " + elementType.getName)
       val subLoaders = generateSubs()
 
       val pr = new PrintWriter(new FileOutputStream(file))
@@ -33,7 +32,8 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
       pr.println("import xml.NodeSeq")
       pr.println("import scala.collection.JavaConversions._")
       //Import parent package (org.kevoree.sub => org.kevoree._)
-      pr.println("import " + genPackage.substring(0, genPackage.lastIndexOf(".")) + "._")
+      pr.println("import " + modelPackage + "._")
+      pr.println("import " + genPackage.substring(0,genPackage.lastIndexOf(".")) + "._")
       pr.println()
 
       //Generates the Trait
@@ -67,20 +67,20 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
     LoaderGenerator.getConcreteSubTypes(elementType).foreach {
       concreteType =>
         if (!concreteType.isInterface) {
-          val el = new BasicElementLoader(genDir, genPackage, concreteType, context, factory, modelingPackage)
+          val el = new BasicElementLoader(genDir, genPackage, concreteType, context, factory, modelingPackage,modelPackage)
           el.generateLoader()
         } else {
           //System.out.println("ReferenceType of " + ref.getName + " is an interface. Not supported yet.")
-          val el = new InterfaceElementLoader(genDir, genPackage, concreteType, context, factory, modelingPackage)
+          val el = new InterfaceElementLoader(genDir, genPackage, concreteType, context, factory, modelingPackage,modelPackage)
           el.generateLoader()
         }
         if (!listContainedElementsTypes.contains(concreteType)) {
           listContainedElementsTypes = listContainedElementsTypes ++ List(concreteType)
         }
     }
-    System.out.print(elementType.getName + " Uses:{")
-    listContainedElementsTypes.foreach(elem => System.out.print(elem.getName + ","))
-    System.out.println()
+   // System.out.print(elementType.getName + " Uses:{")
+   // listContainedElementsTypes.foreach(elem => System.out.print(elem.getName + ","))
+   // System.out.println()
     listContainedElementsTypes
   }
 

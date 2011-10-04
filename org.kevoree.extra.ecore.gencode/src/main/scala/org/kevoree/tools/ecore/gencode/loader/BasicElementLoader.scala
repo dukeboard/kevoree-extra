@@ -12,10 +12,10 @@ import scala.collection.JavaConversions._
  * Time: 17:24
  */
 
-class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass, context: String, factory: String, modelingPackage: EPackage) {
+class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass, context: String, factory: String, modelingPackage: EPackage, modelPackage : String) {
 
   def generateLoader() {
-    System.out.println("Generation of loader for " + elementType.getName)
+    //System.out.println("Generation of loader for " + elementType.getName)
 
     //Creation of the generation dir
     ProcessorHelper.checkOrCreateFolder(genDir)
@@ -34,7 +34,8 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
       pr.println("import xml.NodeSeq")
       pr.println("import scala.collection.JavaConversions._")
       //Import parent package (org.kevoree.sub => org.kevoree._)
-      pr.println("import " + genPackage.substring(0, genPackage.lastIndexOf(".")) + "._")
+      pr.println("import " + modelPackage + "._")
+      pr.println("import " + genPackage.substring(0,genPackage.lastIndexOf(".")) + "._")
       pr.println()
 
       //Generates the Trait
@@ -77,12 +78,12 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
       ref =>
         if (!ref.getEReferenceType.isInterface) {
           //Generates loaders for simple elements
-          val el = new BasicElementLoader(genDir, genPackage, ref.getEReferenceType, context, factory, modelingPackage)
+          val el = new BasicElementLoader(genDir, genPackage, ref.getEReferenceType, context, factory, modelingPackage, modelPackage)
           el.generateLoader()
 
         } else {
           //System.out.println("ReferenceType of " + ref.getName + " is an interface. Not supported yet.")
-          val el = new InterfaceElementLoader(genDir + "/sub/", genPackage + ".sub", ref.getEReferenceType, context, factory, modelingPackage)
+          val el = new InterfaceElementLoader(genDir + "/sub/", genPackage + ".sub", ref.getEReferenceType, context, factory, modelingPackage, modelPackage)
           el.generateLoader()
         }
         if (!listContainedElementsTypes.contains(ref.getEReferenceType)) {
@@ -90,9 +91,9 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
         }
     }
 
-    System.out.print(currentType.getName + " Uses:{")
-    listContainedElementsTypes.foreach(elem => System.out.print(elem.getName + ","))
-    System.out.println()
+    //System.out.print(currentType.getName + " Uses:{")
+    //listContainedElementsTypes.foreach(elem => System.out.print(elem.getName + ","))
+    //System.out.println()
     listContainedElementsTypes
   }
 
