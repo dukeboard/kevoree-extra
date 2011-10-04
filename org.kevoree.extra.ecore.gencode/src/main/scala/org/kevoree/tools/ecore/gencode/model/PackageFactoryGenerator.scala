@@ -31,7 +31,7 @@ trait PackageFactoryGenerator {
     //case class name
     pr.println("object " + formatedFactoryName + " {")
     pr.println()
-    pr.println("\t def eInstance = " + formatedFactoryName)
+    pr.println("\t def eINSTANCE = " + formatedFactoryName)
     pr.println()
     packElement.getEClassifiers.filter(cls=>cls.isInstanceOf[EClass]).foreach {
       cls =>
