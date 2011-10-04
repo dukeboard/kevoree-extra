@@ -64,40 +64,40 @@ trait ComponentTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 
 		def resolveComponentTypeElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[ComponentType]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[ComponentType]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
-		val factoryBeanVal = (elementNode \ "@factoryBean").text
-		if(!factoryBeanVal.equals("")){
-				modelElem.setFactoryBean(java.lang.String.valueOf(factoryBeanVal))
-		}
+				val factoryBeanVal = (elementNode \ "@factoryBean").text
+				if(!factoryBeanVal.equals("")){
+						modelElem.setFactoryBean(java.lang.String.valueOf(factoryBeanVal))
+				}
 
-		val beanVal = (elementNode \ "@bean").text
-		if(!beanVal.equals("")){
-				modelElem.setBean(java.lang.String.valueOf(beanVal))
-		}
+				val beanVal = (elementNode \ "@bean").text
+				if(!beanVal.equals("")){
+						modelElem.setBean(java.lang.String.valueOf(beanVal))
+				}
 
-		val startMethodVal = (elementNode \ "@startMethod").text
-		if(!startMethodVal.equals("")){
-				modelElem.setStartMethod(java.lang.String.valueOf(startMethodVal))
-		}
+				val startMethodVal = (elementNode \ "@startMethod").text
+				if(!startMethodVal.equals("")){
+						modelElem.setStartMethod(java.lang.String.valueOf(startMethodVal))
+				}
 
-		val stopMethodVal = (elementNode \ "@stopMethod").text
-		if(!stopMethodVal.equals("")){
-				modelElem.setStopMethod(java.lang.String.valueOf(stopMethodVal))
-		}
+				val stopMethodVal = (elementNode \ "@stopMethod").text
+				if(!stopMethodVal.equals("")){
+						modelElem.setStopMethod(java.lang.String.valueOf(stopMethodVal))
+				}
 
-		val updateMethodVal = (elementNode \ "@updateMethod").text
-		if(!updateMethodVal.equals("")){
-				modelElem.setUpdateMethod(java.lang.String.valueOf(updateMethodVal))
-		}
+				val updateMethodVal = (elementNode \ "@updateMethod").text
+				if(!updateMethodVal.equals("")){
+						modelElem.setUpdateMethod(java.lang.String.valueOf(updateMethodVal))
+				}
 
 
-				(elementNode \ "@dictionaryType").headOption.map{head => 
+				(elementNode \ "dictionaryType").headOption.map{head => 
 						resolveDictionaryTypeElement(elementId + "/@dictionaryType", head)
 				}
 
@@ -105,7 +105,7 @@ trait ComponentTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 
 				resolveIntegrationPattern(elementId, elementNode, "integrationPatterns")
 
-				(elementNode \ "@extraFonctionalProperties").headOption.map{head => 
+				(elementNode \ "extraFonctionalProperties").headOption.map{head => 
 						resolveExtraFonctionalPropertyElement(elementId + "/@extraFonctionalProperties", head)
 				}
 

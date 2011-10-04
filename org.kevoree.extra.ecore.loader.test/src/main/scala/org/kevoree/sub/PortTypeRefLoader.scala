@@ -42,22 +42,22 @@ trait PortTypeRefLoader extends PortTypeMappingLoader {
 
 		def resolvePortTypeRefElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[PortTypeRef]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[PortTypeRef]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
-		val optionalVal = (elementNode \ "@optional").text
-		if(!optionalVal.equals("")){
-				modelElem.setOptional(java.lang.Boolean.valueOf(optionalVal))
-		}
+				val optionalVal = (elementNode \ "@optional").text
+				if(!optionalVal.equals("")){
+						modelElem.setOptional(java.lang.Boolean.valueOf(optionalVal))
+				}
 
-		val noDependencyVal = (elementNode \ "@noDependency").text
-		if(!noDependencyVal.equals("")){
-				modelElem.setNoDependency(java.lang.Boolean.valueOf(noDependencyVal))
-		}
+				val noDependencyVal = (elementNode \ "@noDependency").text
+				if(!noDependencyVal.equals("")){
+						modelElem.setNoDependency(java.lang.Boolean.valueOf(noDependencyVal))
+				}
 
 
 				resolvePortTypeMapping(elementId, elementNode, "mappings")

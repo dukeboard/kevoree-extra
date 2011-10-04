@@ -38,7 +38,7 @@ trait MBindingLoader{
 
 		def resolveMBindingElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[MBinding]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[MBinding]
 
 
 				(elementNode \ "@port").headOption match {

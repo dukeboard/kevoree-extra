@@ -38,17 +38,17 @@ trait RepositoryLoader{
 
 		def resolveRepositoryElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Repository]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Repository]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
-		val urlVal = (elementNode \ "@url").text
-		if(!urlVal.equals("")){
-				modelElem.setUrl(java.lang.String.valueOf(urlVal))
-		}
+				val urlVal = (elementNode \ "@url").text
+				if(!urlVal.equals("")){
+						modelElem.setUrl(java.lang.String.valueOf(urlVal))
+				}
 
 
 				(elementNode \ "@units").headOption match {

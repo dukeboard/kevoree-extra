@@ -38,12 +38,12 @@ trait TypeLibraryLoader{
 
 		def resolveTypeLibraryElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[TypeLibrary]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[TypeLibrary]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
 
 				(elementNode \ "@subTypes").headOption match {

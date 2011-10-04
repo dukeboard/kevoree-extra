@@ -38,7 +38,7 @@ trait PortLoader{
 
 		def resolvePortElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Port]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Port]
 
 
 				(elementNode \ "@portTypeRef").headOption match {

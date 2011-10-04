@@ -45,60 +45,60 @@ trait ChannelTypeLoader extends DictionaryTypeLoader {
 
 		def resolveChannelTypeElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[ChannelType]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[ChannelType]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
-		val factoryBeanVal = (elementNode \ "@factoryBean").text
-		if(!factoryBeanVal.equals("")){
-				modelElem.setFactoryBean(java.lang.String.valueOf(factoryBeanVal))
-		}
+				val factoryBeanVal = (elementNode \ "@factoryBean").text
+				if(!factoryBeanVal.equals("")){
+						modelElem.setFactoryBean(java.lang.String.valueOf(factoryBeanVal))
+				}
 
-		val beanVal = (elementNode \ "@bean").text
-		if(!beanVal.equals("")){
-				modelElem.setBean(java.lang.String.valueOf(beanVal))
-		}
+				val beanVal = (elementNode \ "@bean").text
+				if(!beanVal.equals("")){
+						modelElem.setBean(java.lang.String.valueOf(beanVal))
+				}
 
-		val startMethodVal = (elementNode \ "@startMethod").text
-		if(!startMethodVal.equals("")){
-				modelElem.setStartMethod(java.lang.String.valueOf(startMethodVal))
-		}
+				val startMethodVal = (elementNode \ "@startMethod").text
+				if(!startMethodVal.equals("")){
+						modelElem.setStartMethod(java.lang.String.valueOf(startMethodVal))
+				}
 
-		val stopMethodVal = (elementNode \ "@stopMethod").text
-		if(!stopMethodVal.equals("")){
-				modelElem.setStopMethod(java.lang.String.valueOf(stopMethodVal))
-		}
+				val stopMethodVal = (elementNode \ "@stopMethod").text
+				if(!stopMethodVal.equals("")){
+						modelElem.setStopMethod(java.lang.String.valueOf(stopMethodVal))
+				}
 
-		val updateMethodVal = (elementNode \ "@updateMethod").text
-		if(!updateMethodVal.equals("")){
-				modelElem.setUpdateMethod(java.lang.String.valueOf(updateMethodVal))
-		}
+				val updateMethodVal = (elementNode \ "@updateMethod").text
+				if(!updateMethodVal.equals("")){
+						modelElem.setUpdateMethod(java.lang.String.valueOf(updateMethodVal))
+				}
 
-		val lowerBindingsVal = (elementNode \ "@lowerBindings").text
-		if(!lowerBindingsVal.equals("")){
-				modelElem.setLowerBindings(java.lang.Integer.valueOf(lowerBindingsVal))
-		}
+				val lowerBindingsVal = (elementNode \ "@lowerBindings").text
+				if(!lowerBindingsVal.equals("")){
+						modelElem.setLowerBindings(java.lang.Integer.valueOf(lowerBindingsVal))
+				}
 
-		val upperBindingsVal = (elementNode \ "@upperBindings").text
-		if(!upperBindingsVal.equals("")){
-				modelElem.setUpperBindings(java.lang.Integer.valueOf(upperBindingsVal))
-		}
+				val upperBindingsVal = (elementNode \ "@upperBindings").text
+				if(!upperBindingsVal.equals("")){
+						modelElem.setUpperBindings(java.lang.Integer.valueOf(upperBindingsVal))
+				}
 
-		val lowerFragmentsVal = (elementNode \ "@lowerFragments").text
-		if(!lowerFragmentsVal.equals("")){
-				modelElem.setLowerFragments(java.lang.Integer.valueOf(lowerFragmentsVal))
-		}
+				val lowerFragmentsVal = (elementNode \ "@lowerFragments").text
+				if(!lowerFragmentsVal.equals("")){
+						modelElem.setLowerFragments(java.lang.Integer.valueOf(lowerFragmentsVal))
+				}
 
-		val upperFragmentsVal = (elementNode \ "@upperFragments").text
-		if(!upperFragmentsVal.equals("")){
-				modelElem.setUpperFragments(java.lang.Integer.valueOf(upperFragmentsVal))
-		}
+				val upperFragmentsVal = (elementNode \ "@upperFragments").text
+				if(!upperFragmentsVal.equals("")){
+						modelElem.setUpperFragments(java.lang.Integer.valueOf(upperFragmentsVal))
+				}
 
 
-				(elementNode \ "@dictionaryType").headOption.map{head => 
+				(elementNode \ "dictionaryType").headOption.map{head => 
 						resolveDictionaryTypeElement(elementId + "/@dictionaryType", head)
 				}
 

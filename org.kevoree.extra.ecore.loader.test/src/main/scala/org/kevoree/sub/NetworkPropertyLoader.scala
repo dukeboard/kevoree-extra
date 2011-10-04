@@ -38,22 +38,22 @@ trait NetworkPropertyLoader{
 
 		def resolveNetworkPropertyElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[NetworkProperty]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[NetworkProperty]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
-		val valueVal = (elementNode \ "@value").text
-		if(!valueVal.equals("")){
-				modelElem.setValue(java.lang.String.valueOf(valueVal))
-		}
+				val valueVal = (elementNode \ "@value").text
+				if(!valueVal.equals("")){
+						modelElem.setValue(java.lang.String.valueOf(valueVal))
+				}
 
-		val lastCheckVal = (elementNode \ "@lastCheck").text
-		if(!lastCheckVal.equals("")){
-				modelElem.setLastCheck(java.lang.String.valueOf(lastCheckVal))
-		}
+				val lastCheckVal = (elementNode \ "@lastCheck").text
+				if(!lastCheckVal.equals("")){
+						modelElem.setLastCheck(java.lang.String.valueOf(lastCheckVal))
+				}
 
 
 		}

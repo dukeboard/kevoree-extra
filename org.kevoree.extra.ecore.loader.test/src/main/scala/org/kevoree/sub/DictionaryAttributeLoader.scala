@@ -38,27 +38,27 @@ trait DictionaryAttributeLoader{
 
 		def resolveDictionaryAttributeElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[DictionaryAttribute]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[DictionaryAttribute]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
-		val optionalVal = (elementNode \ "@optional").text
-		if(!optionalVal.equals("")){
-				modelElem.setOptional(java.lang.Boolean.valueOf(optionalVal))
-		}
+				val optionalVal = (elementNode \ "@optional").text
+				if(!optionalVal.equals("")){
+						modelElem.setOptional(java.lang.Boolean.valueOf(optionalVal))
+				}
 
-		val stateVal = (elementNode \ "@state").text
-		if(!stateVal.equals("")){
-				modelElem.setState(java.lang.Boolean.valueOf(stateVal))
-		}
+				val stateVal = (elementNode \ "@state").text
+				if(!stateVal.equals("")){
+						modelElem.setState(java.lang.Boolean.valueOf(stateVal))
+				}
 
-		val datatypeVal = (elementNode \ "@datatype").text
-		if(!datatypeVal.equals("")){
-				modelElem.setDatatype(java.lang.String.valueOf(datatypeVal))
-		}
+				val datatypeVal = (elementNode \ "@datatype").text
+				if(!datatypeVal.equals("")){
+						modelElem.setDatatype(java.lang.String.valueOf(datatypeVal))
+				}
 
 
 				(elementNode \ "@genericTypes").headOption match {

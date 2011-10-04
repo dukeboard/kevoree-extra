@@ -42,7 +42,7 @@ trait DictionaryLoader extends DictionaryValueLoader {
 
 		def resolveDictionaryElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Dictionary]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Dictionary]
 
 
 				resolveDictionaryValue(elementId, elementNode, "values")

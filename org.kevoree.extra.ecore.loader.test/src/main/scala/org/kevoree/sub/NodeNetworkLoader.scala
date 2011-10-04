@@ -42,7 +42,7 @@ trait NodeNetworkLoader extends NodeLinkLoader {
 
 		def resolveNodeNetworkElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[NodeNetwork]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[NodeNetwork]
 
 
 				resolveNodeLink(elementId, elementNode, "link")

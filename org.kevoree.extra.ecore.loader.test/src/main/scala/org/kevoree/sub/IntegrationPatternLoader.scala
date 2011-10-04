@@ -42,12 +42,12 @@ trait IntegrationPatternLoader extends ExtraFonctionalPropertyLoader {
 
 		def resolveIntegrationPatternElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[IntegrationPattern]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[IntegrationPattern]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
 
 				resolveExtraFonctionalProperty(elementId, elementNode, "extraFonctionalProperties")

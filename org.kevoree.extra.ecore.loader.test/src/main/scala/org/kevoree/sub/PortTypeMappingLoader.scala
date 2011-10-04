@@ -38,17 +38,17 @@ trait PortTypeMappingLoader{
 
 		def resolvePortTypeMappingElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[PortTypeMapping]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[PortTypeMapping]
 
-		val beanMethodNameVal = (elementNode \ "@beanMethodName").text
-		if(!beanMethodNameVal.equals("")){
-				modelElem.setBeanMethodName(java.lang.String.valueOf(beanMethodNameVal))
-		}
+				val beanMethodNameVal = (elementNode \ "@beanMethodName").text
+				if(!beanMethodNameVal.equals("")){
+						modelElem.setBeanMethodName(java.lang.String.valueOf(beanMethodNameVal))
+				}
 
-		val serviceMethodNameVal = (elementNode \ "@serviceMethodName").text
-		if(!serviceMethodNameVal.equals("")){
-				modelElem.setServiceMethodName(java.lang.String.valueOf(serviceMethodNameVal))
-		}
+				val serviceMethodNameVal = (elementNode \ "@serviceMethodName").text
+				if(!serviceMethodNameVal.equals("")){
+						modelElem.setServiceMethodName(java.lang.String.valueOf(serviceMethodNameVal))
+				}
 
 
 		}

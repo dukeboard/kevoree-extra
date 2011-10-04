@@ -38,12 +38,12 @@ trait DictionaryValueLoader{
 
 		def resolveDictionaryValueElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[DictionaryValue]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[DictionaryValue]
 
-		val valueVal = (elementNode \ "@value").text
-		if(!valueVal.equals("")){
-				modelElem.setValue(java.lang.String.valueOf(valueVal))
-		}
+				val valueVal = (elementNode \ "@value").text
+				if(!valueVal.equals("")){
+						modelElem.setValue(java.lang.String.valueOf(valueVal))
+				}
 
 
 				(elementNode \ "@attribute").headOption match {

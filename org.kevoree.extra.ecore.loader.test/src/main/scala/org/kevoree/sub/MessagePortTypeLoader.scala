@@ -45,30 +45,30 @@ trait MessagePortTypeLoader extends DictionaryTypeLoader {
 
 		def resolveMessagePortTypeElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[MessagePortType]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[MessagePortType]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
-		val factoryBeanVal = (elementNode \ "@factoryBean").text
-		if(!factoryBeanVal.equals("")){
-				modelElem.setFactoryBean(java.lang.String.valueOf(factoryBeanVal))
-		}
+				val factoryBeanVal = (elementNode \ "@factoryBean").text
+				if(!factoryBeanVal.equals("")){
+						modelElem.setFactoryBean(java.lang.String.valueOf(factoryBeanVal))
+				}
 
-		val beanVal = (elementNode \ "@bean").text
-		if(!beanVal.equals("")){
-				modelElem.setBean(java.lang.String.valueOf(beanVal))
-		}
+				val beanVal = (elementNode \ "@bean").text
+				if(!beanVal.equals("")){
+						modelElem.setBean(java.lang.String.valueOf(beanVal))
+				}
 
-		val synchroneVal = (elementNode \ "@synchrone").text
-		if(!synchroneVal.equals("")){
-				modelElem.setSynchrone(java.lang.Boolean.valueOf(synchroneVal))
-		}
+				val synchroneVal = (elementNode \ "@synchrone").text
+				if(!synchroneVal.equals("")){
+						modelElem.setSynchrone(java.lang.Boolean.valueOf(synchroneVal))
+				}
 
 
-				(elementNode \ "@dictionaryType").headOption.map{head => 
+				(elementNode \ "dictionaryType").headOption.map{head => 
 						resolveDictionaryTypeElement(elementId + "/@dictionaryType", head)
 				}
 

@@ -29,7 +29,7 @@ object ContainerRootLoader
 		}
 
 		private def deserialize(rootNode: NodeSeq): ContainerRoot = {
-				ContainerRootLoadContext.containerRoot = KevoreePackage.createContainerRoot
+				ContainerRootLoadContext.containerRoot = KevoreeFactory.createContainerRoot
 				ContainerRootLoadContext.xmiContent = rootNode
 				ContainerRootLoadContext.map = Map[String, Any]()
 				ContainerRootLoadContext.stats = Map[String, Int]()

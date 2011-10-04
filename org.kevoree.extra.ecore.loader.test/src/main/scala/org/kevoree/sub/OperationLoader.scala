@@ -42,12 +42,12 @@ trait OperationLoader extends ParameterLoader {
 
 		def resolveOperationElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Operation]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Operation]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
 
 				resolveParameter(elementId, elementNode, "parameters")

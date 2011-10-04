@@ -38,7 +38,7 @@ trait WireLoader{
 
 		def resolveWireElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Wire]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Wire]
 
 
 				(elementNode \ "@ports").headOption match {

@@ -38,12 +38,12 @@ trait AdaptationPrimitiveTypeLoader{
 
 		def resolveAdaptationPrimitiveTypeElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[AdaptationPrimitiveType]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[AdaptationPrimitiveType]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
 
 		}

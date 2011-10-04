@@ -38,12 +38,12 @@ trait ParameterLoader{
 
 		def resolveParameterElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Parameter]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Parameter]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
 
 				(elementNode \ "@type").headOption match {

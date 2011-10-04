@@ -38,7 +38,7 @@ trait ExtraFonctionalPropertyLoader{
 
 		def resolveExtraFonctionalPropertyElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[ExtraFonctionalProperty]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[ExtraFonctionalProperty]
 
 
 				(elementNode \ "@portTypes").headOption match {

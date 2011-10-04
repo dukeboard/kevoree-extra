@@ -38,12 +38,12 @@ trait TypedElementLoader{
 
 		def resolveTypedElementElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[TypedElement]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[TypedElement]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
 
 				(elementNode \ "@genericTypes").headOption match {

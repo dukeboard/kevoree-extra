@@ -45,20 +45,20 @@ trait ChannelLoader extends DictionaryLoader {
 
 		def resolveChannelElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Channel]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[Channel]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
-		val metaDataVal = (elementNode \ "@metaData").text
-		if(!metaDataVal.equals("")){
-				modelElem.setMetaData(java.lang.String.valueOf(metaDataVal))
-		}
+				val metaDataVal = (elementNode \ "@metaData").text
+				if(!metaDataVal.equals("")){
+						modelElem.setMetaData(java.lang.String.valueOf(metaDataVal))
+				}
 
 
-				(elementNode \ "@dictionary").headOption.map{head => 
+				(elementNode \ "dictionary").headOption.map{head => 
 						resolveDictionaryElement(elementId + "/@dictionary", head)
 				}
 

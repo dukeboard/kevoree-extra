@@ -46,7 +46,7 @@ trait DictionaryTypeLoader extends DictionaryAttributeLoader with DictionaryValu
 
 		def resolveDictionaryTypeElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[DictionaryType]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[DictionaryType]
 
 
 				resolveDictionaryAttribute(elementId, elementNode, "attributes")

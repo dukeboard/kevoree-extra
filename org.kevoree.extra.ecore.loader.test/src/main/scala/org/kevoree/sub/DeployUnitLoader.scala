@@ -38,37 +38,37 @@ trait DeployUnitLoader{
 
 		def resolveDeployUnitElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[DeployUnit]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[DeployUnit]
 
-		val nameVal = (elementNode \ "@name").text
-		if(!nameVal.equals("")){
-				modelElem.setName(java.lang.String.valueOf(nameVal))
-		}
+				val nameVal = (elementNode \ "@name").text
+				if(!nameVal.equals("")){
+						modelElem.setName(java.lang.String.valueOf(nameVal))
+				}
 
-		val groupNameVal = (elementNode \ "@groupName").text
-		if(!groupNameVal.equals("")){
-				modelElem.setGroupName(java.lang.String.valueOf(groupNameVal))
-		}
+				val groupNameVal = (elementNode \ "@groupName").text
+				if(!groupNameVal.equals("")){
+						modelElem.setGroupName(java.lang.String.valueOf(groupNameVal))
+				}
 
-		val unitNameVal = (elementNode \ "@unitName").text
-		if(!unitNameVal.equals("")){
-				modelElem.setUnitName(java.lang.String.valueOf(unitNameVal))
-		}
+				val unitNameVal = (elementNode \ "@unitName").text
+				if(!unitNameVal.equals("")){
+						modelElem.setUnitName(java.lang.String.valueOf(unitNameVal))
+				}
 
-		val versionVal = (elementNode \ "@version").text
-		if(!versionVal.equals("")){
-				modelElem.setVersion(java.lang.String.valueOf(versionVal))
-		}
+				val versionVal = (elementNode \ "@version").text
+				if(!versionVal.equals("")){
+						modelElem.setVersion(java.lang.String.valueOf(versionVal))
+				}
 
-		val urlVal = (elementNode \ "@url").text
-		if(!urlVal.equals("")){
-				modelElem.setUrl(java.lang.String.valueOf(urlVal))
-		}
+				val urlVal = (elementNode \ "@url").text
+				if(!urlVal.equals("")){
+						modelElem.setUrl(java.lang.String.valueOf(urlVal))
+				}
 
-		val timestampVal = (elementNode \ "@timestamp").text
-		if(!timestampVal.equals("")){
-				modelElem.setTimestamp(java.lang.String.valueOf(timestampVal))
-		}
+				val timestampVal = (elementNode \ "@timestamp").text
+				if(!timestampVal.equals("")){
+						modelElem.setTimestamp(java.lang.String.valueOf(timestampVal))
+				}
 
 
 				(elementNode \ "@requiredLibs").headOption match {

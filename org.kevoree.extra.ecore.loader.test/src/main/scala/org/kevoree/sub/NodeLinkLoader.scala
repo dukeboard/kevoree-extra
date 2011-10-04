@@ -42,22 +42,22 @@ trait NodeLinkLoader extends NetworkPropertyLoader {
 
 		def resolveNodeLinkElement(elementId: String, elementNode: NodeSeq) {
 
-		val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[NodeLink]
+				val modelElem = ContainerRootLoadContext.map(elementId).asInstanceOf[NodeLink]
 
-		val networkTypeVal = (elementNode \ "@networkType").text
-		if(!networkTypeVal.equals("")){
-				modelElem.setNetworkType(java.lang.String.valueOf(networkTypeVal))
-		}
+				val networkTypeVal = (elementNode \ "@networkType").text
+				if(!networkTypeVal.equals("")){
+						modelElem.setNetworkType(java.lang.String.valueOf(networkTypeVal))
+				}
 
-		val estimatedRateVal = (elementNode \ "@estimatedRate").text
-		if(!estimatedRateVal.equals("")){
-				modelElem.setEstimatedRate(java.lang.Integer.valueOf(estimatedRateVal))
-		}
+				val estimatedRateVal = (elementNode \ "@estimatedRate").text
+				if(!estimatedRateVal.equals("")){
+						modelElem.setEstimatedRate(java.lang.Integer.valueOf(estimatedRateVal))
+				}
 
-		val lastCheckVal = (elementNode \ "@lastCheck").text
-		if(!lastCheckVal.equals("")){
-				modelElem.setLastCheck(java.lang.String.valueOf(lastCheckVal))
-		}
+				val lastCheckVal = (elementNode \ "@lastCheck").text
+				if(!lastCheckVal.equals("")){
+						modelElem.setLastCheck(java.lang.String.valueOf(lastCheckVal))
+				}
 
 
 				resolveNetworkProperty(elementId, elementNode, "networkProperties")
