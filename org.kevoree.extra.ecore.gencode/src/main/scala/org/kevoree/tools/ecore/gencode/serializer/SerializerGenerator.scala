@@ -147,7 +147,9 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
             buffer.println("}")
           }
           case -1 => {
+            if(subClass.getEReferenceType.isAbstract || subClass.getEReferenceType.isAbstract){
 
+            }
             buffer.println("selfObject." + getGetter(subClass.getName) + ".foreach { so => ")
             buffer.println("subresult = subresult ++ List(" + subClass.getEReferenceType.getName + "toXmi(so,\"" + subClass.getName + "\",addrs))")
             buffer.println("}")
