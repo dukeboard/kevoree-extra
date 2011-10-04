@@ -2,10 +2,9 @@ package org.kevoree.extra.ecore.loader.test
 
 import java.io.File
 import org.junit.{BeforeClass, Test}
-import org.kevoree.{ ComponentType, ContainerRoot}
 import org.junit.Assert._
-import org.kevoree.ContainerRootLoader
 import org.kevoree.serializer.ModelSerializer
+import org.kevoree.{NodeType, ContainerRoot, ContainerRootLoader}
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,16 +31,52 @@ object XmiLoaderTest {
 
 class XmiLoaderTest {
 
-     @Test
-  def testSave() {
-        val serializer = new ModelSerializer
-
-       println(serializer.serialize(XmiLoaderTest.model))
-     }
-
-
-  /*
   @Test
+  def testSave() {
+    val serializer = new ModelSerializer
+
+    println(serializer.serialize(XmiLoaderTest.model))
+  }
+
+  @Test
+  def deepCheck() {
+      XmiLoaderTest.model.getTypeDefinitions.find(td=>td.getName.equals("ArduinoNode")) match {
+        case Some(typeDef) => {
+
+          XmiLoaderTest.model.getDeployUnits.find(du => du.getGroupName.equals("org.kevoree.library.arduino")) match {
+            case Some(du) => {
+              assertTrue("TypeDefinition does not contain its deploy unit.", typeDef.getDeployUnits.contains(du))
+            }
+            case None => fail("DeployUnit org.kevoree.library.arduino not found")
+          }
+
+
+
+
+          typeDef.asInstanceOf[NodeType].getDictionaryType match {
+            case Some(dico) =>{
+              dico.getAttributes.find{att => att.getName.equals("boardTypeName")} match {
+                case Some(att) => {
+                  assertTrue(att.getOptional)
+                  assertTrue(att.getDatatype.equals("enum=uno,atmega328,mega2560"))
+                  dico.getDefaultValues.find(defVal => defVal.getAttribute.equals(att))match{
+                    case Some(default) => {
+                      assertTrue(default.getValue.equals("uno"))
+                    }
+                    case None => fail("No default value for att:" + att.getName)
+                  }
+                }
+                case None => fail("No attribute named boardTypeName found in ArduinoNode type dictionary")
+              }
+            }
+            case None => fail("No dictionaryType loaded for ArduinoNode")
+          }
+        }
+        case None => fail("Arduino Node Type not found !")
+      }
+  }
+
+  //@Test
   def checkRepositories() {
     val repList = XmiLoaderTest.model.getRepositories
     assertTrue("Wrong number of repositories in model." + repList.size, repList.size == 6);
@@ -52,6 +87,7 @@ class XmiLoaderTest {
 
   }
 
+  /*
   @Test
   def checkLibraries() {
     val libList = XmiLoaderTest.model.getLibraries
