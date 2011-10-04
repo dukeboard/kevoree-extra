@@ -20,7 +20,7 @@ trait NodeTypeLoader extends DictionaryTypeLoader {
 
 		def loadNodeTypeElement(elementId: String, elementNode: NodeSeq) : NodeType = {
 		
-				val modelElem = KevoreePackage.createNodeType
+				val modelElem = KevoreeFactory.createNodeType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				(elementNode \ "dictionaryType").headOption.map{head =>

@@ -20,7 +20,7 @@ trait ChannelLoader extends DictionaryLoader {
 
 		def loadChannelElement(elementId: String, elementNode: NodeSeq) : Channel = {
 		
-				val modelElem = KevoreePackage.createChannel
+				val modelElem = KevoreeFactory.createChannel
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				(elementNode \ "dictionary").headOption.map{head =>

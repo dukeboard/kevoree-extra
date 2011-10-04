@@ -25,7 +25,7 @@ trait ClassGenerator {
     pr.println("import " + pack + "._;")
     pr.println()
 
-    pr.print("case class " + cls.getName + "Impl(")
+    pr.print("class " + cls.getName + "Impl(")
 
     pr.println(") extends " + cls.getName + " {")
 

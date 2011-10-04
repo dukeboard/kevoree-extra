@@ -20,7 +20,7 @@ trait GroupLoader extends DictionaryLoader {
 
 		def loadGroupElement(elementId: String, elementNode: NodeSeq) : Group = {
 		
-				val modelElem = KevoreePackage.createGroup
+				val modelElem = KevoreeFactory.createGroup
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				(elementNode \ "dictionary").headOption.map{head =>

@@ -20,7 +20,7 @@ trait DeployUnitLoader{
 
 		def loadDeployUnitElement(elementId: String, elementNode: NodeSeq) : DeployUnit = {
 		
-				val modelElem = KevoreePackage.createDeployUnit
+				val modelElem = KevoreeFactory.createDeployUnit
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem
@@ -65,10 +65,9 @@ trait DeployUnitLoader{
 				modelElem.setUrl(java.lang.String.valueOf(urlVal))
 		}
 
-		val hashcodeVal = (elementNode \ "@hashcode").text
-		if(!hashcodeVal.equals("")){
-        println(hashcodeVal)
-				modelElem.setHashcode(hashcodeVal.toString)
+		val timestampVal = (elementNode \ "@timestamp").text
+		if(!timestampVal.equals("")){
+				modelElem.setTimestamp(java.lang.String.valueOf(timestampVal))
 		}
 
 

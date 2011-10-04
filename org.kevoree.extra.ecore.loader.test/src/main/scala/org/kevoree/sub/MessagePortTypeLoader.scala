@@ -20,7 +20,7 @@ trait MessagePortTypeLoader extends DictionaryTypeLoader {
 
 		def loadMessagePortTypeElement(elementId: String, elementNode: NodeSeq) : MessagePortType = {
 		
-				val modelElem = KevoreePackage.createMessagePortType
+				val modelElem = KevoreeFactory.createMessagePortType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				(elementNode \ "dictionaryType").headOption.map{head =>

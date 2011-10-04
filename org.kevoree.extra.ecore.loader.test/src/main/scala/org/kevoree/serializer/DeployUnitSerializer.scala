@@ -31,8 +31,8 @@ subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("version",selfObject.g
 if(selfObject.getUrl.toString != ""){
 subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("url",selfObject.getUrl.toString,scala.xml.Null))
 }
-if(selfObject.getHashcode.toString != ""){
-subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("hashcode",selfObject.getHashcode.toString,scala.xml.Null))
+if(selfObject.getTimestamp.toString != ""){
+subAtts= subAtts.append(new scala.xml.UnprefixedAttribute("timestamp",selfObject.getTimestamp.toString,scala.xml.Null))
 }
 var subadrsrequiredLibs : List[String] = List()
 selfObject.getRequiredLibs.foreach{sub =>

@@ -20,7 +20,7 @@ trait CompositeTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 
 		def loadCompositeTypeElement(elementId: String, elementNode: NodeSeq) : CompositeType = {
 		
-				val modelElem = KevoreePackage.createCompositeType
+				val modelElem = KevoreeFactory.createCompositeType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				(elementNode \ "dictionaryType").headOption.map{head =>

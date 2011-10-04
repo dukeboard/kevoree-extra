@@ -20,7 +20,7 @@ trait NodeNetworkLoader extends NodeLinkLoader {
 
 		def loadNodeNetworkElement(elementId: String, elementNode: NodeSeq) : NodeNetwork = {
 		
-				val modelElem = KevoreePackage.createNodeNetwork
+				val modelElem = KevoreeFactory.createNodeNetwork
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				val link = loadNodeLink(elementId, elementNode, "link")

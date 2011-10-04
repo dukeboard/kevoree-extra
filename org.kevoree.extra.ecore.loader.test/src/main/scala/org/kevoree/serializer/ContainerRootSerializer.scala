@@ -49,7 +49,6 @@ i=i+1
 }
 i=0
 selfObject.getDeployUnits.foreach{ sub => 
-  println(previousAddr+"/@deployUnits."+i)
 subResult +=  sub -> (previousAddr+"/@deployUnits."+i) 
 subResult = subResult ++ getDeployUnitXmiAddr(sub,previousAddr+"/@deployUnits."+i)
 i=i+1

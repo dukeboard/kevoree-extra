@@ -20,7 +20,7 @@ trait ExtraFonctionalPropertyLoader{
 
 		def loadExtraFonctionalPropertyElement(elementId: String, elementNode: NodeSeq) : ExtraFonctionalProperty = {
 		
-				val modelElem = KevoreePackage.createExtraFonctionalProperty
+				val modelElem = KevoreeFactory.createExtraFonctionalProperty
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

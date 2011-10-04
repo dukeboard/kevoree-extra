@@ -20,7 +20,7 @@ trait ComponentTypeLoader extends DictionaryTypeLoader with PortTypeRefLoader wi
 
 		def loadComponentTypeElement(elementId: String, elementNode: NodeSeq) : ComponentType = {
 		
-				val modelElem = KevoreePackage.createComponentType
+				val modelElem = KevoreeFactory.createComponentType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				(elementNode \ "dictionaryType").headOption.map{head =>

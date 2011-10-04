@@ -20,7 +20,7 @@ trait NetworkPropertyLoader{
 
 		def loadNetworkPropertyElement(elementId: String, elementNode: NodeSeq) : NetworkProperty = {
 		
-				val modelElem = KevoreePackage.createNetworkProperty
+				val modelElem = KevoreeFactory.createNetworkProperty
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

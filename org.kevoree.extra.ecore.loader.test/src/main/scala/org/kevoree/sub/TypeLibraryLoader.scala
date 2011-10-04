@@ -20,7 +20,7 @@ trait TypeLibraryLoader{
 
 		def loadTypeLibraryElement(elementId: String, elementNode: NodeSeq) : TypeLibrary = {
 		
-				val modelElem = KevoreePackage.createTypeLibrary
+				val modelElem = KevoreeFactory.createTypeLibrary
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

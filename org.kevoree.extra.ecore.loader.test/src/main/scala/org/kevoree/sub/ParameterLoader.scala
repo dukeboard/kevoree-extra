@@ -20,7 +20,7 @@ trait ParameterLoader{
 
 		def loadParameterElement(elementId: String, elementNode: NodeSeq) : Parameter = {
 		
-				val modelElem = KevoreePackage.createParameter
+				val modelElem = KevoreeFactory.createParameter
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

@@ -20,7 +20,7 @@ trait NodeLinkLoader extends NetworkPropertyLoader {
 
 		def loadNodeLinkElement(elementId: String, elementNode: NodeSeq) : NodeLink = {
 		
-				val modelElem = KevoreePackage.createNodeLink
+				val modelElem = KevoreeFactory.createNodeLink
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				val networkProperties = loadNetworkProperty(elementId, elementNode, "networkProperties")

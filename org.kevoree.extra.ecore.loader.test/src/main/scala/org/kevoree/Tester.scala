@@ -13,16 +13,20 @@ import xml.PrettyPrinter
  */
 
 object Tester extends App {
+  val current = System.currentTimeMillis()
   val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-extra/org.kevoree.extra.ecore.loader.test/src/test/resources/defaultLibrary.kev")));
+
   localModel match {
     case Some(m) => {
+      println(System.currentTimeMillis() - current)
 
+      println("====Debug")
       m.getTypeDefinitions.foreach{
-        td => td.getDeployUnits.foreach{td =>
-           println(td.hashCode())
+        typed => typed.getDeployUnits.foreach{ tdeploy =>
+           println(typed.getName+"=>"+tdeploy.getUnitName)
         }
       }
-      
+      println("*******Debug")
       val serializer = new ModelSerializer
       val pp = new PrettyPrinter(3000,1)
       val result = serializer.serialize(m)

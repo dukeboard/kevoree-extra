@@ -20,7 +20,7 @@ trait PortTypeMappingLoader{
 
 		def loadPortTypeMappingElement(elementId: String, elementNode: NodeSeq) : PortTypeMapping = {
 		
-				val modelElem = KevoreePackage.createPortTypeMapping
+				val modelElem = KevoreeFactory.createPortTypeMapping
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

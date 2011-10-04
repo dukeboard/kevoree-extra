@@ -20,7 +20,7 @@ trait IntegrationPatternLoader extends ExtraFonctionalPropertyLoader {
 
 		def loadIntegrationPatternElement(elementId: String, elementNode: NodeSeq) : IntegrationPattern = {
 		
-				val modelElem = KevoreePackage.createIntegrationPattern
+				val modelElem = KevoreeFactory.createIntegrationPattern
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				val extraFonctionalProperties = loadExtraFonctionalProperty(elementId, elementNode, "extraFonctionalProperties")

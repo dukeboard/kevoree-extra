@@ -20,7 +20,7 @@ trait ChannelTypeLoader extends DictionaryTypeLoader {
 
 		def loadChannelTypeElement(elementId: String, elementNode: NodeSeq) : ChannelType = {
 		
-				val modelElem = KevoreePackage.createChannelType
+				val modelElem = KevoreeFactory.createChannelType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				(elementNode \ "dictionaryType").headOption.map{head =>

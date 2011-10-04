@@ -20,7 +20,7 @@ trait ComponentInstanceLoader extends DictionaryLoader with PortLoader {
 
 		def loadComponentInstanceElement(elementId: String, elementNode: NodeSeq) : ComponentInstance = {
 		
-				val modelElem = KevoreePackage.createComponentInstance
+				val modelElem = KevoreeFactory.createComponentInstance
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				(elementNode \ "dictionary").headOption.map{head =>

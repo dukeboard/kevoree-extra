@@ -20,7 +20,7 @@ trait MBindingLoader{
 
 		def loadMBindingElement(elementId: String, elementNode: NodeSeq) : MBinding = {
 		
-				val modelElem = KevoreePackage.createMBinding
+				val modelElem = KevoreeFactory.createMBinding
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

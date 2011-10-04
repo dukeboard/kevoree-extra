@@ -68,7 +68,7 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
 
   private def generateSubs(currentType: EClass): List[EClass] = {
     var factory = genPackage.substring(genPackage.lastIndexOf(".") + 1)
-    factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Package"
+    factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Factory"
 
     val context = elementType.getName + "LoadContext"
     //modelingPackage.getEClassifiers.filter(cl => !cl.equals(elementType)).foreach{ ref =>
@@ -110,7 +110,7 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
 
 
     var factory = genPackage.substring(genPackage.lastIndexOf(".") + 1)
-    factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Package"
+    factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Factory"
 
     pr.println("\t\tprivate def deserialize(rootNode: NodeSeq): ContainerRoot = {")
 

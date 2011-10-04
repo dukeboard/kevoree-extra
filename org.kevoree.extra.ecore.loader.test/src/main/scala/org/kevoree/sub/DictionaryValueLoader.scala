@@ -20,7 +20,7 @@ trait DictionaryValueLoader{
 
 		def loadDictionaryValueElement(elementId: String, elementNode: NodeSeq) : DictionaryValue = {
 		
-				val modelElem = KevoreePackage.createDictionaryValue
+				val modelElem = KevoreeFactory.createDictionaryValue
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

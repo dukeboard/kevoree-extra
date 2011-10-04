@@ -20,7 +20,7 @@ trait OperationLoader extends ParameterLoader {
 
 		def loadOperationElement(elementId: String, elementNode: NodeSeq) : Operation = {
 		
-				val modelElem = KevoreePackage.createOperation
+				val modelElem = KevoreeFactory.createOperation
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				val parameters = loadParameter(elementId, elementNode, "parameters")

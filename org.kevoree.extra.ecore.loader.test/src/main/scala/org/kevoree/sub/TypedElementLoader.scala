@@ -20,7 +20,7 @@ trait TypedElementLoader{
 
 		def loadTypedElementElement(elementId: String, elementNode: NodeSeq) : TypedElement = {
 		
-				val modelElem = KevoreePackage.createTypedElement
+				val modelElem = KevoreeFactory.createTypedElement
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

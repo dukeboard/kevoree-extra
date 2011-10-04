@@ -20,7 +20,7 @@ trait ContainerNodeLoader extends DictionaryLoader with ComponentInstanceLoader 
 
 		def loadContainerNodeElement(elementId: String, elementNode: NodeSeq) : ContainerNode = {
 		
-				val modelElem = KevoreePackage.createContainerNode
+				val modelElem = KevoreeFactory.createContainerNode
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				(elementNode \ "dictionary").headOption.map{head =>

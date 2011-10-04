@@ -20,7 +20,7 @@ trait WireLoader{
 
 		def loadWireElement(elementId: String, elementNode: NodeSeq) : Wire = {
 		
-				val modelElem = KevoreePackage.createWire
+				val modelElem = KevoreeFactory.createWire
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

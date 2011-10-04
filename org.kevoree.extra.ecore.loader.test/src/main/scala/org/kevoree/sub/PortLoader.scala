@@ -20,7 +20,7 @@ trait PortLoader{
 
 		def loadPortElement(elementId: String, elementNode: NodeSeq) : Port = {
 		
-				val modelElem = KevoreePackage.createPort
+				val modelElem = KevoreeFactory.createPort
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

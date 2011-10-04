@@ -20,7 +20,7 @@ trait AdaptationPrimitiveTypeLoader{
 
 		def loadAdaptationPrimitiveTypeElement(elementId: String, elementNode: NodeSeq) : AdaptationPrimitiveType = {
 		
-				val modelElem = KevoreePackage.createAdaptationPrimitiveType
+				val modelElem = KevoreeFactory.createAdaptationPrimitiveType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

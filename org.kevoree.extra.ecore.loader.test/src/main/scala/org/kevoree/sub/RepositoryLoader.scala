@@ -20,7 +20,7 @@ trait RepositoryLoader{
 
 		def loadRepositoryElement(elementId: String, elementNode: NodeSeq) : Repository = {
 		
-				val modelElem = KevoreePackage.createRepository
+				val modelElem = KevoreeFactory.createRepository
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				modelElem

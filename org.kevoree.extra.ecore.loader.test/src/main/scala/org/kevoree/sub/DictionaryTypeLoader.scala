@@ -20,7 +20,7 @@ trait DictionaryTypeLoader extends DictionaryAttributeLoader with DictionaryValu
 
 		def loadDictionaryTypeElement(elementId: String, elementNode: NodeSeq) : DictionaryType = {
 		
-				val modelElem = KevoreePackage.createDictionaryType
+				val modelElem = KevoreeFactory.createDictionaryType
 				ContainerRootLoadContext.map += elementId -> modelElem
 
 				val attributes = loadDictionaryAttribute(elementId, elementNode, "attributes")
