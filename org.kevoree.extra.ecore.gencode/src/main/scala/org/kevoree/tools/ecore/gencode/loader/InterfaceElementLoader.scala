@@ -94,7 +94,7 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
     pr.println("\t\t\t\t\t\txmiElem.attributes.find(att => att.key.equals(\"type\")) match {")
     pr.println("\t\t\t\t\t\t\t\tcase Some(s) => {")
     pr.println("\t\t\t\t\t\t\t\t\t\t\t\ts.value.text match {")
-    LoaderGenerator.getConcreteSubTypes(elementType).foreach {
+    ProcessorHelper.getConcreteSubTypes(elementType).foreach {
       concreteType =>
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\tcase \"" + modelingPackage.getName + ":" + concreteType.getName + "\" => {")
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tloadedElements = loadedElements ++ List(load" + concreteType.getName + "Element(currentElementId,xmiElem))")
@@ -121,7 +121,7 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
     pr.println("\t\t\t\t\t\txmiElem.attributes.find(att => att.key.equals(\"type\")) match {")
     pr.println("\t\t\t\t\t\t\t\t\t\tcase Some(s) => {")
     pr.println("\t\t\t\t\t\t\t\t\t\t\t\ts.value.text match {")
-    LoaderGenerator.getConcreteSubTypes(elementType).foreach {
+    ProcessorHelper.getConcreteSubTypes(elementType).foreach {
       concreteType =>
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\tcase \"" + modelingPackage.getName + ":" + concreteType.getName + "\" => {")
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tresolve" + concreteType.getName + "Element(currentElementId,xmiElem)")
