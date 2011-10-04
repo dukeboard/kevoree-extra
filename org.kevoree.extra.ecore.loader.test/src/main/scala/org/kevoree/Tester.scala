@@ -13,23 +13,19 @@ import xml.PrettyPrinter
  */
 
 object Tester extends App {
+
   val current = System.currentTimeMillis()
-  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-extra/org.kevoree.extra.ecore.loader.test/src/test/resources/defaultLibrary.kev")));
+  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-generated/models/Models580")));
 
   localModel match {
     case Some(m) => {
-      println(System.currentTimeMillis() - current)
 
-      println("====Debug")
-      m.getTypeDefinitions.foreach{
-        typed => typed.getDeployUnits.foreach{ tdeploy =>
-           println(typed.getName+"=>"+tdeploy.getUnitName)
-        }
-      }
-      println("*******Debug")
+
       val serializer = new ModelSerializer
-      val pp = new PrettyPrinter(3000,1)
+
       val result = serializer.serialize(m)
+       println(System.currentTimeMillis() - current)
+      val pp = new PrettyPrinter(3000,1)
       println(pp.format(result))
     }
     case None =>
