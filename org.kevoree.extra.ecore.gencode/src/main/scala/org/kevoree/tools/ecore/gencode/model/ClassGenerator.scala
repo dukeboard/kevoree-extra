@@ -108,13 +108,17 @@ trait ClassGenerator {
           }
           )
 
-        if (ref.getUpperBound == -1) { // multiple values
+        if (ref.getUpperBound == -1) {
+          // multiple values
           pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : List[" + typeRefName + "] = List[" + typeRefName + "]()\n")
-        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 0 ) { // optional single ref
+        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 0) {
+          // optional single ref
           pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : Option[" + typeRefName + "] = None\n")
-        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 1) { // mandatory single ref
+        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 1) {
+          // mandatory single ref
           pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : " + typeRefName + " = _\n")
-        } else if (ref.getLowerBound > 1) { // else
+        } else if (ref.getLowerBound > 1) {
+          // else
           pr.println("\t\tprivate var " + protectReservedWords(ref.getName) + " : List[" + typeRefName + "] = List[" + typeRefName + "]()\n")
         } else {
           throw new UnsupportedOperationException("GenDefConsRef::None standard arrity: " + cls.getName + "->" + typeRefName + "[" + ref.getLowerBound + "," + ref.getUpperBound + "]. Not implemented yet !")
@@ -150,22 +154,25 @@ trait ClassGenerator {
           )
 
 
-        if (ref.getUpperBound == -1) { // multiple values
+        if (ref.getUpperBound == -1) {
+          // multiple values
           pr.println(generateGetter(ref, typeRefName, false, false))
-          pr.println(generateSetter(ref, typeRefName, false, false))
-          pr.println(generateAddMethod(ref, typeRefName))
-          pr.println(generateRemoveMethod(ref, typeRefName, true))
-        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 0 ) { // optional single ref
+          pr.println(generateSetter(cls, ref, typeRefName, false, false))
+          pr.println(generateAddMethod(cls, ref, typeRefName))
+          pr.println(generateRemoveMethod(cls, ref, typeRefName, true))
+        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 0) {
+          // optional single ref
           pr.println(generateGetter(ref, typeRefName, true, true))
-          pr.println(generateSetter(ref, typeRefName, true, true))
-        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 1) { // mandatory single ref
+          pr.println(generateSetter(cls, ref, typeRefName, true, true))
+        } else if (ref.getUpperBound == 1 && ref.getLowerBound == 1) {
+          // mandatory single ref
           pr.println(generateGetter(ref, typeRefName, false, true))
-          pr.println(generateSetter(ref, typeRefName, false, true))
+          pr.println(generateSetter(cls, ref, typeRefName, false, true))
         } else if (ref.getLowerBound > 1) {
           pr.println(generateGetter(ref, typeRefName, false, false))
-          pr.println(generateSetter(ref, typeRefName, false, false))
-          pr.println(generateAddMethod(ref, typeRefName))
-          pr.println(generateRemoveMethod(ref, typeRefName, false))
+          pr.println(generateSetter(cls, ref, typeRefName, false, false))
+          pr.println(generateAddMethod(cls, ref, typeRefName))
+          pr.println(generateRemoveMethod(cls, ref, typeRefName, false))
         } else {
           throw new UnsupportedOperationException("GenDefConsRef::None standard arrity: " + cls.getName + "->" + typeRefName + "[" + ref.getLowerBound + "," + ref.getUpperBound + "]. Not implemented yet !")
         }
@@ -188,11 +195,35 @@ trait ClassGenerator {
     res += "\n\t\tdef " + methName + " : "
 
     //Set return type
-    res += {if (isOptional) {"Option["}else{""}}
-    res += {if (!isSingleRef) {"List["}else{""}}
+    res += {
+      if (isOptional) {
+        "Option["
+      } else {
+        ""
+      }
+    }
+    res += {
+      if (!isSingleRef) {
+        "List["
+      } else {
+        ""
+      }
+    }
     res += typeRefName
-    res += {if (!isSingleRef) {"]"}else{""}}
-    res += {if (isOptional) {"]"}else{""}}
+    res += {
+      if (!isSingleRef) {
+        "]"
+      } else {
+        ""
+      }
+    }
+    res += {
+      if (isOptional) {
+        "]"
+      } else {
+        ""
+      }
+    }
     res += " = {"
 
     //Method core
@@ -201,7 +232,7 @@ trait ClassGenerator {
     res
   }
 
-  private def generateSetter(ref: EReference, typeRefName: String, isOptional: Boolean, isSingleRef: Boolean): String = {
+  private def generateSetter(cls: EClass, ref: EReference, typeRefName: String, isOptional: Boolean, isSingleRef: Boolean): String = {
     //generate setter
     var res = ""
     res += "\n\t\tdef set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
@@ -209,14 +240,26 @@ trait ClassGenerator {
 
     //Set parameter type
     //res += {if (isOptional) {"Option["}else{""}}
-    res += {if (!isSingleRef) {"List["}else{""}}
+    res += {
+      if (!isSingleRef) {
+        "List["
+      } else {
+        ""
+      }
+    }
     res += typeRefName
-    res += {if (!isSingleRef) {"]"}else{""}}
-   // res += {if (isOptional) {"]"}else{""}}
+    res += {
+      if (!isSingleRef) {
+        "]"
+      } else {
+        ""
+      }
+    }
+    // res += {if (isOptional) {"]"}else{""}}
     res += " ) {\n"
 
     //Method core
-    if(isOptional) {
+    if (isOptional) {
       res += "\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n"
       res += "\t\t\t\t\t\tcase l : " + typeRefName + " => {\n"
       res += "\t\t\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = Some(" + protectReservedWords(ref.getName) + ")\n"
@@ -224,42 +267,46 @@ trait ClassGenerator {
       res += "\t\t\t\t\t\tcase _ => this." + protectReservedWords(ref.getName) + " = None\n"
       res += "\t\t\t\t}\n"
     } else {
-      res += "\t\t\t\tthis."+ protectReservedWords(ref.getName) + " = " + protectReservedWords(ref.getName) + "\n"
+      res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + " = " + protectReservedWords(ref.getName) + "\n"
     }
-    if(isSingleRef) {
-      res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".eContainer = this\n"
-    } else {
-      res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".foreach{e=>e.eContainer = this}\n"
+    if (cls.getEAllContainments.contains(ref)) {
+      if (isSingleRef) {
+        res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".eContainer = this\n"
+      } else {
+        res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".foreach{e=>e.eContainer = this}\n"
+      }
     }
     res += "\n\t\t}"
     res
 
   }
 
-  private def generateAddMethod(ref: EReference, typeRefName: String): String = {
+  private def generateAddMethod(cls: EClass, ref: EReference, typeRefName: String): String = {
     //generate add
     var res = ""
     res += "\n\t\tdef add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
     res += "(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n"
-    res += "\t\t\t\t"+protectReservedWords(ref.getName)+".eContainer = this\n"
+    if (cls.getEAllContainments.contains(ref)) {
+      res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".eContainer = this\n"
+    }
     res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + " = this." + protectReservedWords(ref.getName) + " ++ List(" + protectReservedWords(ref.getName) + ")\n"
     res += "\t\t}"
     res += "\n"
     res += "\n\t\tdef addAll" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
     res += "(" + protectReservedWords(ref.getName) + " : List[" + typeRefName + "]) {\n"
-    res += "\t\t\t\t"+ protectReservedWords(ref.getName) +".foreach{ elem => add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(elem)}\n"
+    res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".foreach{ elem => add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(elem)}\n"
     res += "\t\t}"
 
     res
   }
 
-  private def generateRemoveMethod(ref: EReference, typeRefName: String, isOptional: Boolean): String = {
+  private def generateRemoveMethod(cls: EClass, ref: EReference, typeRefName: String, isOptional: Boolean): String = {
     //generate remove
     var res = ""
 
     res += "\n\t\tdef remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
     res += "(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n"
-    if(isOptional) {
+    if (isOptional) {
       res += "\t\t\t\tif(this." + protectReservedWords(ref.getName) + ".size != 0 ) {\n"
     } else {
       res += "\t\t\t\tif(this." + protectReservedWords(ref.getName) + ".size == " + ref.getLowerBound + ") {\n"

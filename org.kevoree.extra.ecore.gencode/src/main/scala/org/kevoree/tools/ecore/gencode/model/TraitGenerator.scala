@@ -32,8 +32,9 @@ trait TraitGenerator {
     //case class name
     pr.println("trait " + formatedFactoryName + " {")
     pr.println()
-    //pr.println("\t var eContainer : " + formatedFactoryName + " = null")
-    pr.println("\t var eContainer : Any = null")
+    pr.println("\t var eContainer : " + formatedFactoryName + " = null")
+    //pr.println("\t private var _eContainer : Any = null")
+    //pr.println("\t var eContainer : "+formatedFactoryName+" = _eContainer.asInstanceOf["++"]")
     pr.println()
     //generate setter
     pr.print("\n\t\tdef setEContainer( container : " + formatedFactoryName + ") {\n")
