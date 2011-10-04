@@ -16,7 +16,7 @@ import xml.PrettyPrinter
 object Tester extends App {
 
   val current = System.currentTimeMillis()
-  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-generated/models/Models580")));
+  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-platform/org.kevoree.platform.osgi.standalone/src/main/resources/defaultLibrary.kev")));
 
   localModel match {
     case Some(m) => {
