@@ -154,15 +154,15 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
   private def generateElementResolutionMethod(pr: PrintWriter) {
     pr.println("\t\tdef resolve" + elementType.getName + "Element(elementId: String, elementNode: NodeSeq) {")
     pr.println("")
-    pr.println("\t\tval modelElem = " + context + ".map(elementId).asInstanceOf[" + elementType.getName + "]")
+    pr.println("\t\t\t\tval modelElem = " + context + ".map(elementId).asInstanceOf[" + elementType.getName + "]")
     pr.println("")
     elementType.getEAllAttributes.foreach {
       att =>
         val methName = "set" + att.getName.substring(0, 1).toUpperCase + att.getName.substring(1)
-        pr.println("\t\tval " + att.getName + "Val = (elementNode \\ \"@" + att.getName + "\").text")
-        pr.println("\t\tif(!" + att.getName + "Val.equals(\"\")){")
-        pr.println("\t\t\t\tmodelElem." + methName + "(" + ProcessorHelper.convertType(att.getEAttributeType.getInstanceClassName) + ".valueOf(" + att.getName + "Val))")
-        pr.println("\t\t}")
+        pr.println("\t\t\t\tval " + att.getName + "Val = (elementNode \\ \"@" + att.getName + "\").text")
+        pr.println("\t\t\t\tif(!" + att.getName + "Val.equals(\"\")){")
+        pr.println("\t\t\t\t\t\tmodelElem." + methName + "(" + ProcessorHelper.convertType(att.getEAttributeType.getInstanceClassName) + ".valueOf(" + att.getName + "Val))")
+        pr.println("\t\t\t\t}")
         pr.println("")
     }
     pr.println("")
@@ -170,7 +170,7 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
     elementType.getEAllContainments.foreach {
       ref =>
         if (ref.getUpperBound == 1) {
-          pr.println("\t\t\t\t(elementNode \\ \"@" + ref.getName + "\").headOption.map{head => ")
+          pr.println("\t\t\t\t(elementNode \\ \"" + ref.getName + "\").headOption.map{head => ")
           pr.println("\t\t\t\t\t\tresolve" + ref.getEReferenceType.getName + "Element(elementId + \"/@" + ref.getName + "\", head)")
           pr.println("\t\t\t\t}")
         } else {
