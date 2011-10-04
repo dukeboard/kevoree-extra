@@ -5,7 +5,7 @@ import org.kevoree.impl._;
 /**
  * Created by Ecore Model Generator.
  * @author: Gregory NAIN
- * Date: 04 oct. 11 Time: 13:29
+ * Date: 04 oct. 11 Time: 14:00
  * Meta-Model:NS_URI=http://kevoree/1.0
  */
 object KevoreeFactory {
