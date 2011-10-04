@@ -1,9 +1,10 @@
 package org.kevoree.tools.ecore.gencode.loader
 
 import org.kevoree.tools.ecore.gencode.ProcessorHelper
-import java.io.{File, FileOutputStream, PrintWriter}
 import org.eclipse.emf.ecore.{EPackage, EClass}
 import scala.collection.JavaConversions._
+import xml.XML
+import java.io._
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,7 +27,7 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
     pr.println("package " + genPackage + ";")
     pr.println()
     pr.println("import xml.{XML,NodeSeq}")
-    pr.println("import java.io.File")
+    pr.println("import java.io.{File, FileInputStream, InputStream}")
     pr.println("import " + packagePrefix + "." + modelingPackage.getName + "._")
     pr.println("import " + genPackage + ".sub._")
     pr.println()
@@ -95,19 +96,26 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
   }
 
   private def generateLoadMethod(pr: PrintWriter) {
+
     pr.println("\t\tdef loadModel(file: File) : Option[" + elementType.getName + "] = {")
-    pr.println("\t\t\t\tval xmlStream = XML.loadFile(file)")
+    pr.println("\t\t\t\tloadModel(new FileInputStream(file))")
+    pr.println("\t\t}")
+
+
+    pr.println("\t\tdef loadModel(is: InputStream) : Option[" + elementType.getName + "] = {")
+    pr.println("\t\t\t\tval xmlStream = XML.load(is)")
     pr.println("\t\t\t\tval document = NodeSeq fromSeq xmlStream")
     pr.println("\t\t\t\tdocument.headOption match {")
     pr.println("\t\t\t\t\t\tcase Some(rootNode) => Some(deserialize(rootNode))")
     pr.println("\t\t\t\t\t\tcase None => System.out.println(\"" + elementType.getName + "Loader::Noting at the root !\");None")
     pr.println("\t\t\t\t}")
     pr.println("\t\t}")
+
+
   }
 
 
   private def generateDeserialize(pr: PrintWriter, context: String, rootContainerName: String) {
-
 
     var factory = modelingPackage.getName
     factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Factory"
