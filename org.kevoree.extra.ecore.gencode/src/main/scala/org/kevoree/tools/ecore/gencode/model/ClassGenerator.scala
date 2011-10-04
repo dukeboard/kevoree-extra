@@ -236,6 +236,12 @@ trait ClassGenerator {
     res += "(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n"
     res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + " = this." + protectReservedWords(ref.getName) + " ++ List(" + protectReservedWords(ref.getName) + ")\n"
     res += "\t\t}"
+    res += "\n"
+    res += "\n\t\tdef addAll" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
+    res += "(" + protectReservedWords(ref.getName) + " : List[" + typeRefName + "]) {\n"
+    res += "\t\t\t\t"+ protectReservedWords(ref.getName) +".foreach{ elem => add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(elem)}\n"
+    res += "\t\t}"
+
     res
   }
 
