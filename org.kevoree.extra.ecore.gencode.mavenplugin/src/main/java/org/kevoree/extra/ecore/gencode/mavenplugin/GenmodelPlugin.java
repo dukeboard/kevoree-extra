@@ -12,13 +12,13 @@ import java.io.File;
 /**
  * Generates files based on grammar files with Antlr tool.
  *
- * @goal generate
+ * @goal model
  * @phase generate-sources
  * @requiresDependencyResolution compile
  * @author <a href="mailto:ffouquet@irisa.fr">Fouquet François</a>
  * @version $Id$
  */
-public class GenmodelPlugin extends AbstractMojo {
+public class GenModelPlugin extends AbstractMojo {
 
     /**
      * Ecore file
@@ -61,7 +61,6 @@ public class GenmodelPlugin extends AbstractMojo {
         }
         return (path.delete());
     }
-
 
     @Override
     public void execute() throws MojoExecutionException {
