@@ -67,7 +67,8 @@ trait DeployUnitLoader{
 
 		val hashcodeVal = (elementNode \ "@hashcode").text
 		if(!hashcodeVal.equals("")){
-				modelElem.setHashcode(java.lang.String.valueOf(hashcodeVal))
+        println(hashcodeVal)
+				modelElem.setHashcode(hashcodeVal.toString)
 		}
 
 
