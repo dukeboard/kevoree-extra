@@ -195,40 +195,25 @@ trait ClassGenerator {
     res += "\n\t\tdef " + methName + " : "
 
     //Set return type
-    res += {
-      if (isOptional) {
-        "Option["
-      } else {
-        ""
-      }
-    }
-    res += {
-      if (!isSingleRef) {
-        "List["
-      } else {
-        ""
-      }
-    }
+    res += { if (isOptional) { "Option["} else {""}}
+    res += {if (!isSingleRef) {"List["} else {""}}
     res += typeRefName
-    res += {
-      if (!isSingleRef) {
-        "]"
-      } else {
-        ""
-      }
-    }
-    res += {
-      if (isOptional) {
-        "]"
-      } else {
-        ""
-      }
-    }
+    res += {if (!isSingleRef) {"]"} else {""}}
+    res += {if (isOptional) {"]"} else {""}}
     res += " = {"
-
     //Method core
     res += "\n\t\t\t\t" + protectReservedWords(ref.getName)
     res += "\n\t\t}"
+
+
+    if (!isSingleRef) {
+      res += "\n\t\tdef " + methName + "ForJ : java.util.List[" + typeRefName + "] = {"
+      res += "\n\t\t\t\timport scala.collection.JavaConversions._"
+      res += "\n\t\t\t\t" + protectReservedWords(ref.getName)
+      res += "\n\t\t}"
+    }
+
+
     res
   }
 
