@@ -4,7 +4,8 @@ import java.io.File
 import org.junit.{BeforeClass, Test}
 import org.junit.Assert._
 import org.kevoree.serializer.ModelSerializer
-import org.kevoree.{NodeType, ContainerRoot, ContainerRootLoader}
+import org.kevoree.{NodeType, ContainerRoot}
+import org.kevoree.loader.ContainerRootLoader
 
 /**
  * Created by IntelliJ IDEA.

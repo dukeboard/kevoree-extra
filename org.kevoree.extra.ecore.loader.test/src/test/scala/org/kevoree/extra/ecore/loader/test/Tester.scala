@@ -1,6 +1,7 @@
 package org.kevoree
 
 import java.io.File
+import loader.ContainerRootLoader
 import org.kevoree.serializer.ModelSerializer
 import xml.PrettyPrinter
 
