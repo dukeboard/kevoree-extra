@@ -163,9 +163,18 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
 
 
 
-    if (cls.getEAllAttributes.size() > 0 || cls.getEAllReferences.filter(eref => !cls.getEAllContainments.contains(eref)).size > 0) {
+    if (isRoot || cls.getEAllAttributes.size() > 0 || cls.getEAllReferences.filter(eref => !cls.getEAllContainments.contains(eref)).size > 0) {
       buffer.println("override def attributes  : scala.xml.MetaData =  { ")
       buffer.println("var subAtts : scala.xml.MetaData = scala.xml.Null")
+      if (isRoot) {
+        buffer.println("subAtts=subAtts.append(new scala.xml.UnprefixedAttribute(\"xmlns:" + cls.getEPackage.getNsPrefix + "\",\"" + cls.getEPackage.getNsURI + "\",scala.xml.Null))")
+        buffer.println("subAtts=subAtts.append(new scala.xml.UnprefixedAttribute(\"xmlns:xsi\",\"http://wwww.w3.org/2001/XMLSchema-instance\",scala.xml.Null))")
+        buffer.println("subAtts=subAtts.append(new scala.xml.UnprefixedAttribute(\"xmi:version\",\"2.0\",scala.xml.Null))")
+        buffer.println("subAtts=subAtts.append(new scala.xml.UnprefixedAttribute(\"xmlns:xml\",\"http://www.omg.org/XMI\",scala.xml.Null))")
+
+      }
+
+
       if (cls.isAbstract || cls.isInterface) {
         buffer.println("selfObject match {")
         ProcessorHelper.getConcreteSubTypes(cls).reverse.foreach {
