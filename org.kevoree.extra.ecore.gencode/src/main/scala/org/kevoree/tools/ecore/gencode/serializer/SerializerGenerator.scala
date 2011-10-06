@@ -1,10 +1,10 @@
 package org.kevoree.tools.ecore.gencode.serializer
 
 import scala.collection.JavaConversions._
-import org.kevoree.tools.ecore.gencode.ProcessorHelper
 import java.io.{File, FileOutputStream, PrintWriter}
 import org.kevoree.tools.ecore.gencode.loader.RootLoader
 import org.eclipse.emf.ecore.{EReference, EAttribute, EPackage, EClass}
+import org.kevoree.tools.ecore.gencode.ProcessorHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,6 +67,11 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
         subpr.flush()
         subpr.close()
 
+        //¨PROCESS ALL SUB TYPE
+        ProcessorHelper.getConcreteSubTypes(sub.getEReferenceType).foreach {
+          subsubType =>
+            generateSerializer(genDir, packageName, sub.getName, subsubType, rootXmiPackage)
+        }
         generateSerializer(genDir, packageName, sub.getName, sub.getEReferenceType, rootXmiPackage)
 
     }
@@ -83,14 +88,15 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
   private def generateToXmiMethod(cls: EClass, buffer: PrintWriter, refNameInParent: String, isRoot: Boolean = false) = {
     buffer.println("import org.kevoree._")
     buffer.println("trait " + cls.getName + "Serializer ")
-    val subTraits = cls.getEAllContainments.map(sub => sub.getEReferenceType.getName + "Serializer").toSet
+
+    var subTraits = ( cls.getEAllContainments ).map(sub => sub.getEReferenceType.getName + "Serializer").toSet
+    subTraits = ( subTraits ++ ProcessorHelper.getConcreteSubTypes(cls).map(sub => sub.getName + "Serializer")).toSet
 
     if (subTraits.size >= 1) {
       buffer.print(subTraits.mkString(" extends ", " with ", " "))
     }
 
     buffer.println("{")
-
 
     //GENERATE GET XMI ADDR
     buffer.println("def get" + cls.getName + "XmiAddr(selfObject : " + cls.getName + ",previousAddr : String): Map[Object,String] = {")
@@ -115,17 +121,31 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
           }
         }
     }
+
+    buffer.println("selfObject match {")
+    ProcessorHelper.getConcreteSubTypes(cls).foreach { subType =>
+        buffer.println("case o : "+subType.getName+" =>subResult = subResult ++ get" + subType.getName + "XmiAddr(o,previousAddr)")
+    }
+    buffer.println("case _ => ")
+    buffer.println("}")
+
     buffer.println("subResult")
     buffer.println("}")
 
 
-    // generateGetAddrMethod(cls,buffer,refNameInParent)
     if (isRoot) {
       buffer.println("def " + cls.getName + "toXmi(selfObject : " + cls.getName + ", addrs : Map[Object,String]) : scala.xml.Node = {")
     } else {
       buffer.println("def " + cls.getName + "toXmi(selfObject : " + cls.getName + ",refNameInParent : String, addrs : Map[Object,String]) : scala.xml.Node = {")
     }
 
+    buffer.println("selfObject match {")
+    ProcessorHelper.getConcreteSubTypes(cls).foreach {
+      subType =>
+        buffer.println("case o : "+subType.getName+" => "+subType.getName+"toXmi(o,refNameInParent,addrs)")
+    }
+
+    buffer.println("case _ => {")
     buffer.println("new scala.xml.Node {")
     if (!isRoot) {
       buffer.println("  def label = refNameInParent")
@@ -175,17 +195,17 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
       }
 
 
-      if (cls.isAbstract || cls.isInterface) {
-        buffer.println("selfObject match {")
-        ProcessorHelper.getConcreteSubTypes(cls).reverse.foreach {
-          concreteType =>
-            buffer.println("case concreteT : " + concreteType.getName + " => {")
-            buffer.println("subAtts=subAtts.append(new scala.xml.UnprefixedAttribute(\"xsi:type\",\"" + cls.getEPackage.getName + ":" + concreteType.getName + "\",scala.xml.Null))")
-            buffer.println("}")
-        }
-        buffer.println("case _ =>")
-        buffer.println("}")
-      }
+      //if (cls.isAbstract || cls.isInterface) {
+        //buffer.println("selfObject match {")
+        //ProcessorHelper.getConcreteSubTypes(cls).foreach {
+          //concreteType =>
+            //buffer.println("case concreteT : " + concreteType.getName + " => {")
+            buffer.println("subAtts=subAtts.append(new scala.xml.UnprefixedAttribute(\"xsi:type\",\"" + cls.getEPackage.getName + ":" + cls.getName + "\",scala.xml.Null))")
+           // buffer.println("}")
+        //}
+        //buffer.println("case _ =>")
+        //buffer.println("}")
+      //}
       cls.getEAllAttributes.foreach {
         att =>
           att.getUpperBound match {
@@ -217,33 +237,34 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
               ref.getLowerBound match {
                 case 0 => {
                   buffer.println("selfObject." + getGetter(ref.getName) + ".map{sub =>")
-                  buffer.println("subAtts= subAtts.append(new scala.xml.UnprefixedAttribute(\"" + ref.getName + "\",addrs.get(sub).getOrElse{\"wtf\"},scala.xml.Null))")
+                  buffer.println("subAtts= subAtts.append(new scala.xml.UnprefixedAttribute(\"" + ref.getName + "\",addrs.get(sub).getOrElse{\"non contained reference\"},scala.xml.Null))")
                   buffer.println("}")
                 }
                 case 1 => {
-                  buffer.println("subAtts= subAtts.append(new scala.xml.UnprefixedAttribute(\"" + ref.getName + "\",addrs.get(selfObject." + getGetter(ref.getName) + ").getOrElse{\"wtf\"},scala.xml.Null))")
+                  buffer.println("subAtts= subAtts.append(new scala.xml.UnprefixedAttribute(\"" + ref.getName + "\",addrs.get(selfObject." + getGetter(ref.getName) + ").getOrElse{\"non contained reference\"},scala.xml.Null))")
                 }
               }
 
 
             }
-            case -1 => {
+            case _ => {
               buffer.println("var subadrs" + ref.getName + " : List[String] = List()")
               buffer.println("selfObject." + getGetter(ref.getName) + ".foreach{sub =>")
-              buffer.println("subadrs" + ref.getName + " = subadrs" + ref.getName + " ++ List(addrs.get(sub).getOrElse{\"wtf\"})")
+              buffer.println("subadrs" + ref.getName + " = subadrs" + ref.getName + " ++ List(addrs.get(sub).getOrElse{\"non contained reference\"})")
               buffer.println("}")
               buffer.println("if(subadrs" + ref.getName + ".size > 0){")
               buffer.println("subAtts= subAtts.append(new scala.xml.UnprefixedAttribute(\"" + ref.getName + "\",subadrs" + ref.getName + ".mkString(\" \"),scala.xml.Null))")
               buffer.println("}")
             }
           }
-
       }
       buffer.print("subAtts")
       buffer.println("}")
     }
 
     buffer.println("  }                                                  ")
+
+        buffer.println("}}") //End MATCH CASE
     buffer.println("}") //END TO XMI
     buffer.println("}") //END TRAIT
   }

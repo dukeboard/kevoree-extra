@@ -68,12 +68,31 @@ object ProcessorHelper {
       if(!cls.asInstanceOf[EClass].isInterface
         && !cls.asInstanceOf[EClass].isAbstract
         && cls.asInstanceOf[EClass].getEAllSuperTypes.contains(iface)) {
-        res = res ++ List(cls.asInstanceOf[EClass])
+
+        if(res.exists(previousC => cls.asInstanceOf[EClass].getEAllSuperTypes.contains(previousC))){
+          res = List(cls.asInstanceOf[EClass]) ++ res
+        } else {
+          res = res ++ List(cls.asInstanceOf[EClass])
+        }
       }
     }
     res
-  }
+  }    /*
+  def getSubTypes(iface : EClass) : List[EClass] = {
+    var res = List[EClass]()
+    iface.getEPackage.getEClassifiers.filter(cl => cl.isInstanceOf[EClass]).foreach{cls=>
+      if(cls.asInstanceOf[EClass].getEAllSuperTypes.contains(iface)) {
+        //IS A SUB TYPE NEED TO ADD
+        if(res.exists(previousC => cls.asInstanceOf[EClass].getEAllSuperTypes.contains(previousC))){
+          res = List(cls.asInstanceOf[EClass]) ++ res
+        } else {
+          res = res ++ List(cls.asInstanceOf[EClass])
+        }
 
+      }
+    }
+    res
+  }     */
 
   def lookForRootElement(rootXmiPackage : EPackage) : EClassifier = {
 

@@ -245,20 +245,20 @@ trait ClassGenerator {
 
     //Method core
     if (isOptional) {
-      res += "\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n"
-      res += "\t\t\t\t\t\tcase l : " + typeRefName + " => {\n"
+    //  res += "\t\t\t\t" + protectReservedWords(ref.getName) + " match {\n"
+   //   res += "\t\t\t\t\t\tcase l : " + typeRefName + " => {\n"
       res += "\t\t\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = Some(" + protectReservedWords(ref.getName) + ")\n"
-      res += "\t\t\t\t\t\t}\n"
-      res += "\t\t\t\t\t\tcase _ => this." + protectReservedWords(ref.getName) + " = None\n"
-      res += "\t\t\t\t}\n"
+     // res += "\t\t\t\t\t\t}\n"
+  //    res += "\t\t\t\t\t\tcase _ => this." + protectReservedWords(ref.getName) + " = None\n"
+      //res += "\t\t\t\t}\n"
     } else {
       res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + " = " + protectReservedWords(ref.getName) + "\n"
     }
     if (cls.getEAllContainments.contains(ref)) {
       if (isSingleRef) {
-        res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".eContainer = this\n"
+        res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".setEContainer(this, Some(() => { this."+protectReservedWords(ref.getName)+"= None }) )\n"
       } else {
-        res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".foreach{e=>e.eContainer = this}\n"
+        res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".foreach{e=>e.setEContainer(this,Some(()=>{this.remove"+ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)+"(e)}))}\n"
       }
     }
     res += "\n\t\t}"
@@ -272,7 +272,7 @@ trait ClassGenerator {
     res += "\n\t\tdef add" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
     res += "(" + protectReservedWords(ref.getName) + " : " + typeRefName + ") {\n"
     if (cls.getEAllContainments.contains(ref)) {
-      res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".eContainer = this\n"
+      res += "\t\t\t\t" + protectReservedWords(ref.getName) + ".setEContainer(this,Some(()=>{this.remove"+ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)+"("+protectReservedWords(ref.getName)+")}))\n"
     }
     res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + " = this." + protectReservedWords(ref.getName) + " ++ List(" + protectReservedWords(ref.getName) + ")\n"
     res += "\t\t}"
@@ -299,14 +299,15 @@ trait ClassGenerator {
       res += "\t\t\t\t} else {\n"
     }
     res += "\t\t\t\t\t\tvar nList = List[" + typeRefName + "]()\n"
-    res += "\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach(e => if(!e.equals(" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n"
+    res += "\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach(e => if(e != (" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n"
     res += "\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = nList\n"
+    res += "\t\t\t\t\t\t" + protectReservedWords(ref.getName) + ".setEContainer(null,None)\n"
     res += "\t\t\t\t}\n"
     res += "\t\t}\n"
 
     res += "\n\t\tdef removeAll" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "() {\n"
-    res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + " = List[" + typeRefName + "]()\n"
-    res += "\t\t}\n"
+    res += "\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach{ elem => remove" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(elem)}\n"
+    res += "\t\t}"
     res
   }
 
