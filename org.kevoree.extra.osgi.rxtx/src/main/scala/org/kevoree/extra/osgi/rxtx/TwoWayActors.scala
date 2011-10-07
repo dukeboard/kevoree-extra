@@ -23,10 +23,10 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
       //serialPort.setDTR(false)
       serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
       serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-      //serialPort.disableReceiveTimeout();
-      //serialPort.disableReceiveThreshold();
-      //serialPort.disableReceiveFraming();
-      //serialPort.enableReceiveThreshold(1);
+      serialPort.disableReceiveTimeout();
+      serialPort.disableReceiveThreshold();
+      serialPort.disableReceiveFraming();
+      serialPort.enableReceiveThreshold(1);
       serialPort.addEventListener(this)
       serialPort.notifyOnDataAvailable(true);
 
@@ -43,7 +43,7 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
 
 
 
-  Thread.sleep(1000)
+  Thread.sleep(2000)
 
 
   def sendAndWait(msg: String, waitMsg: String, timeout: Long): java.lang.Boolean = {

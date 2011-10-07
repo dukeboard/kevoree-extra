@@ -12,7 +12,7 @@ import scala.collection.JavaConversions._
  * Time: 17:24
  */
 
-class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass, context: String, factory: String, modelingPackage: EPackage, modelPackage : String) {
+class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass, context: String, factory: String, modelingPackage: EPackage, modelPackage: String) {
 
   def generateLoader() {
     //System.out.println("Generation of loader for " + elementType.getName)
@@ -35,7 +35,7 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
       pr.println("import scala.collection.JavaConversions._")
       //Import parent package (org.kevoree.sub => org.kevoree._)
       pr.println("import " + modelPackage + "._")
-      pr.println("import " + genPackage.substring(0,genPackage.lastIndexOf(".")) + "._")
+      pr.println("import " + genPackage.substring(0, genPackage.lastIndexOf(".")) + "._")
       pr.println()
 
       //Generates the Trait
@@ -124,13 +124,19 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
           pr.println("\t\t\t\t(elementNode \\ \"" + ref.getName + "\").headOption.map{head =>")
           pr.println("\t\t\t\t\t\tval " + ref.getName + "ElementId = elementId + \"/@" + ref.getName + "\"")
           pr.println("\t\t\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "Element(" + ref.getName + "ElementId, head)")
-          pr.println("\t\t\t\t\t\tmodelElem.set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
-//          pr.println("\t\t\t\t\t\t" + ref.getName + ".eContainer = modelElem")
+           if(ref.getLowerBound == 0){
+             pr.println("\t\t\t\t\t\tmodelElem.set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(Some(" + ref.getName + "))")
+
+           } else {
+             pr.println("\t\t\t\t\t\tmodelElem.set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
+           }
+
+          //          pr.println("\t\t\t\t\t\t" + ref.getName + ".eContainer = modelElem")
           pr.println("\t\t\t\t}")
         } else {
           pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(elementId, elementNode, \"" + ref.getName + "\")")
           pr.println("\t\t\t\tmodelElem.set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
- //         pr.println("\t\t\t\t" + ref.getName + ".foreach{ e => e.eContainer = modelElem }")
+          //         pr.println("\t\t\t\t" + ref.getName + ".foreach{ e => e.eContainer = modelElem }")
         }
         pr.println("")
     }
@@ -195,7 +201,13 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
           methName = "add"
         }
         methName += ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1)
-        pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tcase Some(s: " + ref.getEReferenceType.getName + ") => modelElem." + methName + "(s)")
+        if (ref.getUpperBound == 1 && ref.getLowerBound == 0) {
+          pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tcase Some(s: " + ref.getEReferenceType.getName + ") => modelElem." + methName + "(Some(s))")
+        } else {
+          pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tcase Some(s: " + ref.getEReferenceType.getName + ") => modelElem." + methName + "(s)")
+        }
+
+
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tcase None => System.out.println(\"" + ref.getEReferenceType.getName + " not found in map ! xmiRef:\" + xmiRef)")
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\t}")
         pr.println("\t\t\t\t\t\t\t\t\t\t}")
