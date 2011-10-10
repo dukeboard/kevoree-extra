@@ -18,7 +18,7 @@ trait PackageFactoryGenerator {
     def generatePackageFactory(location: String, pack: String, packElement: EPackage) {
     var formatedFactoryName: String = packElement.getName.substring(0, 1).toUpperCase
     formatedFactoryName += packElement.getName.substring(1)
-    formatedFactoryName += "Package"
+    formatedFactoryName += "Factory"
 
     val pr = new PrintWriter(new FileOutputStream(new File(location + "/" + formatedFactoryName + ".scala")))
 
@@ -31,7 +31,7 @@ trait PackageFactoryGenerator {
     //case class name
     pr.println("object " + formatedFactoryName + " {")
     pr.println()
-    pr.println("\t def eInstance = " + formatedFactoryName)
+    pr.println("\t def eINSTANCE = " + formatedFactoryName)
     pr.println()
     packElement.getEClassifiers.filter(cls=>cls.isInstanceOf[EClass]).foreach {
       cls =>

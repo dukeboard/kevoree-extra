@@ -14,9 +14,11 @@ import java.io.File;
  */
 public class GenerateCodeTest {
 
-    // @Test
+    @Test
     public void generate() {
-        File rootDir = new File("target/generated-sources/kevoree");
+        //File rootDir = new File("target/generated-sources/kevoree");
+        File rootDir = new File("../org.kevoree.extra.ecore.loader.test/src/main/scala/");
+
         String rootPackage = "org";
         File ecoreFile = new File(getClass().getResource("/kevoree.ecore").getPath());
         Generator gen = new Generator(rootDir, rootPackage);
@@ -24,7 +26,7 @@ public class GenerateCodeTest {
 
     }
 
-    //@Test
+    @Test
     public void generateLoader() {
         File rootDir = new File("../org.kevoree.extra.ecore.loader.test/src/main/scala/");
 

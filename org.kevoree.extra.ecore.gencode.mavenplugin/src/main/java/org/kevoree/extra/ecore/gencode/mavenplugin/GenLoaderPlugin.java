@@ -12,13 +12,13 @@ import java.io.File;
 /**
  * Generates files based on grammar files with Antlr tool.
  *
- * @goal generate
+ * @goal loader
  * @phase generate-sources
  * @requiresDependencyResolution compile
  * @author <a href="mailto:ffouquet@irisa.fr">Fouquet François</a>
  * @version $Id$
  */
-public class GenmodelPlugin extends AbstractMojo {
+public class GenLoaderPlugin extends AbstractMojo {
 
     /**
      * Ecore file
@@ -62,7 +62,6 @@ public class GenmodelPlugin extends AbstractMojo {
         return (path.delete());
     }
 
-
     @Override
     public void execute() throws MojoExecutionException {
         //File ecoreFile = new File(getClass().getResource("/kevoree.ecore").getPath());
@@ -73,7 +72,7 @@ public class GenmodelPlugin extends AbstractMojo {
         }
 
         org.kevoree.tools.ecore.gencode.Generator gen = new org.kevoree.tools.ecore.gencode.Generator(output,rootPackage);//, getLog());
-        gen.generateModel(ecore);
+        gen.generateLoader(ecore);
 
         //Util.createGenModel(ecore, genmodel, output, getLog(),clearOutput);
     }
