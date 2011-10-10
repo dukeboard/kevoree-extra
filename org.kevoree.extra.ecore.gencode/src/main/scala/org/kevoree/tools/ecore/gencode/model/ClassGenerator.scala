@@ -340,7 +340,9 @@ trait ClassGenerator {
     res += "\t\t\t\t\t\tvar nList = List[" + typeRefName + "]()\n"
     res += "\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + ".foreach(e => if(e != (" + protectReservedWords(ref.getName) + ")) nList = nList ++ List(e))\n"
     res += "\t\t\t\t\t\tthis." + protectReservedWords(ref.getName) + " = nList\n"
-    res += "\t\t\t\t\t\t" + protectReservedWords(ref.getName) + ".setEContainer(null,None)\n"
+    if (cls.getEAllContainments.contains(ref)) {
+      res += "\t\t\t\t\t\t" + protectReservedWords(ref.getName) + ".setEContainer(null,None)\n"
+    }
     res += "\t\t\t\t}\n"
     res += "\t\t}\n"
 
