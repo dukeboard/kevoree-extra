@@ -28,7 +28,7 @@ object Main extends App {
     SupervisorConfig(
       OneForOneStrategy(List(classOf[Exception]), 3, 100),
       List(
-        Supervise(Actor.actorOf(new TestService("test-endpoint")), Permanent),
+        Supervise(Actor.actorOf(new TestService("spray-root-service")), Permanent),
         Supervise(Actor.actorOf(new HttpServer()), Permanent)
       )
     )

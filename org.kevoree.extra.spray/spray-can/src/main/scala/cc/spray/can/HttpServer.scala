@@ -169,7 +169,7 @@ object HttpServer {
  *
  * An `HttpServer` also reacts to [[cc.spray.can.GetStats]] messages.
  */
-class HttpServer(val config: ServerConfig = ServerConfig.fromAkkaConf)
+class HttpServer(val config: ServerConfig = ServerConfig())
         extends HttpPeer("spray-can-server") with ResponsePreparer {
   import HttpServer._
 
