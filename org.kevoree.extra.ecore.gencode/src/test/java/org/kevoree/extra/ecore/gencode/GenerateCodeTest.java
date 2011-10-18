@@ -22,7 +22,7 @@ public class GenerateCodeTest {
         String rootPackage = "org";
         File ecoreFile = new File(getClass().getResource("/kevoree.ecore").getPath());
         Generator gen = new Generator(rootDir, rootPackage);
-        gen.generateModel(ecoreFile);
+        gen.generateModel(ecoreFile,"1.4.0");
 
     }
 

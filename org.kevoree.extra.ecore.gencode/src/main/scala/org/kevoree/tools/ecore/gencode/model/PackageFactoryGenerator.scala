@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.{EClass, EPackage}
 trait PackageFactoryGenerator {
 
 
-    def generatePackageFactory(location: String, pack: String, packElement: EPackage) {
+    def generatePackageFactory(location: String, pack: String, packElement: EPackage , modelVersion : String) {
     var formatedFactoryName: String = packElement.getName.substring(0, 1).toUpperCase
     formatedFactoryName += packElement.getName.substring(1)
     formatedFactoryName += "Factory"
@@ -32,6 +32,7 @@ trait PackageFactoryGenerator {
     pr.println("object " + formatedFactoryName + " {")
     pr.println()
     pr.println("\t def eINSTANCE = " + formatedFactoryName)
+    pr.println("\t def getVersion = \""+ modelVersion+"\"")
     pr.println()
     packElement.getEClassifiers.filter(cls=>cls.isInstanceOf[EClass]).foreach {
       cls =>

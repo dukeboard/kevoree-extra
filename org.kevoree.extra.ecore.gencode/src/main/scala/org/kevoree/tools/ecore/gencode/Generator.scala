@@ -21,7 +21,7 @@ import serializer.SerializerGenerator
 class Generator(rootDir: File, rootPackage: String) {
   //, log : Log) {
 
-  def generateModel(ecoreFile: File) {
+  def generateModel(ecoreFile: File, modelVersion : String) {
     val resource = new XMIResourceImpl(URI.createFileURI(ecoreFile.getAbsolutePath));
     resource.load(null);
     val location = rootDir.getAbsolutePath + "/" + rootPackage.replace(".", "/")
@@ -30,7 +30,7 @@ class Generator(rootDir: File, rootPackage: String) {
     resource.getContents.foreach {
       elem =>
         elem match {
-          case pack: EPackage => Processor.process(location, pack, Some(rootPackage))
+          case pack: EPackage => Processor.process(location, pack, Some(rootPackage),modelVersion)
           case _ => println("No model generator for root element of class: " + elem.getClass)
         }
     }

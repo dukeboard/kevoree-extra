@@ -45,6 +45,11 @@
             <artifactId>org.kevoree.extra.ecore.gencode</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>3.0.3</version>
+        </dependency>
     </dependencies>
 </project>
 

@@ -14,7 +14,7 @@ import scala.None
 
 object Processor extends TraitGenerator with PackageFactoryGenerator with ClassGenerator{
 
-  def process(location: String, pack: EPackage, containerPack: Option[String]) {
+  def process(location: String, pack: EPackage, containerPack: Option[String] , modelVersion : String) {
     //log.debug("Processing package: " + containerPack + "." + pack.getName)
     val dir = location + "/" + pack.getName
     val thisPack =
@@ -25,11 +25,11 @@ object Processor extends TraitGenerator with PackageFactoryGenerator with ClassG
 
     ProcessorHelper.checkOrCreateFolder(dir)
     ProcessorHelper.checkOrCreateFolder(dir + "/impl")
-    generatePackageFactory(dir, thisPack, pack)
+    generatePackageFactory(dir, thisPack, pack,modelVersion)
     generateContainerTrait(dir, thisPack, pack)
     //generateMutableTrait(dir, thisPack, pack)
     pack.getEClassifiers.foreach(c => process(dir, thisPack, c, pack))
-    pack.getESubpackages.foreach(p => process(dir, pack, Some(thisPack)))
+    pack.getESubpackages.foreach(p => process(dir, pack, Some(thisPack),modelVersion))
   }
 
 
