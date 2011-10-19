@@ -24,8 +24,8 @@ package object can {
   def make[A, U](a: A)(f: A => U): A = { f(a); a }
 
   lazy val SprayCanVersion: String = {
-    "0.7.0"
-    //new BufferedReader(new InputStreamReader(getClass.getClassLoader.getResourceAsStream("/version.txt"))).readLine()
+    "0.9.0"
+    //new BufferedReader(new InputStreamReader(getClass.getResourceAsStream("/version.txt"))).readLine()
   }
 
   /**

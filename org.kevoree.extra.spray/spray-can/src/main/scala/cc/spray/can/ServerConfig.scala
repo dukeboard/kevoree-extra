@@ -102,7 +102,7 @@ case class ServerConfig(
   // ServerConfig
 
   host: String = "localhost",
-  port: Int = 8080,
+  port: Int = 7000,
   serverActorId: String = "spray-can-server",
   serviceActorId: String = "spray-root-service",
   timeoutActorId: String = "spray-root-service",

@@ -82,8 +82,7 @@
                 <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots</url>
-        </pluginRepository>  
-        
+        </pluginRepository>
     </pluginRepositories>
 
 </project>

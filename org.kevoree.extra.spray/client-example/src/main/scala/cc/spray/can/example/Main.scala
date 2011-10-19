@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory
 import HttpMethods._
 import akka.actor.{PoisonPill, Supervisor, Actor}
 
-object Main2 extends App {
+object Main extends App {
   val log = LoggerFactory.getLogger(getClass)
 
   // start and supervise the HttpClient actor
@@ -35,7 +35,7 @@ object Main2 extends App {
 
   // create a very basic HttpDialog that results in a Future[HttpResponse]
   import HttpClient._
-  val dialog = HttpDialog("kevoree.org")
+  val dialog = HttpDialog("github.com")
           .send(HttpRequest(method = GET, uri = "/"))
           .end
 

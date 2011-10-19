@@ -6,6 +6,7 @@ package org.kevoree.extra.ecore.gencode.mavenplugin;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 
@@ -48,6 +49,16 @@ public class GenModelPlugin extends AbstractMojo {
      */
     private Boolean clearOutput=true;
 
+
+    /**
+     * The maven project.
+     *
+     * @parameter expression="${project}"
+     * @required
+     * @readonly
+     */
+    private MavenProject project;
+
    private boolean deleteDirectory(File path) {
         if (path.exists()) {
             File[] files = path.listFiles();
@@ -72,7 +83,7 @@ public class GenModelPlugin extends AbstractMojo {
         }
 
         org.kevoree.tools.ecore.gencode.Generator gen = new org.kevoree.tools.ecore.gencode.Generator(output,rootPackage);//, getLog());
-        gen.generateModel(ecore);
+        gen.generateModel(ecore,project.getVersion());
 
         //Util.createGenModel(ecore, genmodel, output, getLog(),clearOutput);
     }
