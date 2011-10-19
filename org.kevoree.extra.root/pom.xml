@@ -39,6 +39,7 @@
         <module>../org.kevoree.extra.ecore.gencode.mavenplugin</module>
         <module>../org.kevoree.extra.spray</module>
         <module>../org.kevoree.extra.avr-arduino</module>
+                <module>../org.kevoree.extra.macwidgets</module>
     </modules>
 
     <distributionManagement>
