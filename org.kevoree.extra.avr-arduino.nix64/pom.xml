@@ -10,16 +10,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>org.kevoree.extra.avr-arduino</artifactId>
+    <artifactId>org.kevoree.extra.avr-arduino.nix64</artifactId>
     <packaging>jar</packaging>
-    <version>0022.nix</version>
-    <name>Kevoree :: Extra :: AVR-ARDUINO :: Unix</name>
+    <version>0022</version>
+    <name>Kevoree :: Extra :: AVR-ARDUINO :: Unix64</name>
 
     <properties>
         <builder>${basedir}/linux/build.bash</builder>
     </properties>
     <build>
-        <plugins>
+        <!--<plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -37,24 +37,8 @@
                     <workingDirectory>${project.build.directory}</workingDirectory>
                 </configuration>
             </plugin>
-        </plugins>
+        </plugins>-->
         <resources>
-            <resource>
-                <directory>${project.build.directory}/binary/avr</directory>
-                <targetPath>avr</targetPath>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/binary/bin</directory>
-                <targetPath>bin</targetPath>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/binary/lib</directory>
-                <targetPath>lib</targetPath>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/binary/libexec</directory>
-                <targetPath>libexec</targetPath>
-            </resource>
             <resource>
                 <directory>${basedir}/src/main/resources/arduino</directory>
                 <targetPath>arduino</targetPath>
@@ -68,6 +52,22 @@
                     ${project.build.directory}/avr_build/arduino/arduino-0022/hardware/
                 </directory>
                 <targetPath>arduino/hardware</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/binary/avr</directory>
+                <targetPath>arduino/hardware/tools/avr</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/binary/bin</directory>
+                <targetPath>arduino/hardware/tools/bin</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/binary/lib</directory>
+                <targetPath>arduino/hardware/tools/lib</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/binary/libexec</directory>
+                <targetPath>arduino/hardware/tools/libexec</targetPath>
             </resource>
         </resources>
     </build>
