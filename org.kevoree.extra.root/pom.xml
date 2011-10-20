@@ -40,6 +40,8 @@
         <module>../org.kevoree.extra.spray</module>
         <module>../org.kevoree.extra.avr-arduino</module>
                 <module>../org.kevoree.extra.macwidgets</module>
+        <module>../org.kevoree.extra.avr-arduino.osx</module>
+
     </modules>
 
     <distributionManagement>
@@ -66,8 +68,7 @@
                 <repository>
             <id>kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots</url>
-        </repository>  
-        
+        </repository>
     </repositories>
 
     <pluginRepositories>
