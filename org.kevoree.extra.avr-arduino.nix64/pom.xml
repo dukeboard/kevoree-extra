@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>org.kevoree.extra.avr-arduino.nix</artifactId>
+    <artifactId>org.kevoree.extra.avr-arduino</artifactId>
     <packaging>jar</packaging>
     <version>0022.nix</version>
     <name>Kevoree :: Extra :: AVR-ARDUINO :: Unix</name>
