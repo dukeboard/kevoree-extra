@@ -10,13 +10,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>org.kevoree.extra.avr-arduino.osx</artifactId>
+    <artifactId>org.kevoree.extra.avr-arduino.win64</artifactId>
     <packaging>jar</packaging>
     <version>0022</version>
-    <name>Kevoree :: Extra :: AVR-ARDUINO :: OSX</name>
+    <name>Kevoree :: Extra :: AVR-ARDUINO :: WIN64</name>
 
     <properties>
-        <builder>${basedir}/osx/build.bash</builder>
+        <builder>${basedir}/win64/build.bash</builder>
     </properties>
     <build>
         <plugins>
@@ -44,11 +44,11 @@
                 <targetPath>arduino</targetPath>
             </resource>
             <resource>
-                <directory>${project.build.directory}/arduino/libraries</directory>
+                <directory>${project.build.directory}/arduino-0022/libraries</directory>
                 <targetPath>arduino/libraries</targetPath>
             </resource>
             <resource>
-                <directory>${project.build.directory}/arduino/hardware</directory>
+                <directory>${project.build.directory}/arduino-0022/hardware</directory>
                 <targetPath>arduino/hardware</targetPath>
             </resource>
         </resources>

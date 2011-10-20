@@ -39,7 +39,8 @@
         <module>../org.kevoree.extra.spray</module>
         <module>../org.kevoree.extra.avr-arduino.nix</module>
         <module>../org.kevoree.extra.avr-arduino.nix64</module>
-                <module>../org.kevoree.extra.avr-arduino.osx</module>
+        <module>../org.kevoree.extra.avr-arduino.osx</module>
+        <module>../org.kevoree.extra.avr-arduino.win64</module>
         <module>../org.kevoree.extra.macwidgets</module>
     </modules>
 
