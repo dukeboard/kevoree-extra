@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.extra.root</artifactId>
+        <groupId>org.kevoree.extra</groupId>
+        <version>1.0</version>
+        <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.kevoree.extra.avr-arduino</artifactId>
+    <packaging>jar</packaging>
+    <version>0022.nix64</version>
+    <name>Kevoree :: Extra :: AVR-ARDUINO :: Unix</name>
+
+    <properties>
+        <builder>${basedir}/linux/build.bash</builder>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>${builder}</executable>
+                    <workingDirectory>${project.build.directory}</workingDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>${project.build.directory}/binary/avr</directory>
+                <targetPath>avr</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/binary/bin</directory>
+                <targetPath>bin</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/binary/lib</directory>
+                <targetPath>lib</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/binary/libexec</directory>
+                <targetPath>libexec</targetPath>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources/arduino</directory>
+                <targetPath>arduino</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/avr_build/arduino/arduino-0022/libraries</directory>
+                <targetPath>arduino/libraries</targetPath>
+            </resource>
+            <resource>
+                <directory>
+                    ${project.build.directory}/avr_build/arduino/arduino-0022/hardware/
+                </directory>
+                <targetPath>arduino/hardware</targetPath>
+            </resource>
+        </resources>
+    </build>
+</project>
