@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.kevoree.extra.kryo</artifactId>
-    <version>1.04</version>
+    <version>1.4</version>
 
     <packaging>bundle</packaging>
     <name>Kevoree :: Extra :: KRYO</name>
@@ -53,8 +53,8 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>com.esotericsoftware.kryo.*,org.objectweb.asm,org.objectweb.asm.*</Export-Package>
-                        <Import-Package>!com.esotericsoftware.kryo.*,!org.objectweb.asm,!org.objectweb.asm.*,*</Import-Package>
+                        <Export-Package>com.*,org.objectweb.asm,org.objectweb.asm.*</Export-Package>
+                        <Import-Package>!com.*,!org.objectweb.asm,!org.objectweb.asm.*,*;resolution:="optional"</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
