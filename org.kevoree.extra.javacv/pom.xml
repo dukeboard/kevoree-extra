@@ -143,9 +143,9 @@
                             native/com/googlecode/javacv/cpp/linux-x86_64/libjniswscale.so;
                             osname=Linux; processor=x86-64,
                             native/com/googlecode/javacv/cpp/macosx-x86_64/libjniARToolKitPlus.dylib;
-                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavcodec.dylib;
+                            <!--native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavcodec.dylib;-->
                             native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavdevice.dylib;
-                            native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavfilter.dylib;
+                            <!--native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavfilter.dylib;-->
                             native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavformat.dylib;
                             native/com/googlecode/javacv/cpp/macosx-x86_64/libjniavutil.dylib;
                             native/com/googlecode/javacv/cpp/macosx-x86_64/libjnicvkernels.dylib;
