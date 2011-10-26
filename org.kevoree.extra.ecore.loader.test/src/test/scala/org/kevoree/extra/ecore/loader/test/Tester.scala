@@ -24,9 +24,9 @@ object Tester extends App {
 
   localModel match {
     case Some(m) => {
-
+      val bclonecurrent = System.currentTimeMillis()
       val clonedModel = cloner.clone(m)
-
+      println(System.currentTimeMillis() - bclonecurrent)
 
       val result = serializer.serialize(clonedModel)
       
