@@ -1,17 +1,18 @@
 package org.kevoree.tools.ecore.gencode.cloner
 
-import scala.collection.JavaConversions._
 import java.io.{File, FileOutputStream, PrintWriter}
 import org.eclipse.emf.ecore.{EPackage, EClass}
 import org.kevoree.tools.ecore.gencode.ProcessorHelper
+import scala.collection.JavaConversions._
+
 
 /**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 02/10/11
- * Time: 20:55
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: duke
+* Date: 02/10/11
+* Time: 20:55
+* To change this template use File | Settings | File Templates.
+*/
 
 class ClonerGenerator(location: String, rootPackage: String, rootXmiPackage: EPackage) {
 
@@ -53,7 +54,7 @@ class ClonerGenerator(location: String, rootPackage: String, rootXmiPackage: EPa
     //PROCESS SELF
     val pr = new PrintWriter(new FileOutputStream(new File(genDir + "/cloner/" + root.getName + "Cloner.scala")))
     pr.println("package " + packageName + ".cloner")
-    generateToHashMethod(root, pr, rootXmiPackage, isRoot)
+    generateToHashMethod(packageName,root, pr, rootXmiPackage, isRoot)
     pr.flush()
     pr.close()
 
@@ -62,7 +63,7 @@ class ClonerGenerator(location: String, rootPackage: String, rootXmiPackage: EPa
       sub =>
         val subpr = new PrintWriter(new FileOutputStream(new File(genDir + "/cloner/" + sub.getEReferenceType.getName + "Cloner.scala")))
         subpr.println("package " + packageName + ".cloner")
-        generateToHashMethod(sub.getEReferenceType, subpr, rootXmiPackage)
+        generateToHashMethod(packageName,sub.getEReferenceType, subpr, rootXmiPackage)
         subpr.flush()
         subpr.close()
 
@@ -85,8 +86,8 @@ class ClonerGenerator(location: String, rootPackage: String, rootXmiPackage: EPa
   }
 
 
-  private def generateToHashMethod(cls: EClass, buffer: PrintWriter, pack: EPackage, isRoot: Boolean = false) = {
-    buffer.println("import org.kevoree._")
+  private def generateToHashMethod(packageName : String,cls: EClass, buffer: PrintWriter, pack: EPackage, isRoot: Boolean = false) = {
+    buffer.println("import "+packageName+"._")
     buffer.println("trait " + cls.getName + "Cloner ")
 
     var subTraits = (cls.getEAllContainments).map(sub => sub.getEReferenceType.getName + "Cloner").toSet
@@ -157,7 +158,7 @@ class ClonerGenerator(location: String, rootPackage: String, rootXmiPackage: EPa
     //SET ALL REFERENCE
     cls.getEAllReferences.foreach {
       ref =>
-        
+
         ref.getUpperBound match {
           case 1 => {
             ref.getLowerBound match {
