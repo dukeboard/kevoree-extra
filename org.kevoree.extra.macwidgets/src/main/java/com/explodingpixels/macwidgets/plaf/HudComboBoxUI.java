@@ -85,7 +85,7 @@ public class HudComboBoxUI extends BasicComboBoxUI {
     /**
      * Updates the value displayed to match that of {@link JComboBox#getSelectedItem()}.
      */
-    private void updateDisplayedItem() {
+    protected void updateDisplayedItem() {
         // TODO make the calculation of the display string more robust
         // TODO (i.e. use TextProvider interface).
         String displayValue = comboBox.getSelectedItem() == null
@@ -98,7 +98,7 @@ public class HudComboBoxUI extends BasicComboBoxUI {
      * center value that takes HudComboBoxUI's drop shadow. The visual center is calculated as if
      * the drop shadow did not exist.
      */
-    private EPComboPopup.ComboBoxVerticalCenterProvider createComboBoxVerticalCenterProvider() {
+    protected EPComboPopup.ComboBoxVerticalCenterProvider createComboBoxVerticalCenterProvider() {
         return new EPComboPopup.ComboBoxVerticalCenterProvider() {
             public int provideCenter(JComboBox comboBox) {
                 return calculateArrowButtonVisualVerticalCenter();

@@ -13,9 +13,9 @@ import java.awt.event.*;
  */
 public class EPComboPopup implements ComboPopup {
 
-    private final JComboBox fComboBox;
-    private JPopupMenu fPopupMenu = new JPopupMenu();
-    private Font fFont;
+    protected final JComboBox fComboBox;
+    protected JPopupMenu fPopupMenu = new JPopupMenu();
+    protected Font fFont;
     private ComboBoxVerticalCenterProvider fComboBoxVerticalCenterProvider =
             new DefaultVerticalCenterProvider();
 
@@ -67,7 +67,7 @@ public class EPComboPopup implements ComboPopup {
         }
     }
 
-    private void clearAndFillMenu() {
+    protected void clearAndFillMenu() {
         fPopupMenu.removeAll();
 
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -124,7 +124,7 @@ public class EPComboPopup implements ComboPopup {
         return new Point(x, y);
     }
 
-    private ActionListener createMenuItemListener(final Object comboBoxItem) {
+    protected ActionListener createMenuItemListener(final Object comboBoxItem) {
         return new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 fComboBox.setSelectedItem(comboBoxItem);
