@@ -97,17 +97,17 @@ make install
 
 # avrdude-5.8
 #sudo apt-get install flex byacc libusb-dev
-cd $ROOT
-mkdir avrdude
-cd avrdude
-wget http://nongnu.askapache.com/avrdude/avrdude-5.8.tar.gz
-tar xvzf avrdude-5.8.tar.gz
-cd avrdude-5.8
-export CC=gcc
-./configure --prefix=$BINARY --disable-shared
-make
-make install
-export CC=
+#cd $ROOT
+#mkdir avrdude
+#cd avrdude
+#wget http://nongnu.askapache.com/avrdude/avrdude-5.8.tar.gz
+#tar xvzf avrdude-5.8.tar.gz
+#cd avrdude-5.8
+#export CC=gcc
+#./configure --prefix=$BINARY --disable-shared
+#make
+#make install
+#export CC=
 # TODO add udev magic to fix usb permissions for non-root user using avrdude.
 
 

@@ -20,7 +20,7 @@
     </properties>
     <build>
         <plugins>
-            <plugin>
+			<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
@@ -68,6 +68,15 @@
             <resource>
                 <directory>${project.build.directory}/binary/libexec</directory>
                 <targetPath>arduino/hardware/tools/libexec</targetPath>
+            </resource>
+            <resource>
+                <directory>
+                    ${project.build.directory}/avr_build/arduino/arduino-0022/hardware/tools
+                </directory>
+                <includes>
+                <include>avrdude</include>
+                </includes>
+                 <targetPath>arduino/hardware/tools/bin</targetPath>
             </resource>
         </resources>
     </build>
