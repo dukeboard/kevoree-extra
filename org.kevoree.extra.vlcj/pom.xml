@@ -71,10 +71,11 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <executable>wget</executable>
+                    <executable>curl</executable>
                     <workingDirectory>${basedir}/target</workingDirectory>
                     <arguments>
-                        <argument>--output-document=${vlcj.local.file}</argument>
+                        <argument>-o</argument>
+                        <argument>${vlcj.local.file}</argument>
                         <argument>${vlcj.download}</argument>
                     </arguments>
                 </configuration>
@@ -99,7 +100,7 @@
                             osname=Linux; processor=x86-64,-->
                             nativelib/macos/libvlc.dylib;
                             nativelib/macos/libvlccore.dylib;
-                            osname="Mac OS X"; processor=x86; processor=PowerPC; processor=x86-64,
+                            osname="Mac OS X"; processor=x86-64; processor=x86_64,
                             nativelib/windows/x86/libvlc.dll;
                             nativelib/windows/x86/libvlccore.dll;
                             <!--osname=Win64; processor=x86_64; processor=x86-64;-->

@@ -33,7 +33,7 @@
         <module>../org.kevoree.extra.finagle</module>
         <module>../org.kevoree.extra.jna</module>
         <module>../org.kevoree.extra.javacv</module>
-        <!--		<module>../org.kevoree.extra.vlcj</module>-->
+  		<module>../org.kevoree.extra.vlcj</module>
         <module>../org.kevoree.extra.ecore.gencode</module>
         <module>../org.kevoree.extra.ecore.gencode.mavenplugin</module>
         <module>../org.kevoree.extra.spray</module>
