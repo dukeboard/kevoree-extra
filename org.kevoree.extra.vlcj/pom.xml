@@ -34,6 +34,15 @@
         <copy.command2>cp ${project.basedir}/target/${vlc.local.file}/src/.libs/libvlccore.so.* ${project.build.directory}/dependency/nativelib/libvlccore.so</copy.command2>-->
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.3</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -122,10 +131,10 @@
                 </includes>
                 <targetPath>licence</targetPath>
             </resource>
-            <resource>
+            <!--<resource>
                 <directory>${basedir}/libs/nativelib</directory>
                 <targetPath>nativelib</targetPath>
-            </resource>
+            </resource>-->
         </resources>
     </build>
 
