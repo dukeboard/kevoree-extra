@@ -12,7 +12,7 @@
 
     <artifactId>org.kevoree.extra.jna</artifactId>
     <packaging>bundle</packaging>
-    <version>3.3.0</version>
+    <version>3.2.7</version>
     <name>Kevoree :: Extra :: JNA</name>
 
     <dependencies>
@@ -21,14 +21,25 @@
             <artifactId>jna</artifactId>
             <version>${pom.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>platform</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
     </dependencies>
 
 
     <repositories>
-        <repository>
+        <!--<repository>
             <id>maven2-repository.java.net</id>
             <name>Java.net Repository for Maven</name>
             <url>http://download.java.net/maven/2/</url>
+        </repository>-->
+        <repository>
+            <id>eviware</id>
+            <name>eviware Repository for Maven</name>
+            <url>http://www.eviware.com/repository/maven2/</url>
         </repository>
     </repositories>
 

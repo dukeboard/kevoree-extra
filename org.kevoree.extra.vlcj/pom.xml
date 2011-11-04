@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.extra.root</artifactId>
+        <groupId>org.kevoree.extra</groupId>
+        <version>1.0</version>
+        <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>bundle</packaging>
+
+    <version>${vlcj.version}</version>
+    <artifactId>org.kevoree.extra.vlcj</artifactId>
+    <name>Kevoree :: Extra :: VLCJ</name>
+
+    <properties>
+        <vlcj.version>1.2.1-b3</vlcj.version>
+        <vlc.version>1.1.11</vlc.version>
+        <vlcj.local.file>${basedir}/target/vlcj-${vlcj.version}.jar</vlcj.local.file>
+        <!--<vlcj.download>http://code.google.com/p/vlcj/downloads/detail?name=vlcj-${vlcj.version}.jar&amp;can=2&amp;q=</vlcj.download>-->
+        <vlcj.download>http://vlcj.googlecode.com/files/vlcj-${vlcj.version}.jar</vlcj.download>
+        <!--<vlcj.version>1.2.1-b2</vlcj.version>
+        <vlc.local.file>${basedir}/target/vlc-${vlc.version}.archive</vlc.local.file>
+        <vlcj.local.file>${basedir}/target/vlc-${vlcj.version}.jar</vlcj.local.file>
+        <vlc.download>http://sourceforge.net/projects/vlc/files/1.1.11/vlc-${vlc.version}.tar.bz2</vlc.download>
+        <vlcj.command>wget ${vlcj.download} -O ${basedir}/target/vlcj-${vlcj.version}.jar</vlcj.command>
+        <vlc.command>wget ${vlc.download} -O ${vlc.local.file};tar jxf ${vlc.local.file}; cd vlc-${vlc.version};
+            ./compile;make
+        </vlc.command>
+        <copy.command0>mkdir -p ${project.build.directory}/dependency/nativelib</copy.command0>
+        <copy.command1>cp ${project.basedir}/target/${vlc.local.file}/src/.libs/libvlc.so.* ${project.build.directory}/dependency/nativelib/libvlc.so</copy.command1>
+        <copy.command2>cp ${project.basedir}/target/${vlc.local.file}/src/.libs/libvlccore.so.* ${project.build.directory}/dependency/nativelib/libvlccore.so</copy.command2>-->
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>truezip-maven-plugin</artifactId>
+                <version>1.0-beta-5</version>
+                <executions>
+                    <execution>
+                        <id>copy-out-files</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${vlcj.local.file}</directory>
+                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>wget</executable>
+                    <workingDirectory>${basedir}/target</workingDirectory>
+                    <arguments>
+                        <argument>--output-document=${vlcj.local.file}</argument>
+                        <argument>${vlcj.download}</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Export-Package>uk.co.caprica.vlcj.*</Export-Package>
+                        <Import-Package>!uk.co.caprica.vlcj.*,*</Import-Package>
+                        <Bundle-NativeCode>
+                            nativelib/linux/x86/libvlc.so;
+                            nativelib/linux/x86/libvlccore.so;
+                            osname=Linux; processor=x86,<!--
+                            nativelib/linux/x86_64/libvlc.so;
+                            nativelib/linux/x86_64/libvlccore.so;
+                            osname=Linux; processor=x86-64,-->
+                            nativelib/macos/libvlc.dylib;
+                            nativelib/macos/libvlccore.dylib;
+                            osname="Mac OS X"; processor=x86; processor=PowerPC; processor=x86-64,
+                            nativelib/windows/x86/libvlc.dll;
+                            nativelib/windows/x86/libvlccore.dll;
+                            <!--osname=Win64; processor=x86_64; processor=x86-64;-->
+                            osname=Win; processor=x86; processor=x86
+                        </Bundle-NativeCode>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>${basedir}/target/dependency/uk/co</directory>
+                <targetPath>uk/co</targetPath>
+            </resource>
+            <resource>
+                <directory>${basedir}/target/dependency/</directory>
+                <includes>
+                    <include>gpl.txt</include>
+                </includes>
+                <targetPath>licence</targetPath>
+            </resource>
+            <resource>
+                <directory>${basedir}/libs/nativelib</directory>
+                <targetPath>nativelib</targetPath>
+            </resource>
+        </resources>
+    </build>
+
+
+</project>
