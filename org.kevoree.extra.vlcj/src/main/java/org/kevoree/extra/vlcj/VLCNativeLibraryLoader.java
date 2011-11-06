@@ -122,7 +122,6 @@ public class VLCNativeLibraryLoader {
 		Enumeration<? extends ZipEntry> enums = zipFile.entries();
 		while (enums.hasMoreElements()) {
 			ZipEntry entry = enums.nextElement();
-			System.out.println(entry.getName());
 			if (entry.isDirectory()) {
 				new File(folder + File.separator + entry.getName()).mkdirs();
 			} else {
