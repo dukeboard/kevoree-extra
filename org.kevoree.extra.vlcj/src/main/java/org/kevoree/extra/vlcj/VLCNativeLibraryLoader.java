@@ -70,11 +70,7 @@ public class VLCNativeLibraryLoader {
 		} else if (isMac()) {
 			return new String[]{"libvlc.dylib", "libvlccore.dylib", "vlc.zip"};
 		} else if (isWindows()) {
-			if (!is64()) {
-				return new String[]{""};
-			} else if (is64()) {
-				return new String[]{""};
-			}
+			return new String[]{"libvlc.dll", "libvlccore.dll", "vlc.zip"};
 		}
 		return null;
 	}
