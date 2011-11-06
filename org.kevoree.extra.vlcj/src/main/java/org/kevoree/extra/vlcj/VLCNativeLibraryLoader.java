@@ -34,6 +34,9 @@ public class VLCNativeLibraryLoader {
 				}
 			}
 			logger.debug("libvlc copied in " + folder.getAbsolutePath());
+            if(isMac()){
+                return folder.getAbsolutePath()+File.separator+"lib";
+            }
 			return folder.getAbsolutePath();
 		} catch (IOException e) {
 			logger.error("cannot copy dynamic libs for libvlc", e);
@@ -49,7 +52,7 @@ public class VLCNativeLibraryLoader {
 				return "nativelib/linux/x86_64";
 			}
 		} else if (isMac()) {
-			return "nativelib/macos";
+			return "nativelib/osx/x86_64";
 		} else if (isWindows()) {
 			if (!is64()) {
 				return "nativelib/windows/x86";
@@ -68,7 +71,7 @@ public class VLCNativeLibraryLoader {
 				return new String[]{""};
 			}
 		} else if (isMac()) {
-			return new String[]{"libvlc.dylib", "libvlccore.dylib", "vlc.zip"};
+			return new String[]{"lib.zip"};
 		} else if (isWindows()) {
 			return new String[]{"libvlc.dll", "libvlccore.dll", "vlc.zip"};
 		}
