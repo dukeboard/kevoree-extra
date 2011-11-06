@@ -31,7 +31,7 @@
         </vlc.command>
         <copy.command0>mkdir -p ${project.build.directory}/dependency/nativelib</copy.command0>
         <copy.command1>cp ${project.basedir}/target/${vlc.local.file}/src/.libs/libvlc.so.* ${project.build.directory}/dependency/nativelib/libvlc.so</copy.command1>
-        <copy.command2>cp ${project.basedir}/target/${vlc.local.file}/src/.libs/libvlccore.so.* ${project.build.directory}/dependency/nativelib/libvlccore.so</copy.command2>-->
+        <copy.command2>cp ${project.basedir}/target/${vlc.local.file}/src/.libs/libvlccore.so.4.* ${project.build.directory}/dependency/nativelib/libvlccore.so.4</copy.command2>-->
     </properties>
 
     <dependencies>
@@ -39,6 +39,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.6.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.2.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -98,23 +104,8 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>uk.co.caprica.vlcj.*</Export-Package>
-                        <Import-Package>!uk.co.caprica.vlcj.*,*</Import-Package>
-                        <Bundle-NativeCode>
-                            nativelib/linux/x86/libvlc.so;
-                            nativelib/linux/x86/libvlccore.so;
-                            osname=Linux; processor=x86,<!--
-                            nativelib/linux/x86_64/libvlc.so;
-                            nativelib/linux/x86_64/libvlccore.so;
-                            osname=Linux; processor=x86-64,-->
-                            nativelib/macos/libvlc.dylib;
-                            nativelib/macos/libvlccore.dylib;
-                            osname="Mac OS X"; processor=x86-64; processor=x86_64,
-                            nativelib/windows/x86/libvlc.dll;
-                            nativelib/windows/x86/libvlccore.dll;
-                            <!--osname=Win64; processor=x86_64; processor=x86-64;-->
-                            osname=Win; processor=x86; processor=x86
-                        </Bundle-NativeCode>
+                        <Export-Package>uk.co.caprica.vlcj.*,org.kevoree.extra.vlcj</Export-Package>
+                        <Import-Package>!uk.co.caprica.vlcj.*,!org.kevoree.extra.vlcj,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -132,10 +123,10 @@
                 </includes>
                 <targetPath>licence</targetPath>
             </resource>
-            <!--<resource>
-                <directory>${basedir}/libs/nativelib</directory>
+            <resource>
+                <directory>${basedir}/src/main/resources/nativelib</directory>
                 <targetPath>nativelib</targetPath>
-            </resource>-->
+            </resource>
         </resources>
     </build>
 
