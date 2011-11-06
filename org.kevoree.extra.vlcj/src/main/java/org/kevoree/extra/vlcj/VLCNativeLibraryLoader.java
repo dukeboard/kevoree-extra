@@ -1,5 +1,6 @@
 package org.kevoree.extra.vlcj;
 
+import com.sun.jna.NativeLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,28 @@ import java.util.zip.ZipFile;
 public class VLCNativeLibraryLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(VLCNativeLibraryLoader.class);
+	private static NativeLibrary instance;
+	private static int nbComponent;
+
+	public static void initialize () {
+		if (instance == null) {
+			String path = VLCNativeLibraryLoader.configure();
+			//NativeLibrary.addSearchPath("vlccore", path);
+			//NativeLibrary.getInstance("vlccore");
+			NativeLibrary.addSearchPath("vlc", path);
+			instance = NativeLibrary.getInstance("vlc");
+			nbComponent++;
+			//Native.register(LibVlc.class, instance);
+		}
+	}
+
+	public static void release () {
+		nbComponent --;
+		if (instance != null && nbComponent == 0) {
+			//Native.unregister(LibVlc.class);
+			instance.dispose();
+		}
+	}
 
 	public static String configure () {
 		try {
@@ -34,9 +57,9 @@ public class VLCNativeLibraryLoader {
 				}
 			}
 			logger.debug("libvlc copied in " + folder.getAbsolutePath());
-            if(isMac()){
-                return folder.getAbsolutePath()+File.separator+"lib";
-            }
+			if (isMac()) {
+				return folder.getAbsolutePath() + File.separator + "lib";
+			}
 			return folder.getAbsolutePath();
 		} catch (IOException e) {
 			logger.error("cannot copy dynamic libs for libvlc", e);
