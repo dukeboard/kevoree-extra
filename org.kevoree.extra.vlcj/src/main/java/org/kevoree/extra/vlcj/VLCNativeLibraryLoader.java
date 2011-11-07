@@ -37,6 +37,7 @@ public class VLCNativeLibraryLoader {
 		if (instance != null && nbComponent == 0) {
 			//Native.unregister(LibVlc.class);
 			instance.dispose();
+			instance = null;
 		}
 	}
 
