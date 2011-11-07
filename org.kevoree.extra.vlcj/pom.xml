@@ -16,7 +16,7 @@
     <name>Kevoree :: Extra :: VLCJ</name>
 
     <properties>
-        <vlcj.version>1.2.1-b3</vlcj.version>
+        <vlcj.version>1.1.5.1</vlcj.version>
         <vlc.version>1.1.11</vlc.version>
         <vlcj.local.file>${basedir}/target/vlcj-${vlcj.version}.jar</vlcj.local.file>
         <!--<vlcj.download>http://code.google.com/p/vlcj/downloads/detail?name=vlcj-${vlcj.version}.jar&amp;can=2&amp;q=</vlcj.download>-->
