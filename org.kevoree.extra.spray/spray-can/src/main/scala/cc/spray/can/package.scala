@@ -24,13 +24,10 @@ package object can {
   def make[A, U](a: A)(f: A => U): A = { f(a); a }
 
   lazy val SprayCanVersion: String = {
-    "0.9.0"
-    //new BufferedReader(new InputStreamReader(getClass.getResourceAsStream("/version.txt"))).readLine()
+    "0.9.1"
+    //new BufferedReader(new InputStreamReader(getClass.getResourceAsStream("/version"))).readLine()
   }
 
-  /**
-   * Returns the actor with the given id.
-   */
   private[can] def actor(id: String): ActorRef = {
     val actors = Actor.registry.actorsFor(id)
     assert(actors.length == 1, actors.length + " actors for id '" + id + "' found, expected exactly one")

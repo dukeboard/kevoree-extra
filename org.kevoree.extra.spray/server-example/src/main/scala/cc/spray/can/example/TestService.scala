@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory
 import HttpMethods._
 import java.util.concurrent.TimeUnit
 import akka.actor.{PoisonPill, Scheduler, Kill, Actor}
-import java.net.URL
 
 class TestService(id: String) extends Actor {
   val log = LoggerFactory.getLogger(getClass)
@@ -29,10 +28,7 @@ class TestService(id: String) extends Actor {
 
   protected def receive = {
 
-    case RequestContext(HttpRequest(GET, "/?myName=dididi", headers, body, _), _, responder) =>
-
-
-
+    case RequestContext(HttpRequest(GET, "/", _, _, _), _, responder) =>
       responder.complete(index)
 
     case RequestContext(HttpRequest(GET, "/ping", _, _, _), _, responder) =>
@@ -81,7 +77,7 @@ class TestService(id: String) extends Actor {
     case RequestContext(HttpRequest(_, _, _, _, _), _, responder) =>
       responder.complete(response("Unknown resource!", 404))
 
-    case Timeout(method, uri, _, headers, _, complete) => complete {
+    case Timeout(method, uri, _, _, _, complete) => complete {
       HttpResponse(status = 500).withBody("The " + method + " request to '" + uri + "' has timed out...")
     }
   }
