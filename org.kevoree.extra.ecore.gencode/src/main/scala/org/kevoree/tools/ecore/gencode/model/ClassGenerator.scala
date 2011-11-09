@@ -6,6 +6,7 @@ import org.kevoree.tools.ecore.gencode.ProcessorHelper
 import scala.collection.JavaConversions._
 import org.eclipse.emf.ecore._
 import xmi.impl.XMIResourceImpl
+import org.kevoree.tools.ecore.gencode.cloner.ClonerGenerator
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@ import xmi.impl.XMIResourceImpl
  * Time: 13:35
  */
 
-trait ClassGenerator {
+trait ClassGenerator extends ClonerGenerator {
 
   def generateCompanion(location: String, pack: String, cls: EClass, packElement: EPackage) {
     val pr = new PrintWriter(new FileOutputStream(new File(location + "/impl/" + cls.getName + "Impl.scala")))
@@ -178,6 +179,11 @@ trait ClassGenerator {
         }
 
     }
+
+
+    //GENERATE CLONE METHOD
+    generateCloneMethods(pack,cls,pr,packElement)
+
 
     pr.println("")
     pr.println("}")

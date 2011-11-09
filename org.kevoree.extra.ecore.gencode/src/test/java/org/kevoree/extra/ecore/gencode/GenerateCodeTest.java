@@ -46,7 +46,7 @@ public class GenerateCodeTest {
         gen.generateSerializer(ecoreFile);
 
     }
-
+/*
     @Test
     public void generateCloner() {
         File rootDir = new File("../org.kevoree.extra.ecore.loader.test/src/main/scala/");
@@ -55,6 +55,6 @@ public class GenerateCodeTest {
         Generator gen = new Generator(rootDir, rootPackage);
         gen.generateCloner(ecoreFile);
 
-    }
+    }*/
 
 }

@@ -30,7 +30,7 @@ class Generator(rootDir: File, rootPackage: String) {
     resource.getContents.foreach {
       elem =>
         elem match {
-          case pack: EPackage => Processor.process(location, pack, Some(rootPackage),modelVersion)
+          case pack: EPackage => Processor.process(location, pack, Some(rootPackage),modelVersion,true)
           case _ => println("No model generator for root element of class: " + elem.getClass)
         }
     }
@@ -69,7 +69,7 @@ class Generator(rootDir: File, rootPackage: String) {
       }
     }
   }
-
+/*
   def generateCloner(ecoreFile: File) {
     val resource = new XMIResourceImpl(URI.createFileURI(ecoreFile.getAbsolutePath));
     resource.load(null);
@@ -85,7 +85,7 @@ class Generator(rootDir: File, rootPackage: String) {
         case _ => println("No serializer generator for root element of class: " + elem.getClass)
       }
     }
-  }
+  }*/
 
 
 }

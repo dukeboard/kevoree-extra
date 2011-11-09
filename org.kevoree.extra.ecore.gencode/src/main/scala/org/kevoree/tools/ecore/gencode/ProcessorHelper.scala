@@ -101,7 +101,7 @@ object ProcessorHelper {
     rootXmiPackage.getEClassifiers.foreach {
       classifier => classifier match {
         case cls: EClass => {
-          //System.out.println("Class::" + cls.getName)
+          System.out.println("Class::" + cls.getName)
           cls.getEAllContainments.foreach {
             reference =>
               if (!referencedElements.contains(reference.getEReferenceType.getName)) {
@@ -112,7 +112,7 @@ object ProcessorHelper {
                   }
                 }
               }
-              //System.out.println("\t\tReference::[name:" + reference.getName + ", type:" + reference.getEReferenceType.getName + ", isContainement:" + reference.isContainment + ", isContainer:" + reference.isContainer + "]")
+              System.out.println("\t\tReference::[name:" + reference.getName + ", type:" + reference.getEReferenceType.getName + ", isContainement:" + reference.isContainment + ", isContainer:" + reference.isContainer + "]")
           }
         }
         case _@e => throw new UnsupportedOperationException(e.getClass.getName + " did not match anything while looking for root element.")
@@ -150,7 +150,7 @@ object ProcessorHelper {
           b.foreach(classifier => System.out.println("Possible root:" + classifier.getName))
           null
         } else {
-          //System.out.println("RootElement:" + b.get(0).getName)
+          System.out.println("RootElement:" + b.get(0).getName)
           b.get(0)
         }
       }

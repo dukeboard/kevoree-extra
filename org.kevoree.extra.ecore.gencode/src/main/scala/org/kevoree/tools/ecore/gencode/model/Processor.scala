@@ -4,6 +4,7 @@ import scala.collection.JavaConversions._
 import org.kevoree.tools.ecore.gencode.ProcessorHelper
 import org.eclipse.emf.ecore.{EClass, EClassifier, EPackage}
 import scala.None
+import org.kevoree.tools.ecore.gencode.cloner.ClonerGenerator
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,9 +13,9 @@ import scala.None
  * Time: 08:32
  */
 
-object Processor extends TraitGenerator with PackageFactoryGenerator with ClassGenerator{
+object Processor extends TraitGenerator with PackageFactoryGenerator with ClassGenerator with ClonerGenerator{
 
-  def process(location: String, pack: EPackage, containerPack: Option[String] , modelVersion : String) {
+  def process(location: String, pack: EPackage, containerPack: Option[String] , modelVersion : String, isRoot : Boolean = false) {
     //log.debug("Processing package: " + containerPack + "." + pack.getName)
     val dir = location + "/" + pack.getName
     val thisPack =
@@ -30,6 +31,14 @@ object Processor extends TraitGenerator with PackageFactoryGenerator with ClassG
     //generateMutableTrait(dir, thisPack, pack)
     pack.getEClassifiers.foreach(c => process(dir, thisPack, c, pack))
     pack.getESubpackages.foreach(p => process(dir, pack, Some(thisPack),modelVersion))
+
+    if(isRoot){
+      generateCloner(pack,location,thisPack)
+    }
+
+
+
+
   }
 
 
