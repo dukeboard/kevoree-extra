@@ -44,7 +44,8 @@ trait ClonerGenerator {
 
     pr.println("o match {")
     pr.println("case o : " + packageName + "." + root.getName + " => {")
-    pr.println("val context = o.getClonelazy()")
+    pr.println("val context = new java.util.IdentityHashMap[Object,Object]()")
+    pr.println("o.getClonelazy(context)")
     pr.println("o.resolve(context).asInstanceOf[A]")
     pr.println("}")
     pr.println("case _ => null.asInstanceOf[A]")
@@ -113,8 +114,8 @@ trait ClonerGenerator {
     if (cls.getESuperTypes.size() > 0) {
       buffer.print("override ")
     }
-    buffer.println("def getClonelazy(): java.util.IdentityHashMap[Object,Object] = {")
-    buffer.println("var subResult = new java.util.IdentityHashMap[Object,Object]()")
+    buffer.println("def getClonelazy(subResult : java.util.IdentityHashMap[Object,Object]): Unit = {")
+    //buffer.println("var subResult = new java.util.IdentityHashMap[Object,Object]()")
 
     var formatedFactoryName: String = pack.getName.substring(0, 1).toUpperCase
     formatedFactoryName += pack.getName.substring(1)
@@ -143,18 +144,18 @@ trait ClonerGenerator {
         contained.getUpperBound match {
           case 1 => {
             buffer.println("this." + getGetter(contained.getName) + ".map{ sub =>")
-            buffer.println("subResult.putAll(sub.getClonelazy())")
+            buffer.println("sub.getClonelazy(subResult)")
             buffer.println("}")
           }
           case -1 => {
             buffer.println("this." + getGetter(contained.getName) + ".foreach{ sub => ")
-            buffer.println("subResult.putAll(sub.getClonelazy())")
+            buffer.println("sub.getClonelazy(subResult)")
             buffer.println("}")
           }
         }
     }
 
-    buffer.println("subResult") //result
+    //buffer.println("subResult") //result
     buffer.println("}") //END METHOD
 
     //GENERATE CLONE METHOD
