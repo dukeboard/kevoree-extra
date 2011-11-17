@@ -92,7 +92,7 @@ public class VLCNativeLibraryLoader {
 			if (!is64()) {
 				return new String[]{"libvlc.so", "libvlccore.so", "vlc.zip"};
 			} else if (is64()) {
-				return new String[]{""};
+				return new String[]{"libvlc.so", "libvlccore.so", "vlc.zip"};
 			}
 		} else if (isMac()) {
 			return new String[]{"lib.zip"};
