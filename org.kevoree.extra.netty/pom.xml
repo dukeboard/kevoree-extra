@@ -26,7 +26,11 @@
             <artifactId>netty</artifactId>
             <version>3.2.5.Final</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.2.0</version>
+        </dependency>
 
 
     </dependencies>
@@ -42,7 +46,7 @@
                     <instructions>
                         <Bundle-SymbolicName>org.kevoree.extra.netty</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
-                        <Dynamic-Import>*</Dynamic-Import>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>com.google.common.*,com.twitter.*,org.jboss.netty.*;version="3.2.4.Final"
                         </Export-Package>
                         <Import-Package>!com.google.common.*,!com.twitter.*,!org.jboss.netty.*,*;resolution:="optional"
