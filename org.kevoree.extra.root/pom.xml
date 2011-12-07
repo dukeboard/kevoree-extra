@@ -42,6 +42,7 @@
         <module>../org.kevoree.extra.avr-arduino.osx</module>
         <module>../org.kevoree.extra.avr-arduino.win64</module>
         <module>../org.kevoree.extra.macwidgets</module>
+        <module>../org.kevoree.extra.osgi.kestrel</module>
     </modules>
 
     <distributionManagement>
