@@ -12,8 +12,12 @@
 
     <artifactId>org.kevoree.extra.netty</artifactId>
     <packaging>bundle</packaging>
-    <version>3.2.5</version>
+    <version>${netty.version}</version>
     <name>Kevoree :: Extra :: Netty</name>
+
+    <properties>
+        <netty.version>3.2.5.Final</netty.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -24,7 +28,7 @@
         <dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
-            <version>3.2.5.Final</version>
+            <version>${netty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -47,7 +51,7 @@
                         <Bundle-SymbolicName>org.kevoree.extra.netty</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <Export-Package>com.google.common.*,com.twitter.*,org.jboss.netty.*;version="3.2.4.Final"
+                        <Export-Package>com.google.common.*,com.twitter.*,org.jboss.netty.*;version="${netty.version}"
                         </Export-Package>
                         <Import-Package>!com.google.common.*,!com.twitter.*,!org.jboss.netty.*,*;resolution:="optional"
                         </Import-Package>
