@@ -22,7 +22,7 @@ import java.nio.channels.Selector
 /**
  * An ExecutorBasedEventDrivenDispatcher that wakes up a given NIO selector upon arrival of a new message or task.
  */
-private[can] class SelectorWakingDispatcher(threadName: String, var selector: Selector)
+ class SelectorWakingDispatcher(threadName: String, var selector: Selector)
         extends ExecutorBasedEventDrivenDispatcher(
   _name = threadName,
   throughput = -1,
@@ -40,4 +40,10 @@ private[can] class SelectorWakingDispatcher(threadName: String, var selector: Se
     super.executeTask(invocation)
     selector.wakeup()
   }
+
+  def killDispatcher() {
+    this.stopAllAttachedActors
+    this.shutdown()
+  }
+
 }
