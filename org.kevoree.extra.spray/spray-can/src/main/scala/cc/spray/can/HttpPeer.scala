@@ -100,6 +100,7 @@ private[can] abstract class HttpPeer(threadName: String) extends Actor {
     self.dispatcher = new SelectorWakingDispatcher(threadName, selector)
   }
 
+
   override def preStart() {
     // CAUTION: as of Akka 2.0 this method will not be called during a restart
     startTime = System.currentTimeMillis()
