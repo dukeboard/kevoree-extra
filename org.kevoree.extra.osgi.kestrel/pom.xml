@@ -24,27 +24,20 @@
             <artifactId>netty</artifactId>
             <version>3.2.5.Final</version>
         </dependency>
+
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.osgi.twitter.library</artifactId>
+            <version>2.3.3</version>
         </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-compiler</artifactId>
-            <version>${scala.version}</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.kevoree.extra.googleguava</groupId>
             <artifactId>org.kevoree.extra.googleguava</artifactId>
             <version>10</version>
         </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -88,27 +81,14 @@
                     <instructions>
                         <Bundle-SymbolicName>org.kevoree.extra.osgi.kestrel</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
-                        <Export-Package>com.twitter.*,net.lag.kestrel.*,!sun.misc</Export-Package>
-                        <Import-Package>!com.sun.*,!javax.*,!scala.tools.*,org.scala.*,!scala.*,!sun.misc</Import-Package>
-                        <Private-Package>!net.lag.kestrel.*,!com.twitter.*,!org.scala.*,!scala.*,sun.misc,*</Private-Package>
+                    		<Dynamic-Import>*</Dynamic-Import>
+						<Export-Package>org.kevoree.exra.osgi.kestrel.*</Export-Package>
+						<Import-Package>!org.kevoree.exra.osgi.kestrel.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
-<!--
-        org.apache.tools.ant,
-        org.apache.tools.ant.taskdefs,
-        org.apache.tools.ant.types,
-        org.apache.tools.ant.util,
-        org.xml.sax,
-        org.xml.sax.ext,
-        org.xml.sax.helpers,
-        scala.tools.jline,
-        scala.tools.jline.console,
-        scala.tools.jline.console.completer,
-        scala.tools.jline.console.history,
-        sun.misc
--->
+
 
     </build>
 
