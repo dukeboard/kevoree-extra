@@ -5,8 +5,8 @@
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Extra :: OSGI JmDNS</name>
-    <version>3.4.1</version>
+    <name>Kevoree :: Extra :: OSGI JmDNS-hack</name>
+    <version>3.4.1-hack</version>
 
     <parent>
         <artifactId>org.kevoree.extra.root</artifactId>
