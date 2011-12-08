@@ -26,7 +26,7 @@ class BasicElementLoader(genDir: String, genPackage: String, elementType: EClass
 
       val subLoaders = generateSubs(elementType)
 
-      val pr = new PrintWriter(new FileOutputStream(file))
+      val pr = new PrintWriter(file,"utf-8")
       //System.out.println("Classifier class:" + cls.getClass)
 
       pr.println("package " + genPackage + ";")

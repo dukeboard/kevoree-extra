@@ -36,7 +36,7 @@ trait ClonerGenerator {
 
   def generateDefaultCloner(genDir: String, packageName: String, root: EClass, rootXmiPackage: EPackage) {
     ProcessorHelper.checkOrCreateFolder(genDir + "/cloner")
-    val pr = new PrintWriter(new FileOutputStream(new File(genDir + "/cloner/" + "ModelCloner.scala")))
+    val pr = new PrintWriter(new File(genDir + "/cloner/" + "ModelCloner.scala"),"utf-8")
     pr.println("package " + packageName + ".cloner")
     pr.println("class ModelCloner {")
 
