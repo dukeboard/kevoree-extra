@@ -10,21 +10,29 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.kevoree.extra.googleguava</groupId>
-       <artifactId>org.kevoree.extra.googleguava</artifactId>
-       <version>10</version>
+    <groupId>org.kevoree.extra</groupId>
+    <artifactId>org.kevoree.extra.googleguava</artifactId>
+    <version>${guava.version}</version>
 
 
     <packaging>bundle</packaging>
     <name>Kevoree :: Extra :: Google Guava</name>
 
     <properties>
-        <googleguava.local.file>${basedir}/src/main/resources/guava-10.0.1.jar</googleguava.local.file>
+        <guava.version>10.0.1</guava.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>truezip-maven-plugin</artifactId>
                 <version>1.0-beta-5</version>
@@ -45,7 +53,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -53,24 +61,25 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org.kevoree.extra.osgi.kestrel</Bundle-SymbolicName>
-                        <Bundle-Version>${pom.version}</Bundle-Version>
-                        <DynamicImport-Package>*</DynamicImport-Package>
-
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <!--<DynamicImport-Package>*</DynamicImport-Package>-->
+                        <Export-Package>com.google.*</Export-Package>
+                        <Import-Package>com.google.*,!sun.misc.*,!javax.annotation.*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
-        <resources>
+        <!--<resources>
             <resource>
                 <directory>${project.build.directory}/dependency/com</directory>
                 <targetPath>com</targetPath>
             </resource>
-            <resource>
+            &lt;!&ndash;<resource>
                 <directory>${project.build.directory}/dependency/org</directory>
                 <targetPath>org</targetPath>
-            </resource>
-        </resources>
+            </resource>&ndash;&gt;
+        </resources>-->
     </build>
 
 
