@@ -118,7 +118,7 @@
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <!--<Dynamic-Import>*</Dynamic-Import>-->
                         <Export-Package>com.twitter.*</Export-Package>
-                        <Import-Package>!com.twitter.*,!com.sun.*,!javax.*,!scala.tools.*,!scala.*,*</Import-Package>
+                        <Import-Package>!com.twitter.*,!com.sun.*,!javax.*,!scala.tools.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
