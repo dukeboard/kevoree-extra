@@ -1137,7 +1137,6 @@ public class JmDNSImpl extends JmDNS implements DNSStatefulObject, DNSTaskStarte
         boolean collision;
         do {
             collision = false;
-
             // Check for collision in cache
             for (DNSEntry dnsEntry : this.getCache().getDNSEntryList(info.getKey())) {
                 if (DNSRecordType.TYPE_SRV.equals(dnsEntry.getRecordType()) && !dnsEntry.isExpired(now)) {
@@ -1178,7 +1177,7 @@ public class JmDNSImpl extends JmDNS implements DNSStatefulObject, DNSTaskStarte
         } catch (final NumberFormatException e) {
             aName += " (2)";
         }
-        return aName;
+        return name;   // ignore duplicate jed
     }
 
     /**
