@@ -18,7 +18,7 @@ import org.kevoree.tools.ecore.gencode.cloner.ClonerGenerator
 trait ClassGenerator extends ClonerGenerator {
 
   def generateCompanion(location: String, pack: String, cls: EClass, packElement: EPackage) {
-    val pr = new PrintWriter(new FileOutputStream(new File(location + "/impl/" + cls.getName + "Impl.scala")))
+    val pr = new PrintWriter(new File(location + "/impl/" + cls.getName + "Impl.scala"),"utf-8")
     //System.out.println("Classifier class:" + cls.getClass)
 
     pr.println("package " + pack + ".impl;")
@@ -67,7 +67,7 @@ trait ClassGenerator extends ClonerGenerator {
   }
 
   def generateClass(location: String, pack: String, cls: EClass, packElement: EPackage) {
-    val pr = new PrintWriter(new FileOutputStream(new File(location + "/" + cls.getName + ".scala")))
+    val pr = new PrintWriter(new File(location + "/" + cls.getName + ".scala"),"utf-8")
     //System.out.println("Generating class:" + cls.getName)
 
     pr.println("package " + pack + ";")

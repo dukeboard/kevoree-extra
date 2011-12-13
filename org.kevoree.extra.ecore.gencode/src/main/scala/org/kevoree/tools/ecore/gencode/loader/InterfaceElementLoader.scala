@@ -24,7 +24,7 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
       //System.out.println("Generation of loader for " + elementType.getName)
       val subLoaders = generateSubs()
 
-      val pr = new PrintWriter(new FileOutputStream(file))
+      val pr = new PrintWriter(file,"utf-8")
       //System.out.println("Classifier class:" + cls.getClass)
 
       pr.println("package " + genPackage + ";")

@@ -18,7 +18,7 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
 
   def generateLoader() {
     ProcessorHelper.checkOrCreateFolder(genDir)
-    val pr = new PrintWriter(new FileOutputStream(new File(genDir + "/" + elementType.getName + "Loader.scala")))
+    val pr = new PrintWriter(new File(genDir + "/" + elementType.getName + "Loader.scala"),"utf-8")
     //System.out.println("Classifier class:" + cls.getClass)
 
     generateContext()

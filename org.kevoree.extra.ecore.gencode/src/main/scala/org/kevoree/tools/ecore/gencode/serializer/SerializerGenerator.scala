@@ -29,7 +29,7 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
 
   def generateDefaultSerializer(genDir: String, packageName: String, root: EClass, rootXmiPackage: EPackage) {
     ProcessorHelper.checkOrCreateFolder(genDir + "/serializer")
-    val pr = new PrintWriter(new FileOutputStream(new File(genDir + "/serializer/" + "ModelSerializer.scala")))
+    val pr = new PrintWriter(new File(genDir + "/serializer/" + "ModelSerializer.scala"),"utf-8")
     pr.println("package " + packageName + ".serializer")
     pr.println("class ModelSerializer extends " + root.getName + "Serializer {")
 
@@ -52,7 +52,7 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
   def generateSerializer(genDir: String, packageName: String, refNameInParent: String, root: EClass, rootXmiPackage: EPackage, isRoot: Boolean = false): Unit = {
     ProcessorHelper.checkOrCreateFolder(genDir + "/serializer")
     //PROCESS SELF
-    val pr = new PrintWriter(new FileOutputStream(new File(genDir + "/serializer/" + root.getName + "Serializer.scala")))
+    val pr = new PrintWriter(new File(genDir + "/serializer/" + root.getName + "Serializer.scala"),"utf-8")
     pr.println("package " + packageName + ".serializer")
     generateToXmiMethod(root, pr, rootXmiPackage.getName + ":" + root.getName, isRoot)
     pr.flush()
@@ -61,7 +61,7 @@ class SerializerGenerator(location: String, rootPackage: String, rootXmiPackage:
     //PROCESS SUB
     root.getEAllContainments.foreach {
       sub =>
-        val subpr = new PrintWriter(new FileOutputStream(new File(genDir + "/serializer/" + sub.getEReferenceType.getName + "Serializer.scala")))
+        val subpr = new PrintWriter(new File(genDir + "/serializer/" + sub.getEReferenceType.getName + "Serializer.scala"),"utf-8")
         subpr.println("package " + packageName + ".serializer")
         generateToXmiMethod(sub.getEReferenceType, subpr, sub.getName)
         subpr.flush()

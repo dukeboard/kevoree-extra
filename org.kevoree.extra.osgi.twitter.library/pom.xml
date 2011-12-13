@@ -10,21 +10,23 @@
 
     <artifactId>org.kevoree.extra.osgi.twitter.library</artifactId>
     <packaging>bundle</packaging>
-    <version>2.3.3</version>
+    <version>${twitter.version}</version>
     <name>Kevoree :: Extra :: Library Twitter </name>
 
 
     <properties>
         <twitter.version>1.0</twitter.version>
         <netty.version>3.2.5.Final</netty.version>
+        <guava.version>10.0.1</guava.version>
     </properties>
 
     <dependencies>
 
         <dependency>
-            <groupId>org.jboss.netty</groupId>
-            <artifactId>netty</artifactId>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.netty</artifactId>
             <version>${netty.version}</version>
+            <type>bundle</type>
         </dependency>
 
         <dependency>
@@ -37,6 +39,7 @@
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
             <version>1.1.0.CR6</version>
+            <!-- TODO Maybe add as an extra-->
         </dependency>
 
         <dependency>
@@ -52,21 +55,23 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.extra.googleguava</groupId>
+            <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.googleguava</artifactId>
-            <version>10</version>
+            <version>${guava.version}</version>
+            <type>bundle</type>
         </dependency>
 
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
-            <optional>true</optional>
+            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.5</version>
+            <type>bundle</type>
         </dependency>
     </dependencies>
 
@@ -102,7 +107,6 @@
                 </configuration>
             </plugin>
 
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -110,32 +114,15 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org.kevoree.extra.osgi.twitter.library</Bundle-SymbolicName>
-                        <Bundle-Version>${pom.version}</Bundle-Version>
-                        <Dynamic-Import>*</Dynamic-Import>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <!--<Dynamic-Import>*</Dynamic-Import>-->
                         <Export-Package>com.twitter.*</Export-Package>
-                        <Import-Package>!com.twitter.*,!com.sun.*,!javax.*,!scala.tools.*,!org.scala.*,!scala.*,*</Import-Package>
+                        <Import-Package>!com.twitter.*,!com.sun.*,!javax.*,!scala.tools.*,!scala.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
-
-
         </plugins>
-        <!--
-        org.apache.tools.ant,
-        org.apache.tools.ant.taskdefs,
-        org.apache.tools.ant.types,
-        org.apache.tools.ant.util,
-        org.xml.sax,
-        org.xml.sax.ext,
-        org.xml.sax.helpers,
-        scala.tools.jline,
-        scala.tools.jline.console,
-        scala.tools.jline.console.completer,
-        scala.tools.jline.console.history,
-        sun.misc
-        -->
-
     </build>
 
     <repositories>

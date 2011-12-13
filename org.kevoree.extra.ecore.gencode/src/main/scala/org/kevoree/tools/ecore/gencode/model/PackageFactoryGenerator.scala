@@ -20,7 +20,7 @@ trait PackageFactoryGenerator {
     formatedFactoryName += packElement.getName.substring(1)
     formatedFactoryName += "Factory"
 
-    val pr = new PrintWriter(new FileOutputStream(new File(location + "/" + formatedFactoryName + ".scala")))
+    val pr = new PrintWriter(new File(location + "/" + formatedFactoryName + ".scala"),"utf-8")
 
 
     pr.println("package " + pack + ";")

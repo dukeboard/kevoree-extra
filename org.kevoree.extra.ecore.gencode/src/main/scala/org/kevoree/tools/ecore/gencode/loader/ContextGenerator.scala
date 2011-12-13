@@ -14,7 +14,7 @@ class ContextGenerator(genDir: String, genPackage: String, elementType: EClass, 
 
 
   def generateContext() {
-     val pr = new PrintWriter(new FileOutputStream(new File(genDir + "/" + elementType.getName + "LoadContext.scala")))
+     val pr = new PrintWriter(new File(genDir + "/" + elementType.getName + "LoadContext.scala"),"utf-8")
     //System.out.println("Classifier class:" + cls.getClass)
 
     pr.println("package " + genPackage + ";")
