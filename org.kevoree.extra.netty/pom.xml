@@ -35,6 +35,7 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.googleguava</artifactId>
             <version>${guava.version}</version>
+            <type>bundle</type>
         </dependency>
 
         <dependency>
