@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.netty</artifactId>
-            <version>${netty.version}.Final</version>
+            <version>${netty.version}</version>
             <type>bundle</type>
         </dependency>
 
