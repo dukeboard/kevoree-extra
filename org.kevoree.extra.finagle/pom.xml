@@ -11,30 +11,43 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.kevoree.extra.finagle</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <version>1.7.3</version>
     <name>Kevoree :: Extra :: Finagle</name>
 
+    <properties>
+        <netty.version>3.2.5</netty.version>
+        <guava.version>10.0.1</guava.version>
+    </properties>
+
     <dependencies>
         <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.netty</artifactId>
+            <version>${netty.version}</version>
+            <type>bundle</type>
+        </dependency>
+        <!--<dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
             <version>3.2.5.Final</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>r08</version>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.googleguava</artifactId>
+            <version>${guava.version}</version>
+            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
+            <type>bundle</type>
         </dependency>
     </dependencies>
 
@@ -66,6 +79,23 @@
                     <jvmArgs>
                         <jvmArg>-Xmx1024m</jvmArg>
                     </jvmArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>org.kevoree.extra.netty</Bundle-SymbolicName>
+                        <Bundle-Version>${pom.version}</Bundle-Version>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Export-Package>com.twitter.*;version="${project.version}"
+                        </Export-Package>
+                        <Import-Package>!com.twitter.*,*;resolution:="optional"
+                        </Import-Package>
+                    </instructions>
                 </configuration>
             </plugin>
         </plugins>

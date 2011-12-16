@@ -17,19 +17,26 @@
 
     <properties>
         <netty.version>3.2.5</netty.version>
+        <guava.version>10.0.1</guava.version>
     </properties>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.finagle</artifactId>
             <version>1.7.3</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
             <version>${netty.version}.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.googleguava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -51,9 +58,9 @@
                         <Bundle-SymbolicName>org.kevoree.extra.netty</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <Export-Package>com.google.common.*,com.twitter.*,org.jboss.netty.*;version="${netty.version}"
+                        <Export-Package>org.jboss.netty.*;version="${netty.version}"
                         </Export-Package>
-                        <Import-Package>!com.google.common.*,!com.twitter.*,!org.jboss.netty.*,*;resolution:="optional"
+                        <Import-Package>!org.jboss.netty.*,*;resolution:="optional"
                         </Import-Package>
                     </instructions>
                 </configuration>
