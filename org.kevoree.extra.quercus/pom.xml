@@ -41,9 +41,13 @@
                             org.apache.log4j.*,
                             com.sun.*;resolution:=optional,
                             javax.xml.rpc.*,
-                            com.mysql.*,org.qjt.*
+                            com.mysql.*,
+                            org.qjt.*,
+                            com.mchange.*
                         </Export-Package>
                         <Import-Package>
+                            !org.jboss.resource.adapter.jdbc.*,
+                            !com.mchange.*,
                             !javax.servlet.jsp.*,
                             !org.jboss.logmanager.*,
                             !org.jboss.util.*,
@@ -92,7 +96,11 @@
         	<artifactId>mysql-connector-java</artifactId>
         	<version>5.1.18</version>
         </dependency>
-
+        <dependency>
+        	<groupId>c3p0</groupId>
+        	<artifactId>c3p0</artifactId>
+        	<version>0.9.0.4</version>
+        </dependency>
     </dependencies>
 
     <repositories>
