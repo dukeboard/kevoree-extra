@@ -22,12 +22,12 @@
     </properties>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.netty</artifactId>
             <version>${netty.version}</version>
             <type>bundle</type>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.kevoree.extra</groupId>
