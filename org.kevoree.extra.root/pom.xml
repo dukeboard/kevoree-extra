@@ -45,6 +45,7 @@
         <module>../org.kevoree.extra.osgi.kestrel</module>
         <module>../org.kevoree.extra.osgi.twitter.library</module>
         <module>../org.kevoree.extra.googleguava</module>
+        <module>../org.kevoree.extra.quercus</module>
     </modules>
 
     <distributionManagement>

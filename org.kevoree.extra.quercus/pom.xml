@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.extra</groupId>
+    <artifactId>org.kevoree.extra.quercus</artifactId>
+    <packaging>bundle</packaging>
+    <name>Kevoree :: Extra :: Quercus</name>
+    <version>4.0.18</version>
+    <url>http://quercus.caucho.com/</url>
+
+    <parent>
+        <artifactId>org.kevoree.extra.root</artifactId>
+        <groupId>org.kevoree.extra</groupId>
+        <version>1.0</version>
+        <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
+    </parent>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            !javax.servlet.*,
+                            com.caucho.*,
+                            javax.annotation.*,
+                            javax.decorator.*,
+                            javax.ejb.*,
+                            javax.el.*,
+                            javax.enterprise.*,
+                            javax.inject,
+                            javax.interceptor,
+                            javax.jms.*,
+                            javax.mail.*,
+                            javax.persistence.*,
+                            org.jboss.*,
+                            org.apache.log4j.*,
+                            com.sun.*;resolution:=optional,
+                            javax.xml.rpc.*,
+                            com.mysql.*,org.qjt.*
+                        </Export-Package>
+                        <Import-Package>
+                            !javax.servlet.jsp.*,
+                            !org.jboss.logmanager.*,
+                            !org.jboss.util.*,
+                            !javax.jmdns.*,
+                            !com.sun.*,
+                            !com.ibm.*,
+                            !sun.security.*,
+                            javax.servlet.*,
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+
+
+        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-6.0</artifactId>
+            <version>3.0.0.Beta1</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <version>3.0.1.GA</version>
+        </dependency>
+        <dependency>
+        	<groupId>log4j</groupId>
+        	<artifactId>log4j</artifactId>
+        	<version>1.2.16</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+        <dependency>
+        	<groupId>mysql</groupId>
+        	<artifactId>mysql-connector-java</artifactId>
+        	<version>5.1.18</version>
+        </dependency>
+
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>jbossuser</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+        </repository>
+    </repositories>
+
+</project>
