@@ -65,7 +65,7 @@
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <!--<DynamicImport-Package>*</DynamicImport-Package>-->
                         <Export-Package>com.google.*</Export-Package>
-                        <Import-Package>com.google.*,!sun.misc.*,!javax.annotation.*</Import-Package>
+                        <Import-Package>!com.google.*,!sun.misc.*,!javax.annotation.*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
