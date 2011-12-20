@@ -23,7 +23,7 @@
             <id>Unix</id>
             <activation>
                 <os>
-                    <arch>x86</arch>
+                    <arch>i386</arch>
                     <family>unix</family>
                 </os>
             </activation>
