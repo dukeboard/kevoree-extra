@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.kevoree.extra.daum</groupId>
-    <artifactId>org.kevoree.extra.daum.fuzzyControl</artifactId>
+    <artifactId>org.kevoree.extra.fuzzyLogic</artifactId>
     <version>${fuzzyControl.version}</version>
 
 
