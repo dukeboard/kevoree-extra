@@ -46,6 +46,7 @@
         <module>../org.kevoree.extra.osgi.twitter.library</module>
         <module>../org.kevoree.extra.googleguava</module>
         <module>../org.kevoree.extra.quercus</module>
+        <module>../org.kevoree.extra.jetty</module>
     </modules>
 
     <distributionManagement>
