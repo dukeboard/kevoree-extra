@@ -59,8 +59,8 @@
                         <Bundle-SymbolicName>org.kevoree.extra.jetty</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <Export-Package>javax.el.*,org.eclipse.jetty.*;version="${jetty.version}"</Export-Package>
-                        <Import-Package>!javax.el.*,!org.eclipse.jetty.*,*;resolution:="optional"</Import-Package>
+                        <Export-Package>javax.servlet.*,javax.el.*,org.eclipse.jetty.*;version="${jetty.version}"</Export-Package>
+                        <Import-Package>!javax.servlet.*,!javax.el.*,!org.eclipse.jetty.*,*;resolution:="optional"</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
