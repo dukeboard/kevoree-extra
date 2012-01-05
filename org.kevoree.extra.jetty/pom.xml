@@ -56,7 +56,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org.kevoree.extra.netty</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.kevoree.extra.jetty</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>javax.el.*,org.eclipse.jetty.*;version="${jetty.version}"</Export-Package>
