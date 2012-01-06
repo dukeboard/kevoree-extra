@@ -195,7 +195,7 @@ private[can] trait RequestPreparer extends MessagePreparer {
     val sb = new java.lang.StringBuilder(256)
     appendLine(sb.append(method.name).append(' ').append(uri).append(' ').append(protocol.name))
     appendHeaders(headers, sb)
-    request.headers.find(header => header._1.toLowerCase == "Host") match { // Kevoree modification to allow proxy
+    request.headers.find(header => header._1.toLowerCase == "host") match { // Kevoree modification to allow proxy
       case None => appendHeader("Host", if (port == 80) host else host + ':' + port, sb)
       case Some(header) =>
     }
