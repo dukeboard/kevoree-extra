@@ -22,7 +22,7 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
       serialPort = commPort.asInstanceOf[SerialPort];
       //serialPort.setDTR(false)
       serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-      serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+      serialPort.setSerialPortParams(115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
       serialPort.disableReceiveTimeout();
       serialPort.disableReceiveThreshold();
       serialPort.disableReceiveFraming();
