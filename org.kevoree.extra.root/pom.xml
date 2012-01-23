@@ -47,6 +47,7 @@
         <module>../org.kevoree.extra.googleguava</module>
         <module>../org.kevoree.extra.quercus</module>
         <module>../org.kevoree.extra.jetty</module>
+        <module>../org.kevoree.extra.winstone</module>
     </modules>
 
     <distributionManagement>
