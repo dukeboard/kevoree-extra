@@ -51,9 +51,22 @@
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
             <version>3.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>stringtemplate</artifactId>
+            <version>3.2</version>
+        </dependency>
+
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
@@ -91,9 +104,35 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Embed-Dependency>cglib-nodep,stringtemplate,antlr-runtime,antlr,commons-logging,log4j</Embed-Dependency>
+                        <Embed-Dependency>cglib-nodep,stringtemplate,antlr-runtime,antlr,commons-logging,log4j
+                        </Embed-Dependency>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Import-Package>
+                            !com.espertech.*,
+                            !org.kevoree.library.esper,
+                            javax.management,
+                            javax.naming,
+                            !javax.servlet,
+                            javax.sql,
+                            !com.ibm.uvm.tools,
+                            !com.sun.jdmk.comm,
+                            !com.sun.org.apache.xerces.internal.*,
+                            !javax.jmdns,
+                            !javax.jms,
+                            !javax.mail.*,
+                            !javax.swing.*,
+                            javax.xml.*,
+                            !junit.framework,
+                            !net.sf.cglib.asm.util,
+                            !org.apache.avalon.framework.logger,
+                            !org.apache.log,
+                            !org.apache.tools.ant.*,
+                            org.kevoree.*,
+                            org.w3c.*,
+                            org.xml.sax,!org.xml.sax.helpers,
+                            scala.*
+                        </Import-Package>
+                        <Export-Package>*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
