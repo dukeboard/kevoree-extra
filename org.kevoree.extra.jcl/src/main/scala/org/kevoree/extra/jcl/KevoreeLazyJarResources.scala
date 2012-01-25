@@ -69,23 +69,31 @@ class KevoreeLazyJarResources extends ClasspathResources {
       var jarEntry = jis.getNextJarEntry
       while (jarEntry != null) {
         if (!jarEntry.isDirectory) {
-          if (jarEntryContents.containsKey(jarEntry.getName)) {
+          if (jarContentURL.containsKey(jarEntry.getName)) {
             if (!collisionAllowed) {
               throw new JclException("Class/Resource " + jarEntry.getName() + " already loaded");
             }
           } else {
+
+            //TODO
+            /*
             val b = new Array[Byte](2048)
-            val out = new ByteArrayOutputStream();
-            var len = 0;
+                    val out = new ByteArrayOutputStream();
+                    var len = 0;
             while (jis.available() > 0) {
               len = jis.read(b);
               if (len > 0) {
                 out.write(b, 0, len);
               }
             }
-            out.flush();
-            out.close();
+            out.flush()
+            out.close()
             jarEntryContents.put(jarEntry.getName, out.toByteArray)
+            */
+            //TODO
+
+            //DON'T load byte[] directly wait for lazy
+            // jarEntryContents.put(jarEntry.getName, out.toByteArray)
             jarContentURL.put(jarEntry.getName, new URL("jar:" + baseurl + "!/" + jarEntry.getName))
           }
         }
@@ -109,5 +117,34 @@ class KevoreeLazyJarResources extends ClasspathResources {
         }
     }
   }
+
+
+  protected override def getJarEntryContents(name: String): Array[Byte] = {
+    if (jarContentURL.containsKey(name)) {
+
+      if (jarEntryContents.containsKey(name)) {
+        jarEntryContents.get(name)
+      } else {
+        val b = new Array[Byte](2048)
+        val out = new ByteArrayOutputStream();
+        var len = 0;
+        val stream = jarContentURL.get(name).openStream()
+        while (stream.available() > 0) {
+          len = stream.read(b);
+          if (len > 0) {
+            out.write(b, 0, len);
+          }
+        }
+        stream.close()
+        out.flush()
+        out.close()
+        jarEntryContents.put(name, out.toByteArray)
+        out.toByteArray
+      }
+    } else {
+      null
+    }
+  }
+
 
 }

@@ -2,24 +2,49 @@ package org.kevoree.extra.jcl
 
 import org.xeustechnologies.jcl.JarClassLoader
 import java.io.{ByteArrayInputStream, InputStream}
-import java.lang.String
 import java.net.URL
+import java.lang.{Class, String}
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
  * Date: 23/01/12
  * Time: 18:57
- * To change this template use File | Settings | File Templates.
  */
 
 class KevoreeJarClassLoader extends JarClassLoader {
 
-  classpathResources =  new KevoreeLazyJarResources
+  classpathResources = new KevoreeLazyJarResources
 
-  override def getResourceAsStream(name  : String) : InputStream = {
+
+  protected var subClassLoaders = List[ClassLoader]()
+
+  def addSubClassLoader(cl: ClassLoader) {
+    subClassLoaders = subClassLoaders ++ List(cl)
+  }
+
+  override def loadClass(className: String): Class[_] = {
+
+    try {
+      return super.loadClass(className)
+    } catch {
+      case nf: ClassNotFoundException =>
+    }
+
+    subClassLoaders.foreach {
+      subCL =>
+        try {
+          return subCL.loadClass(className)
+        } catch {
+          case nf: ClassNotFoundException =>
+        }
+    }
+    throw new ClassNotFoundException(className)
+  }
+
+  override def getResourceAsStream(name: String): InputStream = {
     val res = this.classpathResources.getResource(name)
-    if(res != null){
+    if (res != null) {
       new ByteArrayInputStream(res)
     } else {
       null
@@ -32,8 +57,9 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   def unload() {
     import scala.collection.JavaConversions._
-    (this.getLoadedClasses.keySet().toList++List()).foreach{ lc =>
-      unloadClass(lc)
+    (this.getLoadedClasses.keySet().toList ++ List()).foreach {
+      lc =>
+        unloadClass(lc)
     }
   }
 

@@ -51,6 +51,11 @@ import org.xeustechnologies.jcl.exception.JclException;
 public class JarResources {
 
     protected Map<String, byte[]> jarEntryContents;
+
+    protected byte[] getJarEntryContents(String name){
+        return jarEntryContents.get(name);
+    }
+
     protected boolean collisionAllowed;
 
     private static Logger logger = Logger.getLogger( JarResources.class.getName() );
@@ -68,7 +73,8 @@ public class JarResources {
      * @return byte[]
      */
     public byte[] getResource(String name) {
-        return jarEntryContents.get( name );
+        return getJarEntryContents(name);
+     //   return jarEntryContents.get( name );
     }
 
     /**
