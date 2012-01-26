@@ -24,6 +24,11 @@ class KevoreeLazyJarResources extends ClasspathResources {
 
   def getContentURL(name: String) = jarContentURL.get(name)
 
+
+  override def loadJar(jarStream: InputStream) {
+    loadJar(jarStream, null)
+  }
+
   override def loadJar(url: URL) {
     var in: InputStream = null;
     try {
@@ -61,6 +66,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
   }
 
   def loadJar(jarStream: InputStream, baseurl: URL) {
+
     var bis: BufferedInputStream = null;
     var jis: JarInputStream = null;
     try {
@@ -74,27 +80,23 @@ class KevoreeLazyJarResources extends ClasspathResources {
               throw new JclException("Class/Resource " + jarEntry.getName() + " already loaded");
             }
           } else {
-
-            //TODO
-            /*
-            val b = new Array[Byte](2048)
-                    val out = new ByteArrayOutputStream();
-                    var len = 0;
-            while (jis.available() > 0) {
-              len = jis.read(b);
-              if (len > 0) {
-                out.write(b, 0, len);
+            if (baseurl != null) {
+              jarContentURL.put(jarEntry.getName, new URL("jar:" + baseurl + "!/" + jarEntry.getName))
+            } else {
+              val b = new Array[Byte](2048)
+              val out = new ByteArrayOutputStream();
+              var len = 0;
+              while (jis.available() > 0) {
+                len = jis.read(b);
+                if (len > 0) {
+                  out.write(b, 0, len);
+                }
               }
+              out.flush()
+              out.close()
+              jarEntryContents.put(jarEntry.getName, out.toByteArray)
+              jarContentURL.put(jarEntry.getName, null)
             }
-            out.flush()
-            out.close()
-            jarEntryContents.put(jarEntry.getName, out.toByteArray)
-            */
-            //TODO
-
-            //DON'T load byte[] directly wait for lazy
-            // jarEntryContents.put(jarEntry.getName, out.toByteArray)
-            jarContentURL.put(jarEntry.getName, new URL("jar:" + baseurl + "!/" + jarEntry.getName))
           }
         }
         jarEntry = jis.getNextJarEntry
@@ -121,7 +123,6 @@ class KevoreeLazyJarResources extends ClasspathResources {
 
   protected override def getJarEntryContents(name: String): Array[Byte] = {
     if (jarContentURL.containsKey(name)) {
-
       if (jarEntryContents.containsKey(name)) {
         jarEntryContents.get(name)
       } else {

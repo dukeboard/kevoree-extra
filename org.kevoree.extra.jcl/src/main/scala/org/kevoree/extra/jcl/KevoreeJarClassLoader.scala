@@ -26,11 +26,10 @@ class KevoreeJarClassLoader extends JarClassLoader {
   override def loadClass(className: String): Class[_] = {
 
     try {
-      return super.loadClass(className)
+      return super[JarClassLoader].loadClass(className)
     } catch {
       case nf: ClassNotFoundException =>
     }
-
     subClassLoaders.foreach {
       subCL =>
         try {
