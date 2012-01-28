@@ -16,6 +16,10 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   classpathResources = new KevoreeLazyJarResources
 
+  def setLazyLoad(lazyload : Boolean){
+    classpathResources.asInstanceOf[KevoreeLazyJarResources].setLazyLoad(lazyload)
+  }
+
 
   protected var subClassLoaders = List[ClassLoader]()
 

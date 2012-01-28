@@ -24,6 +24,11 @@ class KevoreeLazyJarResources extends ClasspathResources {
 
   def getContentURL(name: String) = jarContentURL.get(name)
 
+  var lazyload = true
+  def setLazyLoad(_lazyload : Boolean){
+    lazyload = _lazyload
+  }
+
 
   override def loadJar(jarStream: InputStream) {
     loadJar(jarStream, null)
@@ -80,7 +85,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
               throw new JclException("Class/Resource " + jarEntry.getName() + " already loaded");
             }
           } else {
-            if (baseurl != null) {
+            if (baseurl != null && lazyload) {
               jarContentURL.put(jarEntry.getName, new URL("jar:" + baseurl + "!/" + jarEntry.getName))
             } else {
               val b = new Array[Byte](2048)
