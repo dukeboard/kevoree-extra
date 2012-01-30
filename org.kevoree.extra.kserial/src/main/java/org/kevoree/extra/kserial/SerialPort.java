@@ -1,16 +1,10 @@
-package org.daum.ArduinoFOA;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import org.daum.ArduinoFOA.jna.SerialPortJNA;
+package org.kevoree.extra.kserial;
 
 import com.sun.jna.Memory;
-import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
+import org.kevoree.extra.kserial.jna.NativeLoader;
+import org.kevoree.extra.kserial.jna.SerialPortJNA;
+
 /**
  * Created by jed
  * User: jedartois@gmail.com
@@ -45,12 +39,13 @@ public class SerialPort  extends CommPort{
 
 	private int sizefifo= 1024;
 	private	ByteFIFO fifo_out = new ByteFIFO(sizefifo);
-	
+
+
+
 	
 	public SerialPort(String portname,int bitrate) throws Exception{
 		this.port_bitrate = bitrate;
-		this.port_name = portname;	
-
+		this.port_name = portname;
 	}
 
 	public void addEventListener(SerialPortEventListener listener) {
@@ -89,7 +84,7 @@ public class SerialPort  extends CommPort{
 			byte c = '\n';
 			inipar.getPointer().setByte((bs.length+1) * Byte.SIZE / 8, c);
 
-			if(SerialPortJNA.INSTANCE.serialport_write(fd, inipar) !=0)
+			if(NativeLoader.getInstance().serialport_write(fd, inipar) !=0)
 			{
 				throw new SerialPortException("Write "+bs);
 			}
@@ -104,10 +99,10 @@ public class SerialPort  extends CommPort{
 
 	@Override
 	public void open() throws SerialPortException {
-		fd = SerialPortJNA.INSTANCE.open_serial(port_name, port_bitrate);
+		fd = NativeLoader.getInstance().open_serial(port_name, port_bitrate);
 		if(fd < 0)
 		{
-			SerialPortJNA.INSTANCE.close_serial(fd);
+            NativeLoader.getInstance().close_serial(fd);
 			throw new SerialPortException("["+fd+"] "+Constants.messages_errors.get(fd));
 		}
 		SerialPortEvent = new SerialPortEvent(this);	
@@ -115,7 +110,7 @@ public class SerialPort  extends CommPort{
 
 	@Override
 	public void close() throws SerialPortException {
-		 SerialPortJNA.INSTANCE.close_serial(fd);
+        NativeLoader.getInstance().close_serial(fd);
 		
 	}
 

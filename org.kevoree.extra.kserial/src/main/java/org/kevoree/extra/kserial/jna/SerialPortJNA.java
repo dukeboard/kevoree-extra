@@ -1,4 +1,4 @@
-package org.daum.ArduinoFOA.jna;
+package org.kevoree.extra.kserial.jna;
 
 import java.util.HashMap;
 import com.sun.jna.Library;
@@ -19,5 +19,4 @@ public interface SerialPortJNA extends Library
 	int upload_program(int fd, Pointer hex_program);
 
 	
-	SerialPortJNA INSTANCE = (SerialPortJNA) Native.loadLibrary("serialposix", SerialPortJNA.class, new HashMap());
 }

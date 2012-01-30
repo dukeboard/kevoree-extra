@@ -1,4 +1,4 @@
-package org.daum.ArduinoFOA;
+package org.kevoree.extra.kserial;
 
 /**
  * Created by jed

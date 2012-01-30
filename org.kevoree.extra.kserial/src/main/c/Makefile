@@ -10,4 +10,8 @@ test :
 	$(CC) test.c -o test -lserialposix -lpthread
 
 clean :
-	rm *.o test
+	rm *.o *.so test
+
+osx:
+	$(CC) -shared -fPIC -Wl,-install_name,../resources/osx/serialposix.so -o ../resources/osx/serialposix.so serialposix.c semaphore.c
+	$(CC) test.c -o test ../resources/osx/serialposix.so -lpthread

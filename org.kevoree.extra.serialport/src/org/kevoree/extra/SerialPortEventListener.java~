@@ -1,6 +1,0 @@
-package org.daum.ArduinoFOA;
-
-public interface SerialPortEventListener extends java.util.EventListener  
-{
-	  void serialEvent(SerialPortEvent evt);
-}

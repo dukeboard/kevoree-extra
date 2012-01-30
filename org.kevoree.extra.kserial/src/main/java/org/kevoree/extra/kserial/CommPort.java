@@ -1,8 +1,5 @@
-package org.daum.ArduinoFOA;
+package org.kevoree.extra.kserial;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 /**
  * Created by jed
  * User: jedartois@gmail.com

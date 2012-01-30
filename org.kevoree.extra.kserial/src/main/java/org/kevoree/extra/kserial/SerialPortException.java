@@ -1,4 +1,4 @@
-package org.daum.ArduinoFOA;
+package org.kevoree.extra.kserial;
 
 
 /**
@@ -7,6 +7,8 @@ package org.daum.ArduinoFOA;
  * Date: 26/01/12
  * Time: 9:01
  */
+
+
 public class SerialPortException extends Exception {
 
 	

@@ -1,16 +1,12 @@
-package org.daum.ArduinoFOA;
+package org.kevoree.extra.kserial;
 
-import java.io.ByteArrayOutputStream;
-
-
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.EventObject;
 
-import org.daum.ArduinoFOA.jna.SerialEvent;
-import org.daum.ArduinoFOA.jna.SerialPortJNA;
 
 import com.sun.jna.Pointer;
+import org.kevoree.extra.kserial.jna.NativeLoader;
+import org.kevoree.extra.kserial.jna.SerialEvent;
+import org.kevoree.extra.kserial.jna.SerialPortJNA;
 
 /**
  * Created by jed
@@ -33,15 +29,14 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
 	public SerialPortEvent(SerialPort serialport) throws SerialPortException {
 		super(serialport);
 		this.SerialPort = serialport;
-		SerialPortJNA.INSTANCE.register_SerialEvent(this);
+        NativeLoader.getInstance().register_SerialEvent(this);
 
-		if((pthreadid=SerialPortJNA.INSTANCE.reader_serial(SerialPort.fd)) != 0)
+		if((pthreadid=NativeLoader.getInstance().reader_serial(SerialPort.fd)) != 0)
 		{
 			throw new SerialPortException("callback reader");
 		}
 	}
 
-	@Override
 	public void serial_reader_callback(int taille, Pointer data) {
 		try 
 		{

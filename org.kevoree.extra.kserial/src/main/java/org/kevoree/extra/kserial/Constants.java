@@ -1,4 +1,4 @@
-package org.daum.ArduinoFOA;
+package org.kevoree.extra.kserial;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,13 +21,6 @@ public final class Constants {
 		}
 		};
 		
-		
-		public static String BytesToString(byte[] array) {
-			StringBuffer sb = new StringBuffer(array.length);
-			for( int i=0 ; (i < array.length) && (array[i]!=0) ; i++) {
-				sb.append((char)array[i]);
-			}
-			return sb.toString();
-		}
+
 	
 }

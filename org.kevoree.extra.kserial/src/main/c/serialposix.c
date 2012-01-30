@@ -46,8 +46,10 @@ void *serial_reader(int fd)
 		if((taille =serialport_read(fd,byte)) > 0)
 		{
 			SerialEvent(taille,byte);
+			printf("Event %d\n",taille);
+			memset(byte,0,sizeof(byte));
 		}
-		memset(byte,0,sizeof(byte));
+
 	}
 	pthread_exit(NULL);
 }
@@ -90,7 +92,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	quitter = 0;
 
 
-	//printf("Opening serial device %s %d \n", _name_device,_bitrate);
+	printf("Opening serial device %s %d \n", _name_device,_bitrate);
 
 	/* process baud rate */
 	switch (_bitrate) {
@@ -106,12 +108,12 @@ int open_serial(const char *_name_device,int _bitrate){
 	}
 
 	/* open the serial device */
-	fd = open(_name_device, O_RDWR);
+	fd = open(_name_device, O_RDWR | O_NDELAY);
 	if(fd < 0) {
 		close(fd);
 		return -2;
 	}
-
+    printf("la\n");
 	/* get attributes and fill termios structure */
 	err = tcgetattr(fd, &termios);
 	if(err < 0) {
@@ -141,7 +143,6 @@ int open_serial(const char *_name_device,int _bitrate){
 	/* output flags */
 	termios.c_oflag &= ~ OPOST;            /* disable output processing */
 	termios.c_oflag &= ~(ONLCR | OCRNL);   /* disable translating NL <-> CR */
-	termios.c_oflag &= ~ OFILL;            /* disable fill characters */
 	/* control flags */
 	termios.c_cflag |=   CREAD;            /* enable reciever */
 
@@ -176,9 +177,9 @@ int open_serial(const char *_name_device,int _bitrate){
 	}
 	 */
 
-	rc = fcntl(fd, F_GETFL, 0);
-	if (rc != -1)
-		fcntl(fd, F_SETFL, rc & ~O_NONBLOCK);
+	//rc = fcntl(fd, F_GETFL, 0);
+	//if (rc != -1)
+    //		fcntl(fd, F_SETFL, rc & ~O_NONBLOCK);
 
 	/* flush the serial device */
 	tcflush(fd, TCIOFLUSH);

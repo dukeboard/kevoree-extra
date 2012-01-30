@@ -1,4 +1,4 @@
-package org.daum.ArduinoFOA.jna;
+package org.kevoree.extra.kserial.jna;
 import com.sun.jna.Callback;
 import com.sun.jna.Pointer;
 
