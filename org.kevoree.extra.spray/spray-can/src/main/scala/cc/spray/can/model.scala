@@ -100,7 +100,7 @@ object HttpRequest {
     req(headers != null, "headers must not be null")
     req(body != null, "body must not be null (you can use cc.spray.can.EmptyByteArray for an empty body)")
     headers.foreach { header =>
-      if (header.name == "Content-Length" || header.name == "Transfer-Encoding" || header.name == "Host")
+      if (header.name == "Content-Length" || header.name == "Transfer-Encoding" /*|| header.name == "Host"*/)// Kevoree modification to allow proxy
         throw new IllegalArgumentException(header.name + " header must not be set explicitly, it is set automatically")
     }
     request
