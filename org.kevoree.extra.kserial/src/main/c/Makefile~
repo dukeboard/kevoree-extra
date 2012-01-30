@@ -1,7 +1,7 @@
 
 linux: 
 	$(CC) -shared -fPIC -Wl,-soname,serialposix.so -o serialposix.so serialposix.c 
-	sudo cp serialposix.so /usr/lib/libserialposix.so
+	cp serialposix.so /usr/lib/libserialposix.so
 	$(CC) test.c -o test -lserialposix -lpthread
 
 clean :

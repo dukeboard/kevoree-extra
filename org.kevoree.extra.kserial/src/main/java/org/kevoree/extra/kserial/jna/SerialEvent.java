@@ -1,6 +1,7 @@
 package org.kevoree.extra.kserial.jna;
 import com.sun.jna.Callback;
 import com.sun.jna.Pointer;
+import org.kevoree.extra.kserial.SerialPortException;
 
 /*
  * 
@@ -20,8 +21,7 @@ public interface SerialEvent extends Callback {
 	public static final int BI                 =10;
 	
 	
-	void serial_reader_callback(int taille,Pointer data); 
-	
+	void serial_reader_callback(int taille,Pointer data);
 
 } 
 

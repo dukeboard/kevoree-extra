@@ -4,7 +4,7 @@
 
 void test()
 {
-	printf("BROKEN LINl ICI \n");
+	printf("BROKEN LINK\n");
 }
 
 int main(int argc,char ** argv){
@@ -17,12 +17,12 @@ int main(int argc,char ** argv){
 		exit(-2);
 	}
 
- register_SerialBrokenLink( test);
-	 char test2[512];
-
+	 char test[1024];
+	 char test2[1024];
 	printf("File DS :  %d\n",fd);
 
-
+	register_SerialBrokenLink(test);
+	
 	while(1){
 
 	     memset(test2,0,sizeof(test2));

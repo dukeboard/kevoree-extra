@@ -74,11 +74,15 @@ int init(int fd,const char *name_device)
 }
 
 
-int register_SerialEvent( void* fn,void* fonction){
+int register_SerialEvent( void* fn){
 	SerialEvent=fn;
-		SerialBrokenLink=fonction;
-	return 0;
 };
+
+
+int register_SerialBrokenLink( void* fn){
+	SerialBrokenLink=fn;
+};
+
 
 
 void *serial_monitoring()
@@ -88,13 +92,18 @@ void *serial_monitoring()
 	
 	while(quitter ==0)
 	{
+
+		printf("check %s\n",ctx.name_device);
 		 if (stat(ctx.name_device, &sb) == -1)
 		 {
-		    SerialBrokenLink(ctx.fd);
-            close_serial(ctx.fd);
-         }
+			
+			SerialBrokenLink(ctx.fd);
+	
+       			close_serial(ctx.fd);
+			
+         	  }
 
-		usleep(3000);
+		usleep(6000);
 	}
 
 	pthread_exit(NULL);
