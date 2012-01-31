@@ -21,7 +21,7 @@ int serialport_readebyte(int fd, uint8_t *b);
 int serialport_write(int fd,  char* str);
 int serialport_read(int fd,char *ptr);
 void *serial_monitoring();
-int reader_serial(int fd);
+int reader_serial();
 
 
 

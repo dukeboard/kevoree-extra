@@ -118,9 +118,9 @@ void *serial_reader()
  * @param
  */
 int reader_serial(int fd){
-    pthread p;
+ 	pthread_t reader;
 	int rt;
-	rt = pthread_create (& p, NULL,&serial_reader, NULL);
+	rt = pthread_create (& reader, NULL,&serial_reader, NULL);
 	if(rt != 0)
 	{
 	    close(ctx.fd);
@@ -248,8 +248,6 @@ int open_serial(const char *_name_device,int _bitrate){
 int close_serial(int fd){
 	close(fd);
 	quitter = 1;
-	if(ctx.thread_reader =! -1)
-		pthread_kill(ctx.thread_reader,SIGKILL);
 }
 
 
