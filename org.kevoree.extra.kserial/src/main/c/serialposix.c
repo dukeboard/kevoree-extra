@@ -32,7 +32,6 @@ volatile int quitter;
 typedef struct _contexte{
 	int fd;
 	const char *name_device;
-	pthread_t thread_reader;
 } SerialContext;
 
 void (*SerialEvent) (int taille,unsigned char *data);
@@ -58,9 +57,7 @@ int init(int fd,const char *name_device)
 	signal(SIGKILL, handler_sigint);
 	ctx.fd = fd;
 	ctx.name_device =name_device;
-	
-	ctx.thread_reader =  (pthread_t)-1;
- 
+
 	rt = pthread_create (& monitor, NULL,&serial_monitoring, NULL);
 	if(rt != 0)
 	{
@@ -98,14 +95,14 @@ void *serial_monitoring()
 }
 
 
-void *serial_reader(int fd)
+void *serial_reader()
 {
 	char byte[BUFFER_SIZE];
 
 	int taille;
 	while(quitter ==0)
 	{
-		if((taille =serialport_read(fd,byte)) > 0)
+		if((taille =serialport_read(ctx.fd,byte)) > 0)
 		{
 			SerialEvent(taille,byte);
 			memset(byte,0,sizeof(byte));
@@ -121,9 +118,9 @@ void *serial_reader(int fd)
  * @param
  */
 int reader_serial(int fd){
-
+    pthread p;
 	int rt;
-	rt = pthread_create (& ctx.thread_reader, NULL,&serial_reader, fd);
+	rt = pthread_create (& p, NULL,&serial_reader, NULL);
 	if(rt != 0)
 	{
 	    close(ctx.fd);
