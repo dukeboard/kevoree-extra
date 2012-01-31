@@ -21,13 +21,15 @@ class KevoreeLazyJarResources extends ClasspathResources {
 
   protected val jarContentURL = new java.util.HashMap[String, URL]
   private val logger = Logger.getLogger(classOf[KevoreeLazyJarResources].getName);
-  var lastLoadedJar : String = ""
+  var lastLoadedJar: String = ""
+
   def getLastLoadedJar = lastLoadedJar
-  
+
   def getContentURL(name: String) = jarContentURL.get(name)
 
   var lazyload = true
-  def setLazyLoad(_lazyload : Boolean){
+
+  def setLazyLoad(_lazyload: Boolean) {
     lazyload = _lazyload
   }
 
@@ -104,6 +106,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
               out.close()
               jarEntryContents.put(jarEntry.getName, out.toByteArray)
               jarContentURL.put(jarEntry.getName, null)
+              if (jarEntry.getName.endsWith(".jar")) {
+                loadJar(new ByteArrayInputStream(out.toByteArray))
+              }
             }
           }
         }
