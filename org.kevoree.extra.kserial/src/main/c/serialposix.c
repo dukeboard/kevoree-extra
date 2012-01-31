@@ -61,7 +61,7 @@ int init(int fd,const char *name_device)
 	ctx.fd = fd;
 	ctx.name_device =name_device;
 	
-	ctx.thread_reader = -1;
+	ctx.thread_reader =  -1;
  
 	rt = pthread_create (& monitor, NULL,&serial_monitoring, NULL);
 	if(rt != 0)
@@ -82,15 +82,10 @@ int register_SerialEvent( void* fn){
 void *serial_monitoring()
 {
 	char byte[BUFFER_SIZE];
-	struct stat sb;
     int fd;
 	while(quitter ==0)
 	{
-		 if (stat(ctx.name_device, &sb) == -1)
-		 {
-		     SerialEvent(-1,"BROKEN LINK 1\n");
-            close_serial(ctx.fd);
-         }
+
 
         if((fd = open(ctx.name_device,O_RDONLY)) == -1)
         {

@@ -31,9 +31,12 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
 
 
         NativeLoader.getInstance().register_SerialEvent(this);
+
+
+
         if((pthreadid=NativeLoader.getInstance().reader_serial(serialPort.fd)) != 0)
         {
-            throw new SerialPortException("callback reader");
+            throw new SerialPortException("callback reader "+pthreadid);
         }
 
 
