@@ -38,8 +38,6 @@ typedef struct _contexte{
 void (*SerialEvent) (int taille,unsigned char *data);
 
 
-
-
 static SerialContext ctx;
 
 
@@ -61,7 +59,7 @@ int init(int fd,const char *name_device)
 	ctx.fd = fd;
 	ctx.name_device =name_device;
 	
-	ctx.thread_reader =  -1;
+	ctx.thread_reader =  (pthread_t)-1;
  
 	rt = pthread_create (& monitor, NULL,&serial_monitoring, NULL);
 	if(rt != 0)
@@ -85,11 +83,9 @@ void *serial_monitoring()
     int fd;
 	while(quitter ==0)
 	{
-
-
         if((fd = open(ctx.name_device,O_RDONLY)) == -1)
         {
-                SerialEvent(-1,"BROKEN LINK 2\n");
+                SerialEvent(-1,"BROKEN LINK\n");
                 close_serial(ctx.fd);
         }else {
         close(fd);
@@ -130,6 +126,7 @@ int reader_serial(int fd){
 	rt = pthread_create (& ctx.thread_reader, NULL,&serial_reader, fd);
 	if(rt != 0)
 	{
+	    close(ctx.fd);
 		return rt;
 	}
 }
@@ -167,8 +164,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	default:
 		return -1;
 	}
-
-
+     close_serial(ctx.fd);
 	/* open the serial device */
 	fd = open(_name_device,O_RDWR | O_NOCTTY | O_NONBLOCK);
 
