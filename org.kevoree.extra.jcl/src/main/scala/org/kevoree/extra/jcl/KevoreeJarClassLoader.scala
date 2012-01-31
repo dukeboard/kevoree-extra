@@ -4,6 +4,7 @@ import org.xeustechnologies.jcl.JarClassLoader
 import java.io.{ByteArrayInputStream, InputStream}
 import java.net.URL
 import java.lang.{Class, String}
+import ref.WeakReference
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,10 +17,9 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   classpathResources = new KevoreeLazyJarResources
 
-  def setLazyLoad(lazyload : Boolean){
+  def setLazyLoad(lazyload: Boolean) {
     classpathResources.asInstanceOf[KevoreeLazyJarResources].setLazyLoad(lazyload)
   }
-
 
   protected var subClassLoaders = List[ClassLoader]()
 
@@ -27,22 +27,48 @@ class KevoreeJarClassLoader extends JarClassLoader {
     subClassLoaders = subClassLoaders ++ List(cl)
   }
 
-  override def loadClass(className: String): Class[_] = {
+  protected var subWeakClassLoaders = List[WeakReference[ClassLoader]]()
 
+  def addWeakClassLoader(wcl: ClassLoader) {
+    subWeakClassLoaders = subWeakClassLoaders ++ List(new WeakReference[ClassLoader](wcl))
+  }
+
+
+  override def loadClass(className: String, resolveIt: Boolean): Class[_] = {
     try {
-      return super[JarClassLoader].loadClass(className)
+      return super[JarClassLoader].loadClass(className,resolveIt)
     } catch {
       case nf: ClassNotFoundException =>
     }
-    subClassLoaders.foreach {
-      subCL =>
-        try {
-          return subCL.loadClass(className)
-        } catch {
-          case nf: ClassNotFoundException =>
-        }
+    if (resolveIt) {
+      subClassLoaders.foreach {
+        subCL =>
+          try {
+            return subCL.loadClass(className)
+          } catch {
+            case nf: ClassNotFoundException =>
+          }
+      }
+      subWeakClassLoaders.foreach {
+        subCL =>
+          try {
+            subCL.get.map {
+              m =>
+                if(m.isInstanceOf[KevoreeJarClassLoader]){
+                  return m.asInstanceOf[KevoreeJarClassLoader].loadClass(className,false)
+                }
+            }
+          } catch {
+            case nf: ClassNotFoundException =>
+          }
+      }
     }
+
     throw new ClassNotFoundException(className)
+  }
+
+  override def loadClass(className: String): Class[_] = {
+    loadClass(className, true)
   }
 
   override def getResourceAsStream(name: String): InputStream = {

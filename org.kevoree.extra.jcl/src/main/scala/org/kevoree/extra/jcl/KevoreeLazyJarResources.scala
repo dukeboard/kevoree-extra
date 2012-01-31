@@ -21,7 +21,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
 
   protected val jarContentURL = new java.util.HashMap[String, URL]
   private val logger = Logger.getLogger(classOf[KevoreeLazyJarResources].getName);
-
+  var lastLoadedJar : String = ""
+  def getLastLoadedJar = lastLoadedJar
+  
   def getContentURL(name: String) = jarContentURL.get(name)
 
   var lazyload = true
@@ -52,6 +54,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
   }
 
   override def loadJar(jarFile: String) {
+    lastLoadedJar = jarFile
     var fis: FileInputStream = null;
     try {
       val f = new File(jarFile)
