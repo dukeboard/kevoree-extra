@@ -104,10 +104,12 @@ class KevoreeLazyJarResources extends ClasspathResources {
               }
               out.flush()
               out.close()
-              jarEntryContents.put(jarEntry.getName, out.toByteArray)
               jarContentURL.put(jarEntry.getName, null)
               if (jarEntry.getName.endsWith(".jar")) {
+                println("KCL Found sub Jar => " + jarEntry.getName)
                 loadJar(new ByteArrayInputStream(out.toByteArray))
+              } else {
+                jarEntryContents.put(jarEntry.getName, out.toByteArray)
               }
             }
           }
