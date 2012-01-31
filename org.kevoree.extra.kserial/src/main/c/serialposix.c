@@ -164,7 +164,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	default:
 		return -1;
 	}
-     close_serial(ctx.fd);
+
 	/* open the serial device */
 	fd = open(_name_device,O_RDWR | O_NOCTTY | O_NONBLOCK);
 
