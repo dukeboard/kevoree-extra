@@ -1,22 +1,38 @@
+
+
 #include "serialposix.h"
+
+void test()
+{
+	printf("BROKEN LINl ICI \n");
+}
 
 int main(int argc,char ** argv){
 
-	printf(" bfore \n");
+	int	fd = open_serial(argv[1],9600);
 
-	int	fd = open_serial(argv[1],115200);
+	if(fd < 0)
+	{
+		printf("file descriptor %d \n",fd); 
+		exit(-2);
+	}
 
-if(fd < 0)
-{
-	printf("file descriptor %d \n",fd); 
-	return -1;
-}
-char test[2048];
+ register_SerialBrokenLink( test);
+	 char test2[512];
+
+	printf("File DS :  %d\n",fd);
+
+
 	while(1){
-		memset(test,0,sizeof(test));
-		serialport_read(fd,&test[0]);
-		printf("%s\n",test);
-		usleep(1000);
+
+	     memset(test2,0,sizeof(test2));
+
+	if(serialport_read(fd,&test2[0]) > 0){
+		
+		printf("<%s> \n",test2);
+	}
+	
+	
 	}
 	close_serial(fd);
 

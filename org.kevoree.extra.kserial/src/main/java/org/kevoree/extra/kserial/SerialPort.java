@@ -3,7 +3,6 @@ package org.kevoree.extra.kserial;
 import com.sun.jna.Memory;
 import com.sun.jna.ptr.PointerByReference;
 import org.kevoree.extra.kserial.jna.NativeLoader;
-import org.kevoree.extra.kserial.jna.SerialPortJNA;
 
 /**
  * Created by jed
@@ -40,8 +39,6 @@ public class SerialPort  extends CommPort{
 	private int sizefifo= 1024;
 	private	ByteFIFO fifo_out = new ByteFIFO(sizefifo);
 
-
-
 	
 	public SerialPort(String portname,int bitrate) throws Exception{
 		this.port_bitrate = bitrate;
@@ -69,7 +66,6 @@ public class SerialPort  extends CommPort{
 
 	@Override
 	public void write(byte[] bs) throws SerialPortException {
-		
 
 		if(fd > 0)
 		{
@@ -105,7 +101,8 @@ public class SerialPort  extends CommPort{
             NativeLoader.getInstance().close_serial(fd);
 			throw new SerialPortException("["+fd+"] "+Constants.messages_errors.get(fd));
 		}
-		SerialPortEvent = new SerialPortEvent(this);	
+		SerialPortEvent = new SerialPortEvent(this);
+
 	}
 
 	@Override

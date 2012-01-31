@@ -13,7 +13,8 @@ public interface SerialPortJNA extends Library
 	
 	int close_serial(int fd);
 	
-	int register_SerialEvent(SerialEvent callback);
+	int register_SerialEvent(SerialEvent callback,SerialBrokenLink brokenLink);
+
 	int reader_serial(int fd);
 	int serialport_write(int fd,PointerByReference inipar);
 	int upload_program(int fd, Pointer hex_program);

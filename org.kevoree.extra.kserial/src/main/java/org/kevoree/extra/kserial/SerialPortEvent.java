@@ -5,6 +5,7 @@ import java.util.EventObject;
 
 import com.sun.jna.Pointer;
 import org.kevoree.extra.kserial.jna.NativeLoader;
+import org.kevoree.extra.kserial.jna.SerialBrokenLink;
 import org.kevoree.extra.kserial.jna.SerialEvent;
 import org.kevoree.extra.kserial.jna.SerialPortJNA;
 
@@ -15,7 +16,7 @@ import org.kevoree.extra.kserial.jna.SerialPortJNA;
  * Time: 9:01
  */
 
-public class SerialPortEvent extends EventObject  implements SerialEvent {
+public class SerialPortEvent extends EventObject  implements SerialEvent,SerialBrokenLink {
 
 	/**
 	 * 
@@ -29,15 +30,21 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
 	public SerialPortEvent(SerialPort serialport) throws SerialPortException {
 		super(serialport);
 		this.SerialPort = serialport;
-        NativeLoader.getInstance().register_SerialEvent(this);
 
+
+
+        NativeLoader.getInstance().register_SerialEvent(this,this);
 		if((pthreadid=NativeLoader.getInstance().reader_serial(SerialPort.fd)) != 0)
 		{
 			throw new SerialPortException("callback reader");
 		}
+
+
+
 	}
 
 	public void serial_reader_callback(int taille, Pointer data) {
+        System.out.print("ici");
 		try 
 		{
 			if(fifo_in.free() < taille)
@@ -58,7 +65,9 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
 		}
 	}
 
-	public int getSize(){
+
+
+    public int getSize(){
 		return fifo_in.getSize();
 	}
 	public byte[] read(){
@@ -66,4 +75,8 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
 	}
 
 
+    @Override
+    public void serial_broken_link() {
+      System.out.println("broken");
+    }
 }

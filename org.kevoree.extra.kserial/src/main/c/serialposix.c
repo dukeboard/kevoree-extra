@@ -27,13 +27,78 @@
 
 #define BUFFER_SIZE 512
 
-volatile quitter=0;
+volatile int quitter;
+
+typedef struct _contexte{
+	int fd;
+	const char *name_device;
+	pthread_t thread_reader;
+} SerialContext;
 
 void (*SerialEvent) (int taille,unsigned char *data);
+void (*SerialBrokenLink) ();
 
-int register_SerialEvent( void* fn){
+
+
+static SerialContext ctx;
+
+
+void handler_sigint(int sig)
+{
+	printf("CATCH SIGNAL EXIT ");
+	quitter = 1;
+	close_serial(ctx.fd);
+	exit(sig);
+}
+
+
+int init(int fd,const char *name_device)
+{
+	int rt;
+	pthread_t monitor;
+	signal(SIGINT, handler_sigint);
+	signal(SIGKILL, handler_sigint);
+	SerialBrokenLink = NULL;
+	ctx.fd = fd;
+	ctx.name_device =name_device;
+	
+	ctx.thread_reader = -1;
+ 
+	rt = pthread_create (& monitor, NULL,&serial_monitoring, NULL);
+	if(rt != 0)
+	{
+		close(fd);
+		return rt;
+	}
+	return 0;
+}
+
+
+int register_SerialEvent( void* fn,void* fonction){
 	SerialEvent=fn;
+		SerialBrokenLink=fonction;
+	return 0;
 };
+
+
+void *serial_monitoring()
+{
+	char byte[BUFFER_SIZE];
+	struct stat sb;
+	
+	while(quitter ==0)
+	{
+		 if (stat(ctx.name_device, &sb) == -1)
+		 {
+		    SerialBrokenLink(ctx.fd);
+            close_serial(ctx.fd);
+         }
+
+		usleep(3000);
+	}
+
+	pthread_exit(NULL);
+}
 
 
 void *serial_reader(int fd)
@@ -46,7 +111,6 @@ void *serial_reader(int fd)
 		if((taille =serialport_read(fd,byte)) > 0)
 		{
 			SerialEvent(taille,byte);
-			printf("Event %d\n",taille);
 			memset(byte,0,sizeof(byte));
 		}
 
@@ -60,19 +124,15 @@ void *serial_reader(int fd)
  * @param
  */
 int reader_serial(int fd){
-	pthread_t reader;
+
 	int rt;
-
-	rt = pthread_create (& reader, NULL,&serial_reader, fd);
-	if(rt == 0)
-	{
-
-		return 0;
-	}else
+	rt = pthread_create (& ctx.thread_reader, NULL,&serial_reader, fd);
+	if(rt != 0)
 	{
 		return rt;
 	}
 }
+
 
 
 
@@ -92,7 +152,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	quitter = 0;
 
 
-	printf("Opening serial device %s %d \n", _name_device,_bitrate);
+	//printf("Opening serial device %s %d \n", _name_device,_bitrate);
 
 	/* process baud rate */
 	switch (_bitrate) {
@@ -107,13 +167,16 @@ int open_serial(const char *_name_device,int _bitrate){
 		return -1;
 	}
 
+
 	/* open the serial device */
-	fd = open(_name_device, O_RDWR | O_NDELAY);
+	fd = open(_name_device,O_RDWR | O_NOCTTY | O_NONBLOCK);
+
 	if(fd < 0) {
 		close(fd);
 		return -2;
 	}
-    printf("la\n");
+	if(init(fd,_name_device) != 0) { return -11; }
+
 	/* get attributes and fill termios structure */
 	err = tcgetattr(fd, &termios);
 	if(err < 0) {
@@ -138,33 +201,31 @@ int open_serial(const char *_name_device,int _bitrate){
 		return  -4;
 	}
 
-	termios.c_iflag = IGNBRK; 				/* enable ignoring break */
+   	 // 8N1
+    termios.c_cflag &= ~PARENB;
+    termios.c_cflag &= ~CSTOPB;
+    termios.c_cflag &= ~CSIZE;
+    termios.c_cflag |= CS8;
+    // no flow control
+    termios.c_cflag &= ~CRTSCTS;
 
-	/* output flags */
-	termios.c_oflag &= ~ OPOST;            /* disable output processing */
-	termios.c_oflag &= ~(ONLCR | OCRNL);   /* disable translating NL <-> CR */
-	/* control flags */
-	termios.c_cflag |=   CREAD;            /* enable reciever */
+    termios.c_cflag |= CREAD | CLOCAL;  // turn on READ & ignore ctrl lines
+    termios.c_iflag &= ~(IXON | IXOFF | IXANY); // turn off s/w flow ctrl
 
-	termios.c_cflag &= ~ CSTOPB;           /* disable 2 stop bits */
-	termios.c_cflag &= ~ CSIZE;            /* remove size flag... */
-	termios.c_cflag |=   CS8;              /* ...enable 8 bit characters */
-	termios.c_cflag |=   HUPCL;            /* enable lower control lines on close - hang up */
-	/* local flags */
+    termios.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
+    termios.c_oflag &= ~OPOST; // make raw
+
+    // see: http://unixwiz.net/techtips/termios-vmin-vtime.html
+    termios.c_cc[VMIN]  = 0;
+    termios.c_cc[VTIME] = 0;
 
 
+    if( tcsetattr(fd, TCSANOW, &termios) < 0) {
+        perror("init_serialport: Couldn't set term attributes");
+        return -5;
+    }
 
-	/* control chars */
-	termios.c_cc[VMIN]  = 0;
-	termios.c_cc[VTIME] = 1;
-
-	/* see: http://unixwiz.net/techtips/termios-vmin-vtime.html */
-	if (tcsetattr(fd, TCSANOW, &termios) != 0) {
-		perror("tcsetattr");
-		return  -6;
-	}
-
-	/* lock the file
+	/* lock the file */
 	fl.l_type = F_WRLCK | F_RDLCK;
 	fl.l_whence = SEEK_SET;
 	fl.l_start = 0;
@@ -175,25 +236,15 @@ int open_serial(const char *_name_device,int _bitrate){
 		close(fd);
 		return  -7;
 	}
-	 */
+	
 
-	//rc = fcntl(fd, F_GETFL, 0);
-	//if (rc != -1)
-    //		fcntl(fd, F_SETFL, rc & ~O_NONBLOCK);
+	rc = fcntl(fd, F_GETFL, 0);
+	if (rc != -1)
+    		fcntl(fd, F_SETFL, rc & ~O_NONBLOCK);
 
 	/* flush the serial device */
 	tcflush(fd, TCIOFLUSH);
-	/*
-	if(remove(FILE_SERIAL_SEMAPHORE) != 0){
 
-	}
-	 Création du tableau de sémaphore
-	if(creerSem(FILE_SERIAL_SEMAPHORE,NUMBER_SEMAPHORE) != OK)
-	{
-
-		return -10;
-	}
- */
 	return fd;
 
 }
@@ -201,6 +252,8 @@ int open_serial(const char *_name_device,int _bitrate){
 int close_serial(int fd){
 	close(fd);
 	quitter = 1;
+	if(ctx.thread_reader =! -1)
+		pthread_kill(ctx.thread_reader,SIGKILL);
 }
 
 
@@ -252,11 +305,9 @@ int serialport_write(int fd,  char* str)
  * @param
  */
 int serialport_read(int fd, char *ptr){
-
 	char b[1];
 	int i=0;
 	int n;
-	memset(ptr,0,sizeof(*ptr));
 	do {
 		n = read(fd, b, 1);
 		if( n==-1) {
@@ -271,7 +322,8 @@ int serialport_read(int fd, char *ptr){
 			ptr[i] = b[0];
 			i++;
 		}
-	} while( b[0] != '\n'); /* detect finish */
+
+	} while( b[0] != '\n'); /* detect finish and protect overflow*/
 
 	return i;
 }
