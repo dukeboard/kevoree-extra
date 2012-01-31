@@ -10,20 +10,20 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        SerialPort serial = new SerialPort("/dev/ttyACM0", 9600);
+        final SerialPort serial = new SerialPort("/dev/ttyACM3", 9600);
 
         serial.open();
         serial.addEventListener(new SerialPortEventListener(){
 
-            public void serialEvent(SerialPortEvent evt) {
 
-                    System.out.println("event="+evt.getSize()+"/"+new String(evt.read()));
+			public void incomingDataEvent (SerialPortEvent evt) {
+				System.out.println("event="+evt.getSize()+"/"+new String(evt.read()));
+			}
 
-
-            }
-
-
-        });
+			public void disconnectionEvent (SerialPortDisconnectionEvent evt) {
+				System.out.println("device " + serial.port_name + " is not connected anymore ");
+			}
+		});
 
 
         Thread.currentThread().sleep(1000000);

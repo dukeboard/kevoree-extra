@@ -10,6 +10,8 @@ package org.kevoree.extra.kserial;
 
 public interface SerialPortEventListener extends java.util.EventListener
 {
-	  void serialEvent(SerialPortEvent evt);
+	  void incomingDataEvent(SerialPortEvent evt);
+
+	void disconnectionEvent(SerialPortDisconnectionEvent evt);
 
 }
