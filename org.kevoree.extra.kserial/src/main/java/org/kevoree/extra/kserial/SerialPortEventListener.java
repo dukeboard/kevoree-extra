@@ -1,8 +1,6 @@
 package org.kevoree.extra.kserial;
 
 
-import org.kevoree.extra.kserial.jna.SerialBrokenLink;
-
 /**
  * Created by jed
  * User: jedartois@gmail.com

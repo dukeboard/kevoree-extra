@@ -2,9 +2,9 @@
 
 #include "serialposix.h"
 
-void test()
+void test(int fd,char *data)
 {
-	printf("BROKEN LINl ICI \n");
+ printf(" %d %s \n",fd,data);
 }
 
 int main(int argc,char ** argv){
@@ -16,8 +16,8 @@ int main(int argc,char ** argv){
 		printf("file descriptor %d \n",fd); 
 		exit(-2);
 	}
+            register_SerialEvent( test);
 
- register_SerialBrokenLink( test);
 	 char test2[512];
 
 	printf("File DS :  %d\n",fd);

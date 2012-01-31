@@ -21,7 +21,7 @@ public interface SerialEvent extends Callback {
 	public static final int BI                 =10;
 	
 	
-	void serial_reader_callback(int taille,Pointer data);
+	void serial_reader_callback(int taille,Pointer data) throws SerialPortException;
 
 } 
 

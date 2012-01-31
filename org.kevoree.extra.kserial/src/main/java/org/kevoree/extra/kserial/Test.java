@@ -1,8 +1,5 @@
 package org.kevoree.extra.kserial;
 
-import org.kevoree.extra.kserial.jna.SerialBrokenLink;
-import org.kevoree.extra.kserial.jna.SerialEvent;
-
 public class Test {
 
     /**
@@ -13,7 +10,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        SerialPort serial = new SerialPort("/dev/ttyUSB0", 9600);
+        SerialPort serial = new SerialPort("/dev/ttyACM0", 9600);
 
         serial.open();
         serial.addEventListener(new SerialPortEventListener(){

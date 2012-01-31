@@ -36,7 +36,7 @@ typedef struct _contexte{
 } SerialContext;
 
 void (*SerialEvent) (int taille,unsigned char *data);
-void (*SerialBrokenLink) ();
+
 
 
 
@@ -58,7 +58,6 @@ int init(int fd,const char *name_device)
 	pthread_t monitor;
 	signal(SIGINT, handler_sigint);
 	signal(SIGKILL, handler_sigint);
-	SerialBrokenLink = NULL;
 	ctx.fd = fd;
 	ctx.name_device =name_device;
 	
@@ -74,9 +73,8 @@ int init(int fd,const char *name_device)
 }
 
 
-int register_SerialEvent( void* fn,void* fonction){
+int register_SerialEvent( void* fn){
 	SerialEvent=fn;
-		SerialBrokenLink=fonction;
 	return 0;
 };
 
@@ -85,14 +83,22 @@ void *serial_monitoring()
 {
 	char byte[BUFFER_SIZE];
 	struct stat sb;
-	
+    int fd;
 	while(quitter ==0)
 	{
 		 if (stat(ctx.name_device, &sb) == -1)
 		 {
-		    SerialBrokenLink(ctx.fd);
+		     SerialEvent(-1,"BROKEN LINK 1\n");
             close_serial(ctx.fd);
          }
+
+        if((fd = open(ctx.name_device,O_RDONLY)) == -1)
+        {
+                SerialEvent(-1,"BROKEN LINK 2\n");
+                close_serial(ctx.fd);
+        }else {
+        close(fd);
+        }
 
 		usleep(3000);
 	}
@@ -201,11 +207,12 @@ int open_serial(const char *_name_device,int _bitrate){
 		return  -4;
 	}
 
-   	 // 8N1
+   	 //No parity (8N1):
     termios.c_cflag &= ~PARENB;
     termios.c_cflag &= ~CSTOPB;
     termios.c_cflag &= ~CSIZE;
     termios.c_cflag |= CS8;
+
     // no flow control
     termios.c_cflag &= ~CRTSCTS;
 
@@ -237,6 +244,7 @@ int open_serial(const char *_name_device,int _bitrate){
 		return  -7;
 	}
 	
+    fcntl(fd, F_SETFL, FNDELAY);
 
 	rc = fcntl(fd, F_GETFL, 0);
 	if (rc != -1)
