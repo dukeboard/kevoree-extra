@@ -40,33 +40,6 @@ void (*SerialEvent) (int taille,unsigned char *data);
 static SerialContext ctx;
 
 
-void handler_sigint(int sig)
-{
-	printf("CATCH SIGNAL EXIT ");
-	quitter = 1;
-	close_serial(ctx.fd);
-	exit(sig);
-}
-
-
-int init(int fd,const char *name_device)
-{
-	int rt;
-	pthread_t monitor;
-	signal(SIGINT, handler_sigint);
-	signal(SIGKILL, handler_sigint);
-	ctx.fd = fd;
-	ctx.name_device =name_device;
-
-	rt = pthread_create (& monitor, NULL,&serial_monitoring, NULL);
-	if(rt != 0)
-	{
-		close(fd);
-		return rt;
-	}
-	return 0;
-}
-
 
 int register_SerialEvent( void* fn){
 	SerialEvent=fn;
@@ -74,35 +47,36 @@ int register_SerialEvent( void* fn){
 };
 
 
-void *serial_monitoring()
+void *serial_monitoring(char *name)
 {
 	char byte[BUFFER_SIZE];
     int fd;
+
 	while(quitter ==0)
 	{
-        if((fd = open(ctx.name_device,O_RDONLY)) == -1)
+        if((fd = open(name,O_RDONLY)) == -1)
         {
-                SerialEvent(-1,"BROKEN LINK\n");
-                close_serial(ctx.fd);
+
+                    SerialEvent(-1,"BROKEN LINK\n");
         }else {
         close(fd);
         }
 
-		usleep(3000);
+		usleep(9000);
 	}
 
 	pthread_exit(NULL);
 }
 
 
-void *serial_reader()
+void *serial_reader(int fd)
 {
 	char byte[BUFFER_SIZE];
-
+    printf("reader %d\n",fd);
 	int taille;
 	while(quitter ==0)
 	{
-		if((taille =serialport_read(ctx.fd,byte)) > 0)
+		if((taille =serialport_read(fd,byte)) > 0)
 		{
 			SerialEvent(taille,byte);
 			memset(byte,0,sizeof(byte));
@@ -118,14 +92,16 @@ void *serial_reader()
  * @param
  */
 int reader_serial(int fd){
- 	pthread_t reader;
-	int rt;
-	rt = pthread_create (& reader, NULL,&serial_reader, NULL);
-	if(rt != 0)
-	{
-	    close(ctx.fd);
-		return rt;
-	}
+ 	pthread_t lecture;
+ return  pthread_create (& lecture, NULL,&serial_reader, fd);
+
+}
+
+
+int monitoring_serial(char *name_device)
+{
+	pthread_t monitor;
+	return pthread_create (& monitor, NULL,&serial_monitoring, name_device);
 }
 
 
@@ -147,7 +123,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	quitter = 0;
 
 
-	//printf("Opening serial device %s %d \n", _name_device,_bitrate);
+	printf("Opening serial device %s %d \n", _name_device,_bitrate);
 
 	/* process baud rate */
 	switch (_bitrate) {
@@ -163,19 +139,22 @@ int open_serial(const char *_name_device,int _bitrate){
 	}
 
 	/* open the serial device */
-	fd = open(_name_device,O_RDWR | O_NOCTTY | O_NONBLOCK);
+	fd = open(_name_device,O_RDWR | O_NONBLOCK);
 
 	if(fd < 0) {
+	    printf("CLOSE\n");
 		close(fd);
+		   exit(0);
 		return -2;
 	}
-	if(init(fd,_name_device) != 0) { return -11; }
+	//if(init(fd,_name_device) != 0) { return -11; }
 
 	/* get attributes and fill termios structure */
 	err = tcgetattr(fd, &termios);
 	if(err < 0) {
 		fprintf(stderr, "tcgetattr: %s\n", strerror(errno));
 		close(fd);
+		exit(0);
 		return  -3;
 	}
 
@@ -184,6 +163,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	if(err < 0) {
 		fprintf(stderr, "cfsetispeed: %s\n", strerror(errno));
 		close(fd);
+		exit(0);
 		return  -4;
 	}
 
@@ -192,6 +172,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	if(err < 0) {
 		fprintf(stderr, "cfsetspeed: %s\n", strerror(errno));
 		close(fd);
+		exit(0);
 		return  -4;
 	}
 
@@ -212,7 +193,7 @@ int open_serial(const char *_name_device,int _bitrate){
 
     // see: http://unixwiz.net/techtips/termios-vmin-vtime.html
     termios.c_cc[VMIN]  = 0;
-    termios.c_cc[VTIME] = 0;
+    termios.c_cc[VTIME] = 1;
 
 
     if( tcsetattr(fd, TCSANOW, &termios) < 0) {
@@ -220,7 +201,7 @@ int open_serial(const char *_name_device,int _bitrate){
         return -5;
     }
 
-	/* lock the file */
+	/* lock the file
 	fl.l_type = F_WRLCK | F_RDLCK;
 	fl.l_whence = SEEK_SET;
 	fl.l_start = 0;
@@ -237,7 +218,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	rc = fcntl(fd, F_GETFL, 0);
 	if (rc != -1)
     		fcntl(fd, F_SETFL, rc & ~O_NONBLOCK);
-
+ */
 	/* flush the serial device */
 	tcflush(fd, TCIOFLUSH);
 

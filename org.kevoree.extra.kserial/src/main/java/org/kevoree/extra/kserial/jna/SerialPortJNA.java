@@ -10,7 +10,7 @@ public interface SerialPortJNA extends Library
 {
 	
 	int open_serial(String name_device,int _bitrate);
-	
+    int monitoring_serial(String name_device);
 	int close_serial(int fd);
 	
 	int register_SerialEvent(SerialEvent callback);

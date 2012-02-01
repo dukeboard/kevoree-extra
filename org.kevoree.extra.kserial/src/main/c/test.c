@@ -4,38 +4,36 @@
 
 void test(int fd,char *data)
 {
- printf(" %d %s \n",fd,data);
+ //printf(" %d %s \n",fd,data);
+ if(fd == -1){ printf("ERRROR\n");}
 }
 
 int main(int argc,char ** argv){
 
-	int	fd = open_serial(argv[1],9600);
+	int	fd = open_serial(argv[1],19200);
 
 	if(fd < 0)
 	{
 		printf("file descriptor %d \n",fd); 
 		exit(-2);
 	}
-            register_SerialEvent( test);
+
+    register_SerialEvent( test);
 
 	 char test2[512];
 
 	printf("File DS :  %d\n",fd);
 
 
-	while(1){
-
-	     memset(test2,0,sizeof(test2));
-
-	if(serialport_read(fd,&test2[0]) > 0){
-		
-		printf("<%s> \n",test2);
+	if(reader_serial(fd) != 0)
+	{
+	    printf("ERROR\n");
 	}
-	
-	
-	}
-	close_serial(fd);
 
-
+	
+    sleep(10);
+    printf("close\n");
+    close(fd);
+    exit(0);
 	return 0;
 }
