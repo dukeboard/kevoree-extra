@@ -168,10 +168,13 @@ class KevoreeJarClassLoader extends JarClassLoader {
   def printDump(){
     logger.debug("KCL : "+classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
     subClassLoaders.foreach{ s =>
-      logger.debug("    l->"+s.asInstanceOf[KevoreeJarClassLoader].asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+      logger.debug("    l->"+s.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
     }
+
     subWeakClassLoaders.foreach{ s =>
-      logger.debug("    w~>"+s.asInstanceOf[KevoreeJarClassLoader].asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+      if(s.get.isDefined){
+        logger.debug("    w~>"+s.get.get.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+      }
     }
   }
 
