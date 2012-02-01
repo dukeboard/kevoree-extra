@@ -1,10 +1,12 @@
 package org.kevoree.extra.jcl
 
 import org.xeustechnologies.jcl.JarClassLoader
-import java.io.{ByteArrayInputStream, InputStream}
 import java.net.URL
 import java.lang.{Class, String}
 import ref.WeakReference
+import org.slf4j.LoggerFactory
+import java.util.{Collections, Enumeration}
+import java.io._
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,6 +16,9 @@ import ref.WeakReference
  */
 
 class KevoreeJarClassLoader extends JarClassLoader {
+
+  private val logger = LoggerFactory.getLogger(classOf[KevoreeJarClassLoader]);
+
 
   classpathResources = new KevoreeLazyJarResources
 
@@ -36,7 +41,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   override def loadClass(className: String, resolveIt: Boolean): Class[_] = {
     try {
-      return super[JarClassLoader].loadClass(className,resolveIt)
+      return super[JarClassLoader].loadClass(className, resolveIt)
     } catch {
       case nf: ClassNotFoundException =>
     }
@@ -54,8 +59,8 @@ class KevoreeJarClassLoader extends JarClassLoader {
           try {
             subCL.get.map {
               m =>
-                if(m.isInstanceOf[KevoreeJarClassLoader]){
-                  return m.asInstanceOf[KevoreeJarClassLoader].loadClass(className,false)
+                if (m.isInstanceOf[KevoreeJarClassLoader]) {
+                  return m.asInstanceOf[KevoreeJarClassLoader].loadClass(className, false)
                 }
             }
           } catch {
@@ -72,6 +77,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def getResourceAsStream(name: String): InputStream = {
+    logger.debug("Get Ressource : " + name)
     val res = this.classpathResources.getResource(name)
     if (res != null) {
       new ByteArrayInputStream(res)
@@ -80,8 +86,27 @@ class KevoreeJarClassLoader extends JarClassLoader {
     }
   }
 
-  override def getResource(p1: String): URL = {
-    classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(p1)
+  override def getResource(s: String): URL = {
+    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containKey(s)) {
+      if (classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s) == null) {
+        val cleanName = if (s.contains("/")) {
+          s.substring(s.lastIndexOf("/") + 1)
+        } else {
+          s
+        }
+        val tFile = File.createTempFile("dummy_kcl_temp", cleanName)
+        tFile.deleteOnExit()
+        val tWriter = new FileOutputStream(tFile)
+        tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResource(s))
+        tWriter.close()
+        new URL("file:///" + tFile.getAbsolutePath)
+      } else {
+        classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s)
+      }
+    } else {
+      logger.debug("getResource not found null=>"+s+" in "+classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+      null
+    }
   }
 
   def unload() {
@@ -89,6 +114,64 @@ class KevoreeJarClassLoader extends JarClassLoader {
     (this.getLoadedClasses.keySet().toList ++ List()).foreach {
       lc =>
         unloadClass(lc)
+    }
+  }
+
+  override def findResource(s: java.lang.String): java.net.URL = {
+    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containKey(s)) {
+      if (classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s) == null) {
+        val cleanName = if (s.contains("/")) {
+          s.substring(s.lastIndexOf("/") + 1)
+        } else {
+          s
+        }
+
+        val tFile = File.createTempFile("dummy_kcl_temp", cleanName)
+        tFile.deleteOnExit()
+        val tWriter = new FileOutputStream(tFile)
+        tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResource(s))
+        tWriter.close()
+        new URL("file:///" + tFile.getAbsolutePath)
+      } else {
+        classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s)
+      }
+    } else {
+      logger.debug("findResource not found null=>"+s+" in "+classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+      null
+    }
+  }
+
+  override def findResources(p1: String): Enumeration[URL] = {
+    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containKey(p1)) {
+      val url = if (classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(p1) == null) {
+        val cleanName = if (p1.contains("/")) {
+          p1.substring(p1.lastIndexOf("/") + 1)
+        } else {
+          p1
+        }
+        val tFile = File.createTempFile("dummy_kcl_temp", cleanName)
+        tFile.deleteOnExit()
+        val tWriter = new FileOutputStream(tFile)
+        tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResource(p1))
+        tWriter.close()
+        new URL("file:///" + tFile.getAbsolutePath)
+      } else {
+        classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(p1)
+      }
+      Collections.enumeration(Collections.singleton(url));
+    } else {
+      Collections.enumeration(new java.util.ArrayList[URL]())
+    }
+  }
+
+
+  def printDump(){
+    logger.debug("KCL : "+classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+    subClassLoaders.foreach{ s =>
+      logger.debug("    l->"+s.asInstanceOf[KevoreeJarClassLoader].asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+    }
+    subWeakClassLoaders.foreach{ s =>
+      logger.debug("    w~>"+s.asInstanceOf[KevoreeJarClassLoader].asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
     }
   }
 
