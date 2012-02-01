@@ -23,6 +23,7 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
     private	ByteFIFO fifo_in = new ByteFIFO(sizefifo);
     private SerialPort serialPort;
     private int pthreadid;
+    private int monitorid;
 
     public SerialPortEvent(SerialPort serialport) throws SerialPortException {
         super(serialport);
@@ -31,23 +32,28 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
 
 
         NativeLoader.getInstance().register_SerialEvent(this);
+    System.out.println(serialport.port_name);
 
 
 
         if((pthreadid=NativeLoader.getInstance().reader_serial(serialPort.fd)) != 0)
         {
-            throw new SerialPortException("callback reader "+pthreadid);
+            NativeLoader.getInstance().close_serial(serialPort.fd);
+            serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
         }
 
-
+        if((monitorid=NativeLoader.getInstance().monitoring_serial(serialPort.port_name)) != 0)
+        {
+            NativeLoader.getInstance().close_serial(serialPort.fd);
+            serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
+        }
 
     }
 
     public void serial_reader_callback(int taille, Pointer data) throws SerialPortException {
-            System.out.println("event ");
-        if(taille <= 0){
+        if(taille < 0){
             NativeLoader.getInstance().close_serial(serialPort.fd);
-//            throw new SerialPortException("Broken link");
+System.out.println(" taille "+taille);
 			serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
         }
         else
