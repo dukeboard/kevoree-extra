@@ -17,8 +17,18 @@ import java.io._
 
 class KevoreeJarClassLoader extends JarClassLoader {
 
+  private var locked = false
+
+  def lockLinks() {
+    locked = true
+  }
+
   private val logger = LoggerFactory.getLogger(classOf[KevoreeJarClassLoader]);
 
+  def cleanupLinks(c : ClassLoader){ // CHEKC USED
+    subClassLoaders = subClassLoaders.filter(scl => scl != c)
+    subWeakClassLoaders = subWeakClassLoaders.filter(scl => scl != c)
+  }
 
   classpathResources = new KevoreeLazyJarResources
 
@@ -29,15 +39,26 @@ class KevoreeJarClassLoader extends JarClassLoader {
   protected var subClassLoaders = List[ClassLoader]()
 
   def addSubClassLoader(cl: ClassLoader) {
-    subClassLoaders = subClassLoaders ++ List(cl)
+    if (!locked) {
+      if (!subClassLoaders.exists(scl => scl == cl)) {
+        if (!subWeakClassLoaders.exists(scl => scl.get.isDefined && scl.get.get == cl)) {
+          subClassLoaders = subClassLoaders ++ List(cl)
+        }
+      }
+    }
   }
 
   protected var subWeakClassLoaders = List[WeakReference[ClassLoader]]()
 
   def addWeakClassLoader(wcl: ClassLoader) {
-    subWeakClassLoaders = subWeakClassLoaders ++ List(new WeakReference[ClassLoader](wcl))
+    if (!locked) {
+      if (!subClassLoaders.exists(scl => scl == wcl)) {
+        if (!subWeakClassLoaders.exists(scl => scl.get.isDefined && scl.get.get == wcl)) {
+          subWeakClassLoaders = subWeakClassLoaders ++ List(new WeakReference[ClassLoader](wcl))
+        }
+      }
+    }
   }
-
 
   override def loadClass(className: String, resolveIt: Boolean): Class[_] = {
     try {
@@ -104,7 +125,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
         classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s)
       }
     } else {
-      logger.debug("getResource not found null=>"+s+" in "+classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+      logger.debug("getResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
       null
     }
   }
@@ -136,7 +157,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
         classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s)
       }
     } else {
-      logger.debug("findResource not found null=>"+s+" in "+classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+      logger.debug("findResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
       null
     }
   }
@@ -165,16 +186,18 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
 
-  def printDump(){
-    logger.debug("KCL : "+classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
-    subClassLoaders.foreach{ s =>
-      logger.debug("    l->"+s.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+  def printDump() {
+    logger.debug("KCL : " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+    subClassLoaders.foreach {
+      s =>
+        logger.debug("    l->" + s.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar + "_" + s.hashCode())
     }
 
-    subWeakClassLoaders.foreach{ s =>
-      if(s.get.isDefined){
-        logger.debug("    w~>"+s.get.get.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
-      }
+    subWeakClassLoaders.foreach {
+      s =>
+        if (s.get.isDefined) {
+          logger.debug("    w~>" + s.get.get.asInstanceOf[KevoreeJarClassLoader].classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar + "_" + s.get.get.hashCode())
+        }
     }
   }
 
