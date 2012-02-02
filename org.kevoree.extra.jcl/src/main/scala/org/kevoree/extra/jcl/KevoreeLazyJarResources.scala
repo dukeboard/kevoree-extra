@@ -2,12 +2,11 @@ package org.kevoree.extra.jcl
 
 import java.io._
 import java.util.jar.JarInputStream
-
-import java.util.logging.Logger
 import org.xeustechnologies.jcl.exception.JclException
 import java.net.URL
 import org.xeustechnologies.jcl.ClasspathResources
 import java.lang.String
+import org.slf4j.{LoggerFactory, Logger}
 ;
 
 /**
@@ -20,7 +19,7 @@ import java.lang.String
 class KevoreeLazyJarResources extends ClasspathResources {
 
   protected val jarContentURL = new java.util.HashMap[String, URL]
-  private val logger = Logger.getLogger(classOf[KevoreeLazyJarResources].getName);
+  private val logger = LoggerFactory.getLogger(classOf[KevoreeLazyJarResources].getName);
   var lastLoadedJar: String = ""
 
   def getLastLoadedJar = lastLoadedJar
@@ -76,7 +75,6 @@ class KevoreeLazyJarResources extends ClasspathResources {
   }
 
   def loadJar(jarStream: InputStream, baseurl: URL) {
-
     var bis: BufferedInputStream = null;
     var jis: JarInputStream = null;
     try {
@@ -90,6 +88,11 @@ class KevoreeLazyJarResources extends ClasspathResources {
               throw new JclException("Class/Resource " + jarEntry.getName() + " already loaded");
             }
           } else {
+            
+            if(jarEntry.getName.endsWith(".composite")){
+              logger.debug("Composite foudn = "+jarEntry.getName)
+            }
+            
             if (baseurl != null && lazyload) {
               jarContentURL.put(jarEntry.getName, new URL("jar:" + baseurl + "!/" + jarEntry.getName))
             } else {
@@ -106,7 +109,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
               out.close()
               jarContentURL.put(jarEntry.getName, null)
               if (jarEntry.getName.endsWith(".jar")) {
-                println("KCL Found sub Jar => " + jarEntry.getName)
+                logger.debug("KCL Found sub Jar => " + jarEntry.getName)
                 loadJar(new ByteArrayInputStream(out.toByteArray))
               } else {
                 jarEntryContents.put(jarEntry.getName, out.toByteArray)
@@ -133,6 +136,10 @@ class KevoreeLazyJarResources extends ClasspathResources {
           case _@e => throw new JclException(e);
         }
     }
+  }
+
+  def containKey(name : String) : Boolean = {
+    jarContentURL.containsKey(name)
   }
 
 
