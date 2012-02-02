@@ -8,26 +8,19 @@
  */
 
 #include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <errno.h>
 #include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
+#include <sys/select.h>
 #include "utils.h"
 #include "serialposix.h"
 
 #define BUFFER_SIZE 512
 
-volatile int quitter;
+static int quitter;
 
 typedef struct _contexte{
 	int fd;
@@ -60,7 +53,7 @@ void *serial_monitoring(char *devicename)
 
 	    usleep(6000);
 	}
-
+    printf("monitoring exit\n");
 	pthread_exit(NULL);
 }
 
@@ -72,13 +65,14 @@ void *serial_reader(int fd)
 	int taille;
 	while(quitter ==0)
 	{
-		if((taille =serialport_read(fd,byte)) > 0)
+		if((taille =serialport_read_timeout(fd,byte)) > 0)
 		{
 			SerialEvent(taille,byte);
 			memset(byte,0,sizeof(byte));
 		}
 
 	}
+	printf("reader exit\n");
 	pthread_exit(NULL);
 }
 
@@ -181,7 +175,7 @@ int open_serial(const char *_name_device,int _bitrate){
 
     // see: http://unixwiz.net/techtips/termios-vmin-vtime.html
     termios.c_cc[VMIN]  = 0;
-    termios.c_cc[VTIME] = 1;
+    termios.c_cc[VTIME] = 0;
 
 
     if( tcsetattr(fd, TCSANOW, &termios) < 0) {
@@ -269,6 +263,7 @@ int serialport_write(int fd,  char* str)
  * @param
  * @param
  */
+
 int serialport_read(int fd, char *ptr){
 	char b[1];
 	int i=0;
@@ -293,6 +288,39 @@ int serialport_read(int fd, char *ptr){
 	return i;
 }
 
+int serialport_read_timeout(int fd, char *ptr){
+	char b[1];
+	int i=0;
+	int n;
+	fd_set set;
+	int rv;
+	struct timeval timeout;
+	FD_ZERO(&set);
+	FD_SET(fd,&set);
+	timeout.tv_sec = 3;
+	timeout.tv_usec = 100;
+
+	do {
+	    rv  = select(fd+1,&set,NULL,NULL,&timeout);
+	    if(rv == -1 || rv == 0 ) { printf("timeout \n"); return 0; }
+		n = read(fd, b, 1);
+		if( n==-1) {
+			usleep( 100*1000 );
+			continue;
+		}
+		if( n==0 ) {
+			usleep( 10 * 1000 );
+			continue;
+		}
+		if(b[0] != 10){
+			ptr[i] = b[0];
+			i++;
+		}
+
+	} while( b[0] != '\n'); /* detect finish and protect overflow*/
+
+	return i;
+}
 
 /**
  * Open a file descriptor

@@ -2,15 +2,24 @@
 
 #include "serialposix.h"
 
+
+
+static int fd;
 void test(int fd,char *data)
 {
- //printf(" %d %s \n",fd,data);
- if(fd == -1){ printf("ERRROR\n");}
+ printf(" %d %s \n",fd,data);
+ if(fd == -1){
+  printf("ERRROR\n");
+  close_serial(fd);
+
+ }
 }
+
+
 
 int main(int argc,char ** argv){
 
-	int	fd = open_serial(argv[1],19200);
+	fd = open_serial(argv[1],19200);
 
 	if(fd < 0)
 	{
@@ -34,7 +43,7 @@ int main(int argc,char ** argv){
 	
     sleep(10);
     printf("close\n");
-    close(fd);
+    close_serial(fd);
     exit(0);
 	return 0;
 }
