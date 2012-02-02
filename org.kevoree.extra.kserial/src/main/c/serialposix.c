@@ -8,26 +8,19 @@
  */
 
 #include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <errno.h>
 #include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
+#include <sys/select.h>
 #include "utils.h"
 #include "serialposix.h"
 
 #define BUFFER_SIZE 512
 
-volatile int quitter;
+static int quitter;
 
 typedef struct _contexte{
 	int fd;
@@ -60,7 +53,7 @@ void *serial_monitoring(char *devicename)
 
 	    usleep(6000);
 	}
-
+    printf("monitoring exit\n");
 	pthread_exit(NULL);
 }
 
@@ -72,13 +65,15 @@ void *serial_reader(int fd)
 	int taille;
 	while(quitter ==0)
 	{
-		if((taille =serialport_read(fd,byte)) > 0)
+
+		if((taille =serialport_read(fd,byte)) > 0 && quitter == 0)
 		{
 			SerialEvent(taille,byte);
 			memset(byte,0,sizeof(byte));
 		}
 
 	}
+	printf("reader exit\n");
 	pthread_exit(NULL);
 }
 
@@ -181,7 +176,7 @@ int open_serial(const char *_name_device,int _bitrate){
 
     // see: http://unixwiz.net/techtips/termios-vmin-vtime.html
     termios.c_cc[VMIN]  = 0;
-    termios.c_cc[VTIME] = 1;
+    termios.c_cc[VTIME] = 0;
 
 
     if( tcsetattr(fd, TCSANOW, &termios) < 0) {
@@ -189,25 +184,6 @@ int open_serial(const char *_name_device,int _bitrate){
         return -5;
     }
 
-	/* lock the file
-	fl.l_type = F_WRLCK | F_RDLCK;
-	fl.l_whence = SEEK_SET;
-	fl.l_start = 0;
-	fl.l_len = 0;
-	fl.l_pid = getpid();
-
-	if (fcntl(fd, F_SETLK, &fl) == -1) {
-		close(fd);
-		return  -7;
-	}
-	
-    fcntl(fd, F_SETFL, FNDELAY);
-
-	rc = fcntl(fd, F_GETFL, 0);
-	if (rc != -1)
-    		fcntl(fd, F_SETFL, rc & ~O_NONBLOCK);
- */
-	/* flush the serial device */
 	tcflush(fd, TCIOFLUSH);
     return fd;
 
@@ -269,6 +245,7 @@ int serialport_write(int fd,  char* str)
  * @param
  * @param
  */
+
 int serialport_read(int fd, char *ptr){
 	char b[1];
 	int i=0;
@@ -288,7 +265,7 @@ int serialport_read(int fd, char *ptr){
 			i++;
 		}
 
-	} while( b[0] != '\n'); /* detect finish and protect overflow*/
+	} while( b[0] != '\n' && quitter == 0); /* detect finish and protect overflow*/
 
 	return i;
 }
