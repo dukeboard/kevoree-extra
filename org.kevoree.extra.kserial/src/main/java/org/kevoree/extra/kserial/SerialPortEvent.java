@@ -30,11 +30,7 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
         this.serialPort = serialport;
 
 
-
         NativeLoader.getInstance().register_SerialEvent(this);
-    System.out.println(serialport.port_name);
-
-
 
         if((pthreadid=NativeLoader.getInstance().reader_serial(serialPort.fd)) != 0)
         {
@@ -53,7 +49,6 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
     public void serial_reader_callback(int taille, Pointer data) throws SerialPortException {
         if(taille < 0){
             NativeLoader.getInstance().close_serial(serialPort.fd);
-System.out.println(" taille "+taille);
 			serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
         }
         else

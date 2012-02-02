@@ -96,7 +96,7 @@ public class SerialPort extends CommPort {
 	@Override
 	public void open () throws SerialPortException {
 		fd = NativeLoader.getInstance().open_serial(port_name, port_bitrate);
-        System.out.println(" file descr : "+fd);
+
 		if (fd < 0) {
 			NativeLoader.getInstance().close_serial(fd);
 			throw new SerialPortException("[" + fd + "] " + Constants.messages_errors.get(fd));

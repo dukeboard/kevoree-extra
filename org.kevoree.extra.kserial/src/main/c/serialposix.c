@@ -35,11 +35,7 @@ typedef struct _contexte{
 } SerialContext;
 
 void (*SerialEvent) (int taille,unsigned char *data);
-
-
 static SerialContext ctx;
-
-
 
 int register_SerialEvent( void* fn){
 	SerialEvent=fn;
@@ -47,22 +43,22 @@ int register_SerialEvent( void* fn){
 };
 
 
-void *serial_monitoring(char *name)
+void *serial_monitoring(char *devicename)
 {
-	char byte[BUFFER_SIZE];
+	char name[1024];
     int fd;
-
+    strcpy(name,devicename);
 	while(quitter ==0)
 	{
         if((fd = open(name,O_RDONLY)) == -1)
         {
-
                     SerialEvent(-1,"BROKEN LINK\n");
         }else {
+        //printf("OK");
         close(fd);
         }
 
-		usleep(9000);
+	    usleep(6000);
 	}
 
 	pthread_exit(NULL);
@@ -72,7 +68,7 @@ void *serial_monitoring(char *name)
 void *serial_reader(int fd)
 {
 	char byte[BUFFER_SIZE];
-    printf("reader %d\n",fd);
+    //printf("reader %d\n",fd);
 	int taille;
 	while(quitter ==0)
 	{
@@ -123,7 +119,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	quitter = 0;
 
 
-	printf("Opening serial device %s %d \n", _name_device,_bitrate);
+	//printf("Opening serial device %s %d \n", _name_device,_bitrate);
 
 	/* process baud rate */
 	switch (_bitrate) {
@@ -142,9 +138,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	fd = open(_name_device,O_RDWR | O_NONBLOCK);
 
 	if(fd < 0) {
-	    printf("CLOSE\n");
-		close(fd);
-		   exit(0);
+         close_serial(fd);
 		return -2;
 	}
 	//if(init(fd,_name_device) != 0) { return -11; }
@@ -152,27 +146,21 @@ int open_serial(const char *_name_device,int _bitrate){
 	/* get attributes and fill termios structure */
 	err = tcgetattr(fd, &termios);
 	if(err < 0) {
-		fprintf(stderr, "tcgetattr: %s\n", strerror(errno));
-		close(fd);
-		exit(0);
+         close_serial(fd);
 		return  -3;
 	}
 
 	/* set input baud rate */
 	err = cfsetispeed(&termios, bitrate);
 	if(err < 0) {
-		fprintf(stderr, "cfsetispeed: %s\n", strerror(errno));
-		close(fd);
-		exit(0);
+	 close_serial(fd);
 		return  -4;
 	}
 
 	/* set baud rate */
 	err = cfsetspeed(&termios, bitrate);
 	if(err < 0) {
-		fprintf(stderr, "cfsetspeed: %s\n", strerror(errno));
-		close(fd);
-		exit(0);
+	 close_serial(fd);
 		return  -4;
 	}
 
@@ -221,13 +209,15 @@ int open_serial(const char *_name_device,int _bitrate){
  */
 	/* flush the serial device */
 	tcflush(fd, TCIOFLUSH);
-
-	return fd;
+    return fd;
 
 }
 
 int close_serial(int fd){
+if(quitter ==0){
 	close(fd);
+}
+
 	quitter = 1;
 }
 

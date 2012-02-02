@@ -29,6 +29,7 @@ int main(int argc,char ** argv){
 	{
 	    printf("ERROR\n");
 	}
+	 monitoring_serial(argv[1]);
 
 	
     sleep(10);

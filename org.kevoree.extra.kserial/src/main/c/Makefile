@@ -9,7 +9,7 @@ clean :
 	rm *.o *.so test
 
 osx:
-	$(CC) -shared -fPIC -Wl,-install_name,../resources/osx/serialposix.so -o ../resources/osx/serialposix.so serialposix.c
+	$(CC) -shared -fPIC -Wl,-install_name,serialposix.so -o ../resources/osx/serialposix.so serialposix.c
 	
 test:
 	$(CC) test.c -o test ../resources/osx/serialposix.so -lpthread
