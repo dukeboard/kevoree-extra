@@ -10,7 +10,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        final SerialPort serial = new SerialPort("/dev/ttyACM0", 19200);
+        final SerialPort serial = new SerialPort("/dev/tty.usbmodem26231", 19200);
         final int maxtentative=5;
         serial.open();
         serial.addEventListener(new SerialPortEventListener(){
