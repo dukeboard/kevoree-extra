@@ -2,36 +2,23 @@ package org.kevoree.extra.kserial;
 
 import com.sun.jna.Memory;
 import com.sun.jna.ptr.PointerByReference;
+import org.kevoree.extra.kserial.Utils.KserialHelper;
 import org.kevoree.extra.kserial.jna.NativeLoader;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jed
  * User: jedartois@gmail.com
  * Date: 26/01/12
  * Time: 17:29
- * <p/>
+
  * SerialPort
  */
 
 public class SerialPort extends CommPort {
-
-    public static final int DATABITS_5 = 5;
-    public static final int DATABITS_6 = 6;
-    public static final int DATABITS_7 = 7;
-    public static final int DATABITS_8 = 8;
-    public static final int PARITY_NONE = 0;
-    public static final int PARITY_ODD = 1;
-    public static final int PARITY_EVEN = 2;
-    public static final int PARITY_MARK = 3;
-    public static final int PARITY_SPACE = 4;
-    public static final int STOPBITS_1 = 1;
-    public static final int STOPBITS_2 = 2;
-    public static final int STOPBITS_1_5 = 3;
-    public static final int FLOWCONTROL_NONE = 0;
-    public static final int FLOWCONTROL_RTSCTS_IN = 1;
-    public static final int FLOWCONTROL_RTSCTS_OUT = 2;
-    public static final int FLOWCONTROL_XONXOFF_IN = 4;
-    public static final int FLOWCONTROL_XONXOFF_OUT = 8;
 
     private SerialPortEvent SerialPortEvent;
     protected javax.swing.event.EventListenerList listenerList = new javax.swing.event.EventListenerList();
@@ -44,6 +31,7 @@ public class SerialPort extends CommPort {
         this.port_bitrate = bitrate;
         this.port_name = portname;
     }
+
 
     public void addEventListener (SerialPortEventListener listener) {
         listenerList.add(SerialPortEventListener.class, listener);
@@ -99,13 +87,13 @@ public class SerialPort extends CommPort {
 
         if (fd < 0) {
             NativeLoader.getInstance().close_serial(fd);
-            throw new SerialPortException("[" + fd + "] " + Constants.messages_errors.get(fd));
+            throw new SerialPortException("[" + fd + "] " + Constants.messages_errors.get(fd)+" Ports : "+ KserialHelper.getPortIdentifiers());
         }
         SerialPortEvent = new SerialPortEvent(this);
 
     }
 
-    public void reopen (int tentative,SerialPortEventListener event) throws SerialPortException {
+    public void autoReconnect (int tentative,SerialPortEventListener event) throws SerialPortException {
         removeEventListener(event);
 
         int i=0;
@@ -117,7 +105,7 @@ public class SerialPort extends CommPort {
                 System.out.print("Try reconnect N°"+i);
                 try
                 {
-                    Thread.sleep(2000);
+                    Thread.sleep(500);
                 } catch (Exception e) {
                 }
 

@@ -1,8 +1,6 @@
 package org.kevoree.extra.kserial.jna;
 
-import java.util.HashMap;
 import com.sun.jna.Library;
-import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 
@@ -16,6 +14,8 @@ public interface SerialPortJNA extends Library
 	int register_SerialEvent(SerialEvent callback);
 	int reader_serial(int fd);
 	int serialport_write(int fd,PointerByReference inipar);
+
+    int verify_fd(String devicename);
 	int upload_program(int fd, Pointer hex_program);
 
 	

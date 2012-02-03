@@ -1,0 +1,513 @@
+   1               		.file	"Wireless_Bootloader_ATmega328.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__ = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	onboard_program_write
+  18               	onboard_program_write:
+  19               	.LFB6:
+  20               	.LM1:
+  21               	.LVL0:
+  22 0000 0F93      		push r16
+  23 0002 1F93      		push r17
+  24 0004 CF93      		push r28
+  25 0006 DF93      		push r29
+  26               	/* prologue: function */
+  27               	/* frame size = 0 */
+  28               	/* stack size = 4 */
+  29               	.L__stack_usage = 4
+  30 0008 DA01      		movw r26,r20
+  31               	.LM2:
+  32 000a 1FB7      		in r17,__SREG__
+  33               	.LVL1:
+  34               	.LM3:
+  35               	/* #APP */
+  36               	 ;  79 "Wireless_Bootloader_ATmega328.c" 1
+  37 000c F894      		cli
+  38               	 ;  0 "" 2
+  39               	/* #NOAPP */
+  40               	.L2:
+  41               	.LM4:
+  42 000e F999      		sbic 63-32,1
+  43 0010 00C0      		rjmp .L2
+  44               	.LM5:
+  45 0012 83E0      		ldi r24,lo8(3)
+  46 0014 FB01      		movw r30,r22
+  47               	/* #APP */
+  48               	 ;  83 "Wireless_Bootloader_ATmega328.c" 1
+  49 0016 8093 5700 		sts 87, r24
+  50 001a E895      		spm
+  51               		
+  52               	 ;  0 "" 2
+  53               	/* #NOAPP */
+  54               	.L3:
+  55               	.LM6:
+  56 001c 07B6      		in __tmp_reg__,87-32
+  57 001e 00FC      		sbrc __tmp_reg__,0
+  58 0020 00C0      		rjmp .L3
+  59               	.LM7:
+  60 0022 CB01      		movw r24,r22
+  61 0024 8058      		subi r24,lo8(-(128))
+  62 0026 9F4F      		sbci r25,hi8(-(128))
+  63 0028 FB01      		movw r30,r22
+  64               	.LBB2:
+  65               	.LM8:
+  66 002a 01E0      		ldi r16,lo8(1)
+  67               	.LVL2:
+  68               	.L4:
+  69               	.LM9:
+  70 002c 4C91      		ld r20,X
+  71               	.LVL3:
+  72               	.LM10:
+  73 002e 1196      		adiw r26,1
+  74 0030 3C91      		ld r19,X
+  75 0032 1197      		sbiw r26,1
+  76 0034 20E0      		ldi r18,lo8(0)
+  77 0036 E901      		movw r28,r18
+  78 0038 C40F      		add r28,r20
+  79 003a D11D      		adc r29,__zero_reg__
+  80               	.LVL4:
+  81               	.LM11:
+  82 003c 1296      		adiw r26,2
+  83               	.LVL5:
+  84               	.LM12:
+  85               	/* #APP */
+  86               	 ;  93 "Wireless_Bootloader_ATmega328.c" 1
+  87 003e 0E01      		movw  r0, r28
+  88 0040 0093 5700 		sts 87, r16
+  89 0044 E895      		spm
+  90 0046 1124      		clr  r1
+  91               		
+  92               	 ;  0 "" 2
+  93               	/* #NOAPP */
+  94 0048 3296      		adiw r30,2
+  95               	.LBE2:
+  96               	.LM13:
+  97 004a E817      		cp r30,r24
+  98 004c F907      		cpc r31,r25
+  99 004e 01F4      		brne .L4
+ 100               	.LM14:
+ 101 0050 85E0      		ldi r24,lo8(5)
+ 102 0052 FB01      		movw r30,r22
+ 103               	/* #APP */
+ 104               	 ;  96 "Wireless_Bootloader_ATmega328.c" 1
+ 105 0054 8093 5700 		sts 87, r24
+ 106 0058 E895      		spm
+ 107               		
+ 108               	 ;  0 "" 2
+ 109               	/* #NOAPP */
+ 110               	.L5:
+ 111               	.LM15:
+ 112 005a 07B6      		in __tmp_reg__,87-32
+ 113 005c 00FC      		sbrc __tmp_reg__,0
+ 114 005e 00C0      		rjmp .L5
+ 115               	.LM16:
+ 116 0060 81E1      		ldi r24,lo8(17)
+ 117               	/* #APP */
+ 118               	 ;  98 "Wireless_Bootloader_ATmega328.c" 1
+ 119 0062 8093 5700 		sts 87, r24
+ 120 0066 E895      		spm
+ 121               		
+ 122               	 ;  0 "" 2
+ 123               	.LM17:
+ 124               	/* #NOAPP */
+ 125 0068 1FBF      		out __SREG__,r17
+ 126               	/* epilogue start */
+ 127               	.LM18:
+ 128 006a DF91      		pop r29
+ 129 006c CF91      		pop r28
+ 130 006e 1F91      		pop r17
+ 131               	.LVL6:
+ 132 0070 0F91      		pop r16
+ 133 0072 0895      		ret
+ 134               	.LFE6:
+ 136               	.global	putch
+ 138               	putch:
+ 139               	.LFB8:
+ 140               	.LM19:
+ 141               	/* prologue: function */
+ 142               	/* frame size = 0 */
+ 143               	/* stack size = 0 */
+ 144               	.L__stack_usage = 0
+ 145               	.LVL7:
+ 146               	.L11:
+ 147               	.LM20:
+ 148 0074 9091 C000 		lds r25,192
+ 149 0078 95FF      		sbrs r25,5
+ 150 007a 00C0      		rjmp .L11
+ 151               	.LM21:
+ 152 007c 8093 C600 		sts 198,r24
+ 153               	/* epilogue start */
+ 154               	.LM22:
+ 155 0080 0895      		ret
+ 156               	.LFE8:
+ 158               	.global	putchKID
+ 160               	putchKID:
+ 161               	.LFB7:
+ 162               	.LM23:
+ 163               	/* prologue: function */
+ 164               	/* frame size = 0 */
+ 165               	/* stack size = 0 */
+ 166               	.L__stack_usage = 0
+ 167               	.LVL8:
+ 168               	.LM24:
+ 169 0082 8EE4      		ldi r24,lo8(78)
+ 170 0084 0E94 0000 		call putch
+ 171               	.LVL9:
+ 172 0088 8FE4      		ldi r24,lo8(79)
+ 173 008a 0E94 0000 		call putch
+ 174               	.LVL10:
+ 175 008e 84E4      		ldi r24,lo8(68)
+ 176 0090 0E94 0000 		call putch
+ 177               	.LVL11:
+ 178 0094 85E4      		ldi r24,lo8(69)
+ 179 0096 0E94 0000 		call putch
+ 180               	.LVL12:
+ 181 009a 80E3      		ldi r24,lo8(48)
+ 182 009c 0E94 0000 		call putch
+ 183               	.LVL13:
+ 184               	/* epilogue start */
+ 185               	.LM25:
+ 186 00a0 0895      		ret
+ 187               	.LFE7:
+ 189               	.global	getch
+ 191               	getch:
+ 192               	.LFB9:
+ 193               	.LM26:
+ 194               	/* prologue: function */
+ 195               	/* frame size = 0 */
+ 196               	/* stack size = 0 */
+ 197               	.L__stack_usage = 0
+ 198               	.LM27:
+ 199 00a2 81E0      		ldi r24,lo8(1)
+ 200 00a4 8093 0000 		sts retransmit_flag,r24
+ 201               	.LVL14:
+ 202               	.LM28:
+ 203 00a8 80E0      		ldi r24,lo8(0)
+ 204 00aa 90E0      		ldi r25,hi8(0)
+ 205 00ac DC01      		movw r26,r24
+ 206               	.LM29:
+ 207 00ae 00C0      		rjmp .L15
+ 208               	.LVL15:
+ 209               	.L17:
+ 210               	.LM30:
+ 211 00b0 0196      		adiw r24,1
+ 212 00b2 A11D      		adc r26,__zero_reg__
+ 213 00b4 B11D      		adc r27,__zero_reg__
+ 214               	.LVL16:
+ 215               	.LM31:
+ 216 00b6 813A      		cpi r24,lo8(100001)
+ 217 00b8 26E8      		ldi r18,hi8(100001)
+ 218 00ba 9207      		cpc r25,r18
+ 219 00bc 21E0      		ldi r18,hlo8(100001)
+ 220 00be A207      		cpc r26,r18
+ 221 00c0 20E0      		ldi r18,hhi8(100001)
+ 222 00c2 B207      		cpc r27,r18
+ 223 00c4 01F4      		brne .L15
+ 224               	.LM32:
+ 225 00c6 1092 0000 		sts retransmit_flag,__zero_reg__
+ 226               	.LM33:
+ 227 00ca 00C0      		rjmp .L16
+ 228               	.LVL17:
+ 229               	.L15:
+ 230               	.LM34:
+ 231 00cc 2091 C000 		lds r18,192
+ 232 00d0 27FF      		sbrs r18,7
+ 233 00d2 00C0      		rjmp .L17
+ 234               	.L16:
+ 235               	.LM35:
+ 236 00d4 8091 C600 		lds r24,198
+ 237               	.LVL18:
+ 238               	/* epilogue start */
+ 239               	.LM36:
+ 240 00d8 0895      		ret
+ 241               	.LFE9:
+ 243               	.global	main
+ 245               	main:
+ 246               	.LFB10:
+ 247               	.LM37:
+ 248 00da CF92      		push r12
+ 249 00dc DF92      		push r13
+ 250 00de EF92      		push r14
+ 251 00e0 FF92      		push r15
+ 252 00e2 0F93      		push r16
+ 253 00e4 1F93      		push r17
+ 254 00e6 CF93      		push r28
+ 255 00e8 DF93      		push r29
+ 256               	/* prologue: function */
+ 257               	/* frame size = 0 */
+ 258               	/* stack size = 8 */
+ 259               	.L__stack_usage = 8
+ 260               	.LVL19:
+ 261               	.LM38:
+ 262 00ea 1092 C500 		sts 197,__zero_reg__
+ 263               	.LM39:
+ 264 00ee 83E3      		ldi r24,lo8(51)
+ 265 00f0 8093 C400 		sts 196,r24
+ 266               	.LM40:
+ 267 00f4 88E1      		ldi r24,lo8(24)
+ 268 00f6 8093 C100 		sts 193,r24
+ 269               	.LM41:
+ 270 00fa 85E0      		ldi r24,lo8(5)
+ 271 00fc 0E94 0000 		call putch
+ 272               	.LVL20:
+ 273               	.LM42:
+ 274 0100 EE24      		clr r14
+ 275 0102 FF24      		clr r15
+ 276 0104 8701      		movw r16,r14
+ 277               	.LM43:
+ 278 0106 00C0      		rjmp .L42
+ 279               	.LVL21:
+ 280               	.L22:
+ 281               	.LM44:
+ 282 0108 0894      		sec
+ 283 010a E11C      		adc r14,__zero_reg__
+ 284 010c F11C      		adc r15,__zero_reg__
+ 285 010e 011D      		adc r16,__zero_reg__
+ 286 0110 111D      		adc r17,__zero_reg__
+ 287               	.LVL22:
+ 288               	.LM45:
+ 289 0112 81EA      		ldi r24,lo8(100001)
+ 290 0114 E816      		cp r14,r24
+ 291 0116 86E8      		ldi r24,hi8(100001)
+ 292 0118 F806      		cpc r15,r24
+ 293 011a 81E0      		ldi r24,hlo8(100001)
+ 294 011c 0807      		cpc r16,r24
+ 295 011e 80E0      		ldi r24,hhi8(100001)
+ 296 0120 1807      		cpc r17,r24
+ 297 0122 00F0      		brlo .L42
+ 298               	.LM46:
+ 299 0124 E091 0000 		lds r30,app_start
+ 300 0128 F091 0000 		lds r31,app_start+1
+ 301 012c 0995      		icall
+ 302               	.LVL23:
+ 303               	.L42:
+ 304               	.LM47:
+ 305 012e 8091 C000 		lds r24,192
+ 306 0132 87FF      		sbrs r24,7
+ 307 0134 00C0      		rjmp .L22
+ 308               	.LM48:
+ 309 0136 8091 C600 		lds r24,198
+ 310 013a 8630      		cpi r24,lo8(6)
+ 311 013c 01F0      		breq .L23
+ 312               	.LM49:
+ 313 013e E091 0000 		lds r30,app_start
+ 314 0142 F091 0000 		lds r31,app_start+1
+ 315 0146 0995      		icall
+ 316               	.L23:
+ 317               	.LM50:
+ 318 0148 0E94 0000 		call putchKID
+ 319               	.LM51:
+ 320 014c 80E0      		ldi r24,lo8(0)
+ 321               	.LM52:
+ 322 014e 91E1      		ldi r25,lo8(17)
+ 323 0150 D92E      		mov r13,r25
+ 324               	.LVL24:
+ 325               	.L39:
+ 326               	.LM53:
+ 327 0152 8823      		tst r24
+ 328 0154 01F0      		breq .L25
+ 329               	.LVL25:
+ 330               	.L26:
+ 331               	.LM54:
+ 332 0156 87E0      		ldi r24,lo8(7)
+ 333 0158 00C0      		rjmp .L44
+ 334               	.L25:
+ 335               	.LM55:
+ 336 015a 84E5      		ldi r24,lo8(84)
+ 337               	.L44:
+ 338 015c 0E94 0000 		call putch
+ 339               	.L43:
+ 340               	.LM56:
+ 341 0160 0E94 0000 		call getch
+ 342 0164 8A33      		cpi r24,lo8(58)
+ 343 0166 01F0      		breq .L28
+ 344               	.LM57:
+ 345 0168 8091 0000 		lds r24,retransmit_flag
+ 346 016c 8823      		tst r24
+ 347 016e 01F4      		brne .L43
+ 348 0170 00C0      		rjmp .L26
+ 349               	.L28:
+ 350               	.LM58:
+ 351 0172 0E94 0000 		call getch
+ 352 0176 8093 0000 		sts page_length,r24
+ 353               	.LM59:
+ 354 017a 9091 0000 		lds r25,retransmit_flag
+ 355 017e 9923      		tst r25
+ 356 0180 01F0      		breq .L26
+ 357               	.LM60:
+ 358 0182 8637      		cpi r24,lo8(118)
+ 359 0184 01F4      		brne .L30
+ 360               	.LM61:
+ 361 0186 0E94 0000 		call putch
+ 362               	.LM62:
+ 363 018a 81E3      		ldi r24,lo8(49)
+ 364 018c 0E94 0000 		call putch
+ 365               	.LM63:
+ 366 0190 8EE2      		ldi r24,lo8(46)
+ 367 0192 0E94 0000 		call putch
+ 368               	.LM64:
+ 369 0196 80E3      		ldi r24,lo8(48)
+ 370 0198 0E94 0000 		call putch
+ 371               	.L30:
+ 372               	.LM65:
+ 373 019c 8091 0000 		lds r24,page_length
+ 374 01a0 8B36      		cpi r24,lo8(107)
+ 375 01a2 01F4      		brne .L31
+ 376               	.LM66:
+ 377 01a4 0E94 0000 		call putchKID
+ 378               	.L31:
+ 379               	.LM67:
+ 380 01a8 8091 0000 		lds r24,page_length
+ 381 01ac 8335      		cpi r24,lo8(83)
+ 382 01ae 01F4      		brne .L32
+ 383               	.LM68:
+ 384               	/* #APP */
+ 385               	 ;  186 "Wireless_Bootloader_ATmega328.c" 1
+ 386 01b0 D092 5700 		sts 87, r13
+ 387 01b4 E895      		spm
+ 388               		
+ 389               	 ;  0 "" 2
+ 390               	.LM69:
+ 391               	/* #NOAPP */
+ 392 01b6 E091 0000 		lds r30,app_start
+ 393 01ba F091 0000 		lds r31,app_start+1
+ 394 01be 0995      		icall
+ 395               	.L32:
+ 396               	.LM70:
+ 397 01c0 0E94 0000 		call getch
+ 398 01c4 8093 0000 		sts page_address,r24
+ 399 01c8 8091 0000 		lds r24,retransmit_flag
+ 400 01cc 8823      		tst r24
+ 401 01ce 01F4      		brne .+2
+ 402 01d0 00C0      		rjmp .L26
+ 403               	.LM71:
+ 404 01d2 0E94 0000 		call getch
+ 405 01d6 8093 0000 		sts page_address+1,r24
+ 406 01da 8091 0000 		lds r24,retransmit_flag
+ 407 01de 8823      		tst r24
+ 408 01e0 01F4      		brne .+2
+ 409 01e2 00C0      		rjmp .L26
+ 410               	.LM72:
+ 411 01e4 0E94 0000 		call getch
+ 412 01e8 C82E      		mov r12,r24
+ 413               	.LVL26:
+ 414               	.LM73:
+ 415 01ea 8091 0000 		lds r24,retransmit_flag
+ 416               	.LVL27:
+ 417 01ee 8823      		tst r24
+ 418 01f0 01F4      		brne .+2
+ 419 01f2 00C0      		rjmp .L26
+ 420 01f4 C0E0      		ldi r28,lo8(incoming_page_data)
+ 421 01f6 D0E0      		ldi r29,hi8(incoming_page_data)
+ 422 01f8 7E01      		movw r14,r28
+ 423 01fa 00E0      		ldi r16,lo8(0)
+ 424 01fc 10E0      		ldi r17,hi8(0)
+ 425 01fe 00C0      		rjmp .L33
+ 426               	.LVL28:
+ 427               	.L34:
+ 428               	.LM74:
+ 429 0200 0E94 0000 		call getch
+ 430 0204 F701      		movw r30,r14
+ 431 0206 8193      		st Z+,r24
+ 432 0208 7F01      		movw r14,r30
+ 433               	.LM75:
+ 434 020a 8091 0000 		lds r24,retransmit_flag
+ 435 020e 8823      		tst r24
+ 436 0210 01F4      		brne .+2
+ 437 0212 00C0      		rjmp .L26
+ 438               	.LM76:
+ 439 0214 0F5F      		subi r16,lo8(-(1))
+ 440 0216 1F4F      		sbci r17,hi8(-(1))
+ 441               	.LVL29:
+ 442               	.L33:
+ 443               	.LM77:
+ 444 0218 9091 0000 		lds r25,page_length
+ 445 021c 292F      		mov r18,r25
+ 446 021e 30E0      		ldi r19,lo8(0)
+ 447 0220 0217      		cp r16,r18
+ 448 0222 1307      		cpc r17,r19
+ 449 0224 00F0      		brlo .L34
+ 450               	.LM78:
+ 451 0226 2050      		subi r18,lo8(-(incoming_page_data))
+ 452 0228 3040      		sbci r19,hi8(-(incoming_page_data))
+ 453 022a 00C0      		rjmp .L35
+ 454               	.LVL30:
+ 455               	.L36:
+ 456               	.LM79:
+ 457 022c 8991      		ld r24,Y+
+ 458 022e C80E      		add r12,r24
+ 459               	.LVL31:
+ 460               	.L35:
+ 461               	.LM80:
+ 462 0230 C217      		cp r28,r18
+ 463 0232 D307      		cpc r29,r19
+ 464 0234 01F4      		brne .L36
+ 465               	.LVL32:
+ 466               	.LM81:
+ 467 0236 8091 0000 		lds r24,page_address+1
+ 468 023a 2091 0000 		lds r18,page_address
+ 469 023e 820F      		add r24,r18
+ 470               	.LM82:
+ 471 0240 890F      		add r24,r25
+ 472               	.LM83:
+ 473 0242 8C0D      		add r24,r12
+ 474               	.LVL33:
+ 475               	.LM84:
+ 476 0244 01F0      		breq .+2
+ 477 0246 00C0      		rjmp .L39
+ 478               	.LM85:
+ 479 0248 6091 0000 		lds r22,page_address
+ 480 024c 7091 0000 		lds r23,page_address+1
+ 481 0250 80E0      		ldi r24,lo8(0)
+ 482 0252 90E0      		ldi r25,hi8(0)
+ 483               	.LVL34:
+ 484 0254 40E0      		ldi r20,lo8(incoming_page_data)
+ 485 0256 50E0      		ldi r21,hi8(incoming_page_data)
+ 486 0258 0E94 0000 		call onboard_program_write
+ 487 025c 00C0      		rjmp .L25
+ 488               	.LFE10:
+ 490               	.global	NODE_ID
+ 491               		.data
+ 494               	NODE_ID:
+ 495 0000 4E4F 4445 		.ascii	"NODE0"
+ 495      30
+ 496               	.global	app_start
+ 497               	.global	app_start
+ 498               		.section .bss
+ 501               	app_start:
+ 502 0000 0000      		.skip 2,0
+ 503               	.global	retransmit_flag
+ 504               		.data
+ 507               	retransmit_flag:
+ 508 0005 01        		.byte	1
+ 509               		.comm incoming_page_data,256,1
+ 510               		.comm page_length,1,1
+ 511               		.comm page_address,2,1
+ 568               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Wireless_Bootloader_ATmega328.c
+     /tmp/ccL56kyc.s:2      *ABS*:000000000000003f __SREG__
+     /tmp/ccL56kyc.s:3      *ABS*:000000000000003e __SP_H__
+     /tmp/ccL56kyc.s:4      *ABS*:000000000000003d __SP_L__
+     /tmp/ccL56kyc.s:5      *ABS*:0000000000000034 __CCP__
+     /tmp/ccL56kyc.s:6      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccL56kyc.s:7      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccL56kyc.s:18     .text:0000000000000000 onboard_program_write
+     /tmp/ccL56kyc.s:138    .text:0000000000000074 putch
+     /tmp/ccL56kyc.s:160    .text:0000000000000082 putchKID
+     /tmp/ccL56kyc.s:191    .text:00000000000000a2 getch
+     /tmp/ccL56kyc.s:507    .data:0000000000000005 retransmit_flag
+     /tmp/ccL56kyc.s:245    .text:00000000000000da main
+     /tmp/ccL56kyc.s:501    .bss:0000000000000000 app_start
+                            *COM*:0000000000000001 page_length
+                            *COM*:0000000000000002 page_address
+                            *COM*:0000000000000100 incoming_page_data
+     /tmp/ccL56kyc.s:494    .data:0000000000000000 NODE_ID
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
