@@ -210,7 +210,7 @@ void print_hex_array(int type,int taille,unsigned char *hex_array)
 	}
 
 }
-int write_on_the_air_program(char *port_device,int target,char *node_id,int taille,int adrlast,unsigned char *hex_array)
+int write_on_the_air_program(char *port_device,int target,char *node_id,int taille,int adrlast,unsigned char *intel_hex_array)
 {
 	int fd;
 	int last_memory;
@@ -225,11 +225,9 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 	int current_memory_address;
 	int page_size;
 	int flash_size;
-	unsigned char file_intel_hex_array[flash_size];
-	unsigned char *intel_hex_array;
 	char c;
-	unsigned char *parsed_intel_hex;
 
+    char NODE_ID[MAX_SIZE_ID];
 
 
 	// Open Serial port
@@ -238,16 +236,24 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 		return fd;
 	}
 
-
-	switch(target){
+    // customize for target
+	switch(target)
+	{
 	case ATMEGA328:
-		page_size = 128;  // 64 words --> 128 bytes
-		flash_size =   30720;     // The max flash size ATmega168 is 16384 bytes atmega368 30720 bytes
+		page_size = 128;            // 64 words
+		flash_size = 30720;     // The max flash
+		break;
+	case ATMEGA1280:
+		page_size = 256;
+		flash_size = 131072;
+		break;
+
+	case ATMEGA168:
+
 		break;
 
 	}
 
-	char NODE_ID[MAX_SIZE_ID];
 	usleep(1000);
 	if(serialport_writebyte(fd,'r') < 0)
 	{
@@ -258,16 +264,16 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 	printf("Waiting bootloader %d \n",last_memory_address );
 	do
 	{
-		printf(".");
+    // TODO ADD TIMEOUT
 		boot_flag =  serialport_readbyte(fd);
 	}while( boot_flag !=5 && flash_exit == 0);
-	printf("\n");
+
 
 	printf("Bootloader Ready ! \n");
 
 	if(serialport_writebyte(fd,6) < 0)
 	{
-		printf("ERROR\n");
+
 		return -1;
 	}
 	int i=0;
@@ -278,7 +284,7 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 	if(strcmp(NODE_ID,node_id))
 	{
 		printf("WRONG NODE %s != %s\n",NODE_ID,node_id);
-		return -1;
+		return -2;
 	}else
 	{
 		printf("GOOD TARGET %s\n",NODE_ID);

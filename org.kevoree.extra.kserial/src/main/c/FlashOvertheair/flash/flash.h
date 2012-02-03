@@ -14,6 +14,8 @@
 
 
 #define ATMEGA328 0
+#define ATMEGA1280 1
+#define ATMEGA168 2
 
 typedef struct _device {
 	int  memsize;
