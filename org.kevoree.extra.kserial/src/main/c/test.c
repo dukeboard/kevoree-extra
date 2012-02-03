@@ -1,44 +1,66 @@
 
 
-#include "serialposix.h"
+#include "serialposix/serialposix.h"
+
+/**
+ * Created by jed
+ * User: jedartois@gmail.com
+ * Date: 02/02/12
+ * Time: 11:47
+ Posix serial interface
+ */
 
 
+static int fd=0;
 
-static int fd;
-void test(int fd,char *data)
+void event(int fd,char *data)
 {
- printf(" %d %s \n",fd,data);
- if(fd == -1){
-  printf("ERRROR\n");
-  close_serial(fd);
 
- }
+     if(fd == -1)
+     {
+         printf("The device is not connected anymore \n");
+         close_serial(fd);
+     }
+     else
+     {
+            printf("\t Event  %d octets  --> <%s> \n",fd,data);
+     }
 }
 
 
 
 int main(int argc,char ** argv){
+    Port *ports= scan_fd();
+     int i;
+     for(i=0;i<MAX_PORTS;i++)
+     {
+        if(strlen(ports[i].devicename) >  0)
+        printf("%s\n",ports[i].devicename);
+     }
 
 	fd = open_serial(argv[1],19200);
 
 	if(fd < 0)
 	{
-		printf("file descriptor %d \n",fd); 
+		printf("Serial device does not exist %d \n",fd);
 		exit(-2);
 	}
 
-    register_SerialEvent( test);
+    register_SerialEvent( event);
 
 	 char test2[512];
 
-	printf("File DS :  %d\n",fd);
+	printf("The device is open on the file descriptor : %d\n",fd);
 
 
 	if(reader_serial(fd) != 0)
 	{
-	    printf("ERROR\n");
+	    printf("pthread reader_serial \n");
 	}
-	 monitoring_serial(argv[1]);
+	if(monitoring_serial(argv[1])!= 0)
+	{
+    	 printf("pthread monitoring \n");
+    }
 
 	
     sleep(10);
