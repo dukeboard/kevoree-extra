@@ -355,10 +355,11 @@ void *flash_firmware(Target *infos)
 	//printf("Waiting bootloader %d \n",last_memory_address );
 	do
 	{
-		usleep(1000);
-		FlashEvent(-35);
-		// TODO ADD TIMEOUT
+
+
 		boot_flag =  serialport_readbyte(fd);
+				FlashEvent(-35);
+        			usleep(1000);
 
 	}while( boot_flag !=5 && flash_exit == 0);
 
