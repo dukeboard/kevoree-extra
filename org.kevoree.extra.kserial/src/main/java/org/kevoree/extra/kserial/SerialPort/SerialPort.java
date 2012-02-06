@@ -91,7 +91,7 @@ public class SerialPort extends CommPort {
 
         if (getFd() < 0) {
             NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
-            throw new SerialPortException("[" + getFd() + "] " + Constants.messages.get(getFd())+" Ports : "+ KHelpers.getPortIdentifiers());
+            throw new SerialPortException(this.getPort_name()+"- [" + getFd() + "] " + Constants.messages.get(getFd())+" Ports : "+ KHelpers.getPortIdentifiers());
         }
         SerialPortEvent = new SerialPortEvent(this);
 

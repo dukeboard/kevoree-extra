@@ -94,6 +94,9 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def loadClass(className: String): Class[_] = {
+    //if (className.contains("Hello")){
+      println("lookFile="+className)
+    //}
     loadClass(className, true)
   }
 
