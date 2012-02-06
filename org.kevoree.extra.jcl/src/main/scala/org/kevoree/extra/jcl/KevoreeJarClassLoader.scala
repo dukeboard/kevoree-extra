@@ -5,8 +5,8 @@ import java.net.URL
 import java.lang.{Class, String}
 import ref.WeakReference
 import org.slf4j.LoggerFactory
-import java.util.{Collections, Enumeration}
 import java.io._
+import java.util.{ArrayList, Collections, Enumeration}
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +18,8 @@ import java.io._
 class KevoreeJarClassLoader extends JarClassLoader {
 
   private var locked = false
+  
+  //def filteredExtension = ".class"
 
   def lockLinks() {
     locked = true
@@ -25,7 +27,8 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   private val logger = LoggerFactory.getLogger(classOf[KevoreeJarClassLoader]);
 
-  def cleanupLinks(c : ClassLoader){ // CHEKC USED
+  def cleanupLinks(c: ClassLoader) {
+    // CHEKC USED
     subClassLoaders = subClassLoaders.filter(scl => scl != c)
     subWeakClassLoaders = subWeakClassLoaders.filter(scl => scl != c)
   }
@@ -60,9 +63,14 @@ class KevoreeJarClassLoader extends JarClassLoader {
     }
   }
 
+  protected def callSuperConcreteLoader(className: String, resolveIt: Boolean) : Class[_] = {
+    super[JarClassLoader].loadClass(className, resolveIt)
+  }
+
+
   override def loadClass(className: String, resolveIt: Boolean): Class[_] = {
     try {
-      return super[JarClassLoader].loadClass(className, resolveIt)
+      return callSuperConcreteLoader(className, resolveIt)
     } catch {
       case nf: ClassNotFoundException =>
     }
@@ -94,15 +102,20 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def loadClass(className: String): Class[_] = {
-    //if (className.contains("Hello")){
-      println("lookFile="+className)
-    //}
     loadClass(className, true)
   }
 
   override def getResourceAsStream(name: String): InputStream = {
     logger.debug("Get Ressource : " + name)
-    val res = this.classpathResources.getResource(name)
+    var res : Array[Byte] = null
+    if(name.endsWith(".class")){
+      res = this.classpathResources.getResource(name)
+    } else {
+      val url = this.classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(name)
+      if(url != null){
+        res = this.classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceContent(url)
+      }
+    }
     if (res != null) {
       new ByteArrayInputStream(res)
     } else {
@@ -111,8 +124,12 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def getResource(s: String): URL = {
-    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containKey(s)) {
-      if (classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s) == null) {
+    internal_getResource(s)
+  }
+
+  def internal_getResource(s: String): URL = {
+    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(s)) {
+      if (classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(s).toString.startsWith("file:kclstream:")) {
         val cleanName = if (s.contains("/")) {
           s.substring(s.lastIndexOf("/") + 1)
         } else {
@@ -121,11 +138,11 @@ class KevoreeJarClassLoader extends JarClassLoader {
         val tFile = File.createTempFile("dummy_kcl_temp", cleanName)
         tFile.deleteOnExit()
         val tWriter = new FileOutputStream(tFile)
-        tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResource(s))
+        tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceContent(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(s)))
         tWriter.close()
         new URL("file:///" + tFile.getAbsolutePath)
       } else {
-        classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s)
+        classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(s)
       }
     } else {
       logger.debug("getResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
@@ -142,47 +159,34 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def findResource(s: java.lang.String): java.net.URL = {
-    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containKey(s)) {
-      if (classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s) == null) {
-        val cleanName = if (s.contains("/")) {
-          s.substring(s.lastIndexOf("/") + 1)
-        } else {
-          s
-        }
-
-        val tFile = File.createTempFile("dummy_kcl_temp", cleanName)
-        tFile.deleteOnExit()
-        val tWriter = new FileOutputStream(tFile)
-        tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResource(s))
-        tWriter.close()
-        new URL("file:///" + tFile.getAbsolutePath)
-      } else {
-        classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(s)
-      }
-    } else {
-      logger.debug("findResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
-      null
-    }
+    internal_getResource(s)
   }
 
   override def findResources(p1: String): Enumeration[URL] = {
-    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containKey(p1)) {
-      val url = if (classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(p1) == null) {
-        val cleanName = if (p1.contains("/")) {
-          p1.substring(p1.lastIndexOf("/") + 1)
-        } else {
-          p1
-        }
-        val tFile = File.createTempFile("dummy_kcl_temp", cleanName)
-        tFile.deleteOnExit()
-        val tWriter = new FileOutputStream(tFile)
-        tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResource(p1))
-        tWriter.close()
-        new URL("file:///" + tFile.getAbsolutePath)
-      } else {
-        classpathResources.asInstanceOf[KevoreeLazyJarResources].getContentURL(p1)
+    if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(p1)) {
+      val urls = classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURLS(p1)
+      val resolvedUrl = new ArrayList[URL]
+      import scala.collection.JavaConversions._
+      urls.foreach {
+        u =>
+          if (u.toString.startsWith("file:kclstream:")) {
+            val cleanName = if (p1.contains("/")) {
+              p1.substring(p1.lastIndexOf("/") + 1)
+            } else {
+              p1
+            }
+            val tFile = File.createTempFile("dummy_kcl_temp", cleanName)
+            println(cleanName+"->"+tFile.getAbsolutePath)
+            tFile.deleteOnExit()
+            val tWriter = new FileOutputStream(tFile)
+            tWriter.write(classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceContent(u))
+            tWriter.close()
+            resolvedUrl.add(new URL("file:///" + tFile.getAbsolutePath))
+          } else {
+            resolvedUrl.add(u)
+          }
       }
-      Collections.enumeration(Collections.singleton(url));
+      Collections.enumeration(resolvedUrl);
     } else {
       Collections.enumeration(new java.util.ArrayList[URL]())
     }
