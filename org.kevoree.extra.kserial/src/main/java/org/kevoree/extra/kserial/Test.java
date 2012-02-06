@@ -1,7 +1,9 @@
 package org.kevoree.extra.kserial;
 
-import org.kevoree.extra.kserial.Utils.KserialHelper;
-import org.kevoree.extra.kserial.jna.NativeLoader;
+import org.kevoree.extra.kserial.Flash.FlashFirmware;
+import org.kevoree.extra.kserial.Flash.FlashFirmwareEvent;
+import org.kevoree.extra.kserial.Flash.FlashFirmwareEventListener;
+import org.kevoree.extra.kserial.Utils.KHelpers;
 
 public class Test {
 
@@ -14,8 +16,8 @@ public class Test {
     public static void main(String[] args) throws Exception {
 
 
-
-        System.out.println(KserialHelper.getPortIdentifiers());
+       /*
+        System.out.println(KHelpers.getPortIdentifiers());
 
         final SerialPort serial = new SerialPort("/dev/ttyUSB0", 19200);
 
@@ -39,7 +41,26 @@ public class Test {
 
                 }
 
+            }
+        });
+               */
 
+
+
+ FlashFirmware flash = new FlashFirmware("/dev/ttyUSB0","ATMEGA328","NODE02");
+        
+        Byte[] intel = KHelpers.read_file("/home/jed/kevoree/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
+
+
+        flash.write_on_the_air_program(intel);
+
+
+        flash.addEventListener(new FlashFirmwareEventListener() {
+            @Override
+            public void FlashEvent(FlashFirmwareEvent evt) {
+
+
+           System.out.println(evt.getSize_uploaded());
 
 
             }
@@ -47,6 +68,8 @@ public class Test {
 
 
         Thread.currentThread().sleep(1000000);
+
+
     }
 
 }

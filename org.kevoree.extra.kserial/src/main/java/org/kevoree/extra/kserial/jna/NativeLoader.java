@@ -15,24 +15,50 @@ import java.util.HashMap;
  */
 public class NativeLoader {
 
-    public static synchronized SerialPortJNA getInstance() {
-        configure();
-        return INSTANCE;
+    public static synchronized SerialPortJNA getINSTANCE_SerialPort() {
+        configureSerialPort();
+        return INSTANCE_SerialPort;
     }
 
-    private static SerialPortJNA INSTANCE = null;
 
-    private static void configure() {
-        if (INSTANCE == null) {
+    public static synchronized FlashJNA getINSTANCE_Foa() {
+        configureFOA();
+        return INSTANCE_Foa;
+    }
+
+
+    private static SerialPortJNA INSTANCE_SerialPort = null;
+    private static FlashJNA INSTANCE_Foa = null;
+
+    private static void configureSerialPort() {
+        if (INSTANCE_SerialPort == null) {
             try {
                 File folder = new File(System.getProperty("java.io.tmpdir") + File.separator + "kserial");
                 if (folder.exists()) {
                     deleteOldFile(folder);
                 }
                 folder.mkdirs();
-                String absolutePath = copyFileFromStream(getPath(), folder.getAbsolutePath(), "serialposix" + getExtension());
+                String absolutePath = copyFileFromStream(getPath("serialposix.so"), folder.getAbsolutePath(), "serialposix" + getExtension());
                 NativeLibrary.addSearchPath("serialposix", folder.getAbsolutePath());
-                INSTANCE = (SerialPortJNA) Native.loadLibrary(absolutePath, SerialPortJNA.class, new HashMap());
+                INSTANCE_SerialPort = (SerialPortJNA) Native.loadLibrary(absolutePath, SerialPortJNA.class, new HashMap());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private static void configureFOA() {
+        if (INSTANCE_SerialPort == null) {
+            try {
+                File folder = new File(System.getProperty("java.io.tmpdir") + File.separator + "FOA");
+                if (folder.exists()) {
+                    deleteOldFile(folder);
+                }
+                folder.mkdirs();
+                String absolutePath = copyFileFromStream(getPath("flash.so"), folder.getAbsolutePath(), "flash" + getExtension());
+                NativeLibrary.addSearchPath("flash", folder.getAbsolutePath());
+                INSTANCE_Foa = (FlashJNA) Native.loadLibrary(absolutePath, FlashJNA.class, new HashMap());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -49,16 +75,16 @@ public class NativeLoader {
         return null;
     }
 
-    public static String getPath() {
+    public static String getPath(String lib) {
         if (System.getProperty("os.name").toLowerCase().contains("nux")) {
             if (is64()) {
-                return "nix64/serialposix.so";
+                return "nix64/"+lib;
             } else {
-                return "nix32/serialposix.so";
+                return "nix32/"+lib;
             }
         }
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            return "osx/serialposix.so";
+            return "osx/"+lib;
         }
         return null;
     }

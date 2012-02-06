@@ -1,13 +1,12 @@
-package org.kevoree.extra.kserial;
+package org.kevoree.extra.kserial.SerialPort;
 
 import com.sun.jna.Memory;
 import com.sun.jna.ptr.PointerByReference;
-import org.kevoree.extra.kserial.Utils.KserialHelper;
+import org.kevoree.extra.kserial.CommPort;
+import org.kevoree.extra.kserial.Constants;
+import org.kevoree.extra.kserial.Utils.ByteFIFO;
+import org.kevoree.extra.kserial.Utils.KHelpers;
 import org.kevoree.extra.kserial.jna.NativeLoader;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jed
@@ -28,8 +27,8 @@ public class SerialPort extends CommPort {
 
 
     public SerialPort (String portname, int bitrate) throws Exception {
-        this.port_bitrate = bitrate;
-        this.port_name = portname;
+        this.setPort_bitrate(bitrate);
+        this.setPort_name(portname);
     }
 
 
@@ -58,7 +57,7 @@ public class SerialPort extends CommPort {
     @Override
     public void write (byte[] bs) throws SerialPortException {
 
-        if (fd > 0) {
+        if (this.getFd() > 0) {
             Memory mem = new Memory(Byte.SIZE * bs.length + 1);
             mem.clear();
 
@@ -70,7 +69,7 @@ public class SerialPort extends CommPort {
             byte c = '\n';
             inipar.getPointer().setByte((bs.length + 1) * Byte.SIZE / 8, c);
 
-            if (NativeLoader.getInstance().serialport_write(fd, inipar) != 0) {
+            if (NativeLoader.getINSTANCE_SerialPort().serialport_write(getFd(), inipar) != 0) {
                 throw new SerialPortException("Write " + bs);
             }
 
@@ -82,12 +81,17 @@ public class SerialPort extends CommPort {
     }
 
     @Override
-    public void open () throws SerialPortException {
-        fd = NativeLoader.getInstance().open_serial(port_name, port_bitrate);
+    public byte[] read() throws SerialPortException {
+        return new byte[0];
+    }
 
-        if (fd < 0) {
-            NativeLoader.getInstance().close_serial(fd);
-            throw new SerialPortException("[" + fd + "] " + Constants.messages_errors.get(fd)+" Ports : "+ KserialHelper.getPortIdentifiers());
+    @Override
+    public void open () throws SerialPortException {
+        setFd(NativeLoader.getINSTANCE_SerialPort().open_serial(this.getPort_name(), this.getPort_bitrate()));
+
+        if (getFd() < 0) {
+            NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
+            throw new SerialPortException("[" + getFd() + "] " + Constants.messages.get(getFd())+" Ports : "+ KHelpers.getPortIdentifiers());
         }
         SerialPortEvent = new SerialPortEvent(this);
 
@@ -124,7 +128,7 @@ public class SerialPort extends CommPort {
 
     @Override
     public void close () throws SerialPortException {
-        NativeLoader.getInstance().close_serial(fd);
+        NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
 
     }
 

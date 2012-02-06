@@ -15,6 +15,23 @@
  * @return size of the file
  */
 static int flash_exit =0;
+static int fd =0;
+
+
+void (*FlashEvent) (int taille);
+
+
+
+/**
+ *  Assign function
+ * @param fn pointer to the callback
+ */
+int register_FlashEvent( void* fn){
+	FlashEvent=fn;
+	return 0;
+};
+
+
 int open_file(char *path,unsigned char *hex_intel){
 
 	FILE* file = NULL;
@@ -39,6 +56,7 @@ int open_file(char *path,unsigned char *hex_intel){
 	return i;
 
 }
+
 
 unsigned int hex2dec( char *s )
 {
@@ -149,7 +167,7 @@ unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_
 			// extract the larger
 			length = parseHex(page[0],page[1]);
 #ifdef DEBUG
-			printf("\n Record length : %d ",length);
+			//printf("\n Record length : %d ",length);
 #endif
 			// extract  adr high
 			memory_address_high = parseHex(page[2],page[3]);
@@ -210,9 +228,19 @@ void print_hex_array(int type,int taille,unsigned char *hex_array)
 	}
 
 }
-int write_on_the_air_program(char *port_device,int target,char *node_id,int taille,int adrlast,unsigned char *intel_hex_array)
+
+void close_flash(){
+
+	if(flash_exit == 0)
+		close(fd);
+
+	flash_exit = 1;
+
+}
+
+
+void *flash_firmware(Target *infos)
 {
-	int fd;
 	int last_memory;
 	unsigned char  octet;
 	uint8_t boot_flag,ready_flag,start_flag;
@@ -221,23 +249,80 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 	int Memory_Address_High;
 	int Memory_Address_Low;
 	int Check_Sum;
-	int last_memory_address;
 	int current_memory_address;
 	int page_size;
 	int flash_size;
 	char c;
+	char NODE_ID[MAX_SIZE_ID];
+	struct termios parametres;
+	struct termios original;
+	int last_memory_address;
+	unsigned char *intel_hex_array;
 
-    char NODE_ID[MAX_SIZE_ID];
-
-
-	// Open Serial port
-	if((fd = open_serial(port_device,19200)) < 0)
+	fd = open(infos->port_device, O_RDWR, 0);
+	if(fd < 0)
 	{
-		return fd;
+		close_flash();
+		FlashEvent(-2);
+	}
+	flash_exit =0;
+
+	tcgetattr(fd, & original);
+	tcgetattr(fd, & parametres);
+	cfmakeraw(& parametres);
+	cfsetispeed(& parametres, B19200);
+	cfsetospeed(& parametres, B19200);
+
+	//No parity (8N1):
+	parametres.c_cflag &= ~PARENB;
+	parametres.c_cflag &= ~CSTOPB;
+	parametres.c_cflag &= ~CSIZE;
+	parametres.c_cflag |= CS8;
+
+	// no flow control
+	parametres.c_cflag &= ~CRTSCTS;
+
+	parametres.c_cflag |= CREAD | CLOCAL | IXON;  // turn on READ & ignore ctrl lines
+
+
+	parametres.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
+	parametres.c_oflag &= ~OPOST; // make raw
+
+	// see: http://unixwiz.net/techtips/termios-vmin-vtime.html
+	parametres.c_cc[VMIN]  = 0;
+	parametres.c_cc[VTIME] = 10;
+
+
+
+	if (tcsetattr(fd, TCSANOW, & parametres) != 0) {
+		perror("tcsetattr");
+		close_flash();
+		FlashEvent(-3);
 	}
 
-    // customize for target
-	switch(target)
+
+	/* flush the serial device */
+	tcflush(fd, TCIOFLUSH);
+
+
+
+	intel_hex_array =  parse_intel_hex(infos->taille,&last_memory_address,infos->raw_intel_hex_array);
+
+	//   printf("FLASH <%s> %d -->  push %d octets last adresse is %d ",dest_node_id,target,taille,last_memory_address);
+
+
+	if(infos->taille < 0){
+		close_flash();
+		FlashEvent(-30);
+	}
+
+	if(last_memory_address <= 0){
+		close_flash();
+		FlashEvent(-31);
+	}
+
+	// customize for target
+	switch(infos->target)
 	{
 	case ATMEGA328:
 		page_size = 128;            // 64 words
@@ -251,43 +336,52 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 	case ATMEGA168:
 
 		break;
-
+	default :
+		FlashEvent(-32);
+		close_flash();
+		break;
 	}
+
+
 
 	usleep(1000);
 	if(serialport_writebyte(fd,'r') < 0)
 	{
-		printf("ERROR\n");
-		return -1;
+		//printf("ERROR\n");
+		FlashEvent(-7);
+		close_flash();
 	}
-
-	printf("Waiting bootloader %d \n",last_memory_address );
+	usleep(500);
+	//printf("Waiting bootloader %d \n",last_memory_address );
 	do
 	{
-    // TODO ADD TIMEOUT
+		usleep(1000);
+		FlashEvent(-35);
+		// TODO ADD TIMEOUT
 		boot_flag =  serialport_readbyte(fd);
+
 	}while( boot_flag !=5 && flash_exit == 0);
 
+	FlashEvent(-29);
 
-	printf("Bootloader Ready ! \n");
+	//printf("Bootloader Ready ! \n");
 
 	if(serialport_writebyte(fd,6) < 0)
 	{
 
-		return -1;
+		FlashEvent(-32);
+		close_flash();
 	}
 	int i=0;
 	for(i=0;i<MAX_SIZE_ID;i++)
 	{
 		NODE_ID[i]= serialport_readbyte(fd);
-	}
-	if(strcmp(NODE_ID,node_id))
-	{
-		printf("WRONG NODE %s != %s\n",NODE_ID,node_id);
-		return -2;
-	}else
-	{
-		printf("GOOD TARGET %s\n",NODE_ID);
+
+		if((NODE_ID[i]) != infos->dest_node_id[i])
+		{
+			close_flash();
+			FlashEvent(-33);
+		}
 	}
 
 	current_memory_address = 0;
@@ -295,7 +389,8 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 	while((current_memory_address < last_memory_address) && (flash_exit == 0))
 	{
 
-		printf("\n %d/%d octets ",current_memory_address,last_memory_address);
+		FlashEvent(current_memory_address);
+		//	printf("\n %d/%d octets ",current_memory_address,last_memory_address);
 		ready_flag =  serialport_readbyte(fd);
 		if(ready_flag == 'T')
 		{
@@ -303,14 +398,14 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 		}else if(ready_flag = 7)
 		{
 			//printf("Re-send line %d \n",ready_flag);
-
+			FlashEvent(-36);
 			current_memory_address = current_memory_address - page_size;
 			if(current_memory_address  < 0) current_memory_address  =0;
 		}else
 		{
 
-			printf("Error");
-			return -1;
+			close_flash();
+			FlashEvent(-34);
 		}
 
 
@@ -345,7 +440,9 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 		//printf("Send the start character :\n");
 		if(serialport_writebyte(fd,':') < 0)
 		{
-			exit(-1);
+
+			FlashEvent(-7);
+			close_flash();
 		}
 
 
@@ -353,7 +450,8 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 		c = page_size;
 		//Send the record length
 		if(serialport_writebyte(fd,c) < 0){
-			exit(-1);
+			FlashEvent(-7);
+			close_flash();
 		}
 
 
@@ -361,11 +459,14 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 		c=Memory_Address_Low;
 		if(serialport_writebyte(fd,c) < 0)
 		{
-			exit(-1);
+			FlashEvent(-7);
+			close_flash();
 		}
 		c=Memory_Address_High;
 		if(serialport_writebyte(fd,Memory_Address_High) < 0)
-		{	exit(-1);
+		{
+			FlashEvent(-7);
+			close_flash();
 
 		}
 
@@ -374,7 +475,8 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 		c=Check_Sum;
 		if(serialport_writebyte(fd,c)< 0)
 		{
-			exit(-1);
+			FlashEvent(-7);
+			close_flash();
 		}
 
 		//Send the block
@@ -384,7 +486,8 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 			char block = 	intel_hex_array[current_memory_address + j];
 			if(serialport_writebyte(fd,block) < 0)
 			{
-				exit(-1);
+				FlashEvent(-7);
+				close_flash();
 			}
 			//printf("%c",block);
 
@@ -395,29 +498,68 @@ int write_on_the_air_program(char *port_device,int target,char *node_id,int tail
 
 	}
 
-	printf("\n");
+
 
 	if(serialport_writebyte(fd,':') < 0)
 	{
-		exit(-1);
+		FlashEvent(-7);
+		close_flash();
 	}
 
 	if(serialport_writebyte(fd,'S') < 0)
 	{
-		exit(-1);
+		FlashEvent(-7);
+		close_flash();
 	}
 	if(serialport_writebyte(fd,'S') < 0)
 	{
-		exit(-1);
+		FlashEvent(-7);
+		close_flash();
 	}
 	if(serialport_writebyte(fd,'S') < 0)
 	{
-		exit(-1);
+		FlashEvent(-7);
+		close_flash();
 	}
 
+	FlashEvent(-38);
 
-	close(fd);
+	if(infos != NULL)
+		free(infos);
+	if(intel_hex_array != NULL)
+		free(intel_hex_array);
 
+	close_flash();
+
+	pthread_exit(NULL);
+}
+
+int write_on_the_air_program(char *port_device,int target,char *dest_node_id,int taille,unsigned char *raw_intel_hex_array)
+{
+	pthread_t flash;
+	Target *mytarget  = (Target*)malloc(sizeof(Target));
+	strcpy(mytarget->port_device,port_device);
+	mytarget->target =  target;
+	strcpy(mytarget->dest_node_id,dest_node_id);
+	mytarget->taille = taille;
+	mytarget->raw_intel_hex_array = raw_intel_hex_array;
+
+	return  pthread_create (& flash, NULL,&flash_firmware, mytarget);
+}
+
+
+uint8_t  serialport_readbyte( int fd)
+{
+	uint8_t b;
+	int n = read(fd,&b,1);
+	if( n!=1)
+		return -1;
+	return b;
+}
+int serialport_writebyte( int fd, uint8_t b)
+{
+	int n = write(fd,&b,1);
+	if( n!=1)
+		return -1;
 	return 0;
-
 }

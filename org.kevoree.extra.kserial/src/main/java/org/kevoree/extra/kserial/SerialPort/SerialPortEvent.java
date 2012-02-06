@@ -1,6 +1,7 @@
-package org.kevoree.extra.kserial;
+package org.kevoree.extra.kserial.SerialPort;
 
 import com.sun.jna.Pointer;
+import org.kevoree.extra.kserial.Utils.ByteFIFO;
 import org.kevoree.extra.kserial.jna.NativeLoader;
 import org.kevoree.extra.kserial.jna.SerialEvent;
 
@@ -30,17 +31,17 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
         this.serialPort = serialport;
 
 
-        NativeLoader.getInstance().register_SerialEvent(this);
+        NativeLoader.getINSTANCE_SerialPort().register_SerialEvent(this);
 
-        if((pthreadid=NativeLoader.getInstance().reader_serial(serialPort.fd)) != 0)
+        if((pthreadid=NativeLoader.getINSTANCE_SerialPort().reader_serial(serialPort.getFd())) != 0)
         {
-            NativeLoader.getInstance().close_serial(serialPort.fd);
+            NativeLoader.getINSTANCE_SerialPort().close_serial(serialPort.getFd());
             serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
         }
 
-        if((monitorid=NativeLoader.getInstance().monitoring_serial(serialPort.port_name)) != 0)
+        if((monitorid=NativeLoader.getINSTANCE_SerialPort().monitoring_serial(serialPort.getPort_name())) != 0)
         {
-            NativeLoader.getInstance().close_serial(serialPort.fd);
+            NativeLoader.getINSTANCE_SerialPort().close_serial(serialPort.getFd());
             serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
         }
 
@@ -48,7 +49,7 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
 
     public void serial_reader_callback(int taille, Pointer data) throws SerialPortException {
         if(taille < 0){
-            NativeLoader.getInstance().close_serial(serialPort.fd);
+            NativeLoader.getINSTANCE_SerialPort().close_serial(serialPort.getFd());
 			serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
         }
         else

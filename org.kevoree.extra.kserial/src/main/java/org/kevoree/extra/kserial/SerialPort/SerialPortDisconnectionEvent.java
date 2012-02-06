@@ -1,4 +1,4 @@
-package org.kevoree.extra.kserial;
+package org.kevoree.extra.kserial.SerialPort;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com

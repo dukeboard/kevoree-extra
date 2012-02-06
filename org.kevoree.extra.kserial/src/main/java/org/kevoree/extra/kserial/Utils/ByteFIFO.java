@@ -1,4 +1,4 @@
-package org.kevoree.extra.kserial;
+package org.kevoree.extra.kserial.Utils;
 
 /**
  * Created by jed
@@ -8,7 +8,7 @@ package org.kevoree.extra.kserial;
 
  */
 
-class ByteFIFO extends Object {
+public class ByteFIFO extends Object {
 	private byte[] queue;
 	private int capacity;
 	private int size;

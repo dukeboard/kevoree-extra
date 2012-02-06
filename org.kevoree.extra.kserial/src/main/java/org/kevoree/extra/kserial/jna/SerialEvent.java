@@ -1,7 +1,7 @@
 package org.kevoree.extra.kserial.jna;
 import com.sun.jna.Callback;
 import com.sun.jna.Pointer;
-import org.kevoree.extra.kserial.SerialPortException;
+import org.kevoree.extra.kserial.SerialPort.SerialPortException;
 
 /*
  * 

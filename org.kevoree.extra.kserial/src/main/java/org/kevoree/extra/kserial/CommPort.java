@@ -1,6 +1,6 @@
 package org.kevoree.extra.kserial;
 
-import com.sun.jna.Structure;
+import org.kevoree.extra.kserial.SerialPort.SerialPortException;
 
 /**
  * Created by jed
@@ -10,14 +10,8 @@ import com.sun.jna.Structure;
  */
 
 
-public abstract class CommPort {
-	protected int fd;
-	protected String port_name;
-	protected int port_bitrate;
-
-
-	public abstract void open()throws SerialPortException;
-	public abstract void close()throws SerialPortException;
-
+public abstract class CommPort extends Port
+{
 	public abstract void write(byte[] data) throws SerialPortException;
+    public abstract byte[] read() throws SerialPortException;
 }

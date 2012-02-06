@@ -278,8 +278,8 @@ int open_serial(const char *_name_device,int _bitrate){
 		return -1;
 	}
 
-	quitter = 1;
-	usleep(2000);
+    quitter = 1;
+    usleep(2000);
 
 	// init  loop variable
 	quitter = 0;
@@ -314,9 +314,7 @@ int open_serial(const char *_name_device,int _bitrate){
 		return -5;
 	}
 
-	cfsetispeed(& termios, bitrate);
-	cfsetospeed(& termios, bitrate);
-	cfmakeraw(& termios);
+
 
 	return fd;
 

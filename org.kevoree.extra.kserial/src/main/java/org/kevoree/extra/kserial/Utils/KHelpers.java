@@ -2,7 +2,7 @@ package org.kevoree.extra.kserial.Utils;
 
 import org.kevoree.extra.kserial.jna.NativeLoader;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 03/02/12
  * Time: 16:14
  */
-public class KserialHelper {
+public class KHelpers {
 
 
     public static List<String> getPortIdentifiers() {
@@ -29,7 +29,7 @@ public class KserialHelper {
                         if(files[i].getName().contains("USB") || files[i].getName().contains("usbserial") || files[i].getName().contains("AC") )
                         {
                             String device_name =   "/dev/"+files[i].getName();
-                            if(NativeLoader.getInstance().verify_fd(device_name) == 0)
+                            if(NativeLoader.getINSTANCE_SerialPort().verify_fd(device_name) == 0)
                             {
                                 ports.add(device_name);
                             }
@@ -44,5 +44,29 @@ public class KserialHelper {
         }
         return ports;
     }
+
+
+    public static Byte[] read_file(String filename) throws IOException {
+        FileInputStream reader =null;
+
+        reader=new FileInputStream(filename);
+        int c;
+        ArrayList<Byte> tab = new ArrayList<Byte>();
+        while((c = reader.read()) != -1) {
+            tab.add((byte)c);
+        }
+
+
+        if (reader!=null)
+            reader.close();
+
+
+        Byte[] data = tab.toArray(new Byte[tab.size()]);
+
+        return data;
+
+    }
+
+
 
 }
