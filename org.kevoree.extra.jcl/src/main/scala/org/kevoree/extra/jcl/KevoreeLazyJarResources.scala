@@ -17,7 +17,7 @@ import java.util.ArrayList
  * Time: 19:13
  */
 
-class KevoreeLazyJarResources extends ClasspathResources {
+class KevoreeLazyJarResources(classExtension : String) extends ClasspathResources {
 
   protected val jarContentURL = new java.util.HashMap[String, URL]
   private val logger = LoggerFactory.getLogger(classOf[KevoreeLazyJarResources].getName);

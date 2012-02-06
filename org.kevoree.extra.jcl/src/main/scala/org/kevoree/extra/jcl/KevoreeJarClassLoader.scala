@@ -18,6 +18,8 @@ import java.util.{ArrayList, Collections, Enumeration}
 class KevoreeJarClassLoader extends JarClassLoader {
 
   private var locked = false
+  
+  def getClasxExtension = ".class"
 
   def lockLinks() {
     locked = true
@@ -61,9 +63,14 @@ class KevoreeJarClassLoader extends JarClassLoader {
     }
   }
 
+  protected def callSuperConcreteLoader(className: String, resolveIt: Boolean) : Class[_] = {
+    super[JarClassLoader].loadClass(className, resolveIt)
+  }
+
+
   override def loadClass(className: String, resolveIt: Boolean): Class[_] = {
     try {
-      return super[JarClassLoader].loadClass(className, resolveIt)
+      return callSuperConcreteLoader(className, resolveIt)
     } catch {
       case nf: ClassNotFoundException =>
     }
