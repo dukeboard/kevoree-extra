@@ -26,7 +26,7 @@ public class KHelpers {
                 {
                     if(files[i].getName().startsWith("tty") || files[i].getName().startsWith("cu"))
                     {
-                        if(files[i].getName().contains("USB") || files[i].getName().contains("usbserial") || files[i].getName().contains("AC") )
+                        if(files[i].getName().contains("USB") || files[i].getName().contains("usb") || files[i].getName().contains("AC") )
                         {
                             String device_name =   "/dev/"+files[i].getName();
                             if(NativeLoader.getINSTANCE_SerialPort().verify_fd(device_name) == 0)

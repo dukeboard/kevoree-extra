@@ -181,7 +181,7 @@ int serialport_read(int fd, char *ptr){
 int verify_fd(char *devicename)
 {
 	int fd;
-	if((fd = open(devicename,O_RDONLY)) == -1)
+	if((fd = open(devicename,O_RDONLY|  O_NONBLOCK )) == -1)
 	{
 		return -1;
 	}
@@ -293,16 +293,36 @@ int open_serial(const char *_name_device,int _bitrate){
 		return -2;
 	}
 
+	tcgetattr(fd, & termios);
+	cfmakeraw(& termios);
+	cfsetispeed(& termios, bitrate);
+	cfsetospeed(& termios, bitrate);
+
 	//No parity (8N1):
-	termios.c_cflag = bitrate| CS8 | CREAD; // CRTSCTS
-	termios.c_iflag = IGNPAR;
-	termios.c_oflag = bitrate | CS8 | CREAD;
-	termios.c_lflag = 0;
+	termios.c_cflag &= ~PARENB;
+	termios.c_cflag &= ~CSTOPB;
+	termios.c_cflag &= ~CSIZE;
+	termios.c_cflag |= CS8;
+
+	// no flow control
+	termios.c_cflag &= ~CRTSCTS;
+	termios.c_cflag |= CREAD | CLOCAL | IXON;  // turn on READ & ignore ctrl lines
+	termios.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
+	termios.c_oflag &= ~OPOST; // make raw
 
 	// see: http://unixwiz.net/techtips/termios-vmin-vtime.html
-	termios.c_cc[VMIN] = 0;
-	termios.c_cc[VTIME] = 0;     /* no blocking read  */
+	termios.c_cc[VMIN]  = 0;
+	termios.c_cc[VTIME] = 0;
 
+
+
+	if (tcsetattr(fd, TCSANOW, & termios) != 0) {
+		perror("tcflush");
+       	return  -4;
+	}
+
+
+	/* flush the serial device */
 	if (tcflush(fd, TCIOFLUSH))
 	{
 		perror("tcflush");
