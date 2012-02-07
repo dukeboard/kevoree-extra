@@ -6,6 +6,11 @@
  */
 #include "flash.h"
 
+
+
+#define _POSIX_SOURCE 1 /* POSIX compliant source */
+
+
 //#define DEBUG
 
 /**
@@ -373,6 +378,7 @@ void *flash_firmware(Target *infos)
 		FlashEvent(-32);
 		close_flash();
 	}
+
 	int i=0;
 	for(i=0;i<MAX_SIZE_ID;i++)
 	{
@@ -384,6 +390,7 @@ void *flash_firmware(Target *infos)
 			FlashEvent(-33);
 		}
 	}
+	printf("FLASH <%s>\n",NODE_ID);
 
 	current_memory_address = 0;
 

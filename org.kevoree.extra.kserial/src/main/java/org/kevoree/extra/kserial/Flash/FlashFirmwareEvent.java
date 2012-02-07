@@ -37,9 +37,12 @@ public class FlashFirmwareEvent extends EventObject implements FlashEvent {
 
         if(taille == -38)
         {
-            System.out.println(Constants.messages.get(taille));
+            System.out.println("-38 : "+Constants.messages.get(taille));
 
-        }else     if(taille == -35)
+            NativeLoader.getINSTANCE_Foa().close_flash();
+            System.exit(0);
+
+        }else  if(taille == -35)
         {
 
             System.out.println(Constants.messages.get(taille));
@@ -47,10 +50,14 @@ public class FlashFirmwareEvent extends EventObject implements FlashEvent {
         {
             System.out.println(Constants.messages.get(taille));
         }
+        else if(taille == -36)
+                {
+                    System.out.println("Ready..");
+                }
         else if (taille <0)
         {
 
-            System.out.println(Constants.messages.get(taille));
+           System.out.println(Constants.messages.get(taille));
 
         }  else {
             this.size_uploaded = taille;

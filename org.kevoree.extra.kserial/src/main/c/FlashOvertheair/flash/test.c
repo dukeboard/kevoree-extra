@@ -22,7 +22,7 @@ int lastmem;
 
             register_FlashEvent(event);
 
-   write_on_the_air_program("/dev/ttyUSB0",ATMEGA328,"NODE0",taille,&file_intel_hex_array[0]);
+   write_on_the_air_program("/dev/ttyUSB0",ATMEGA328,"KS1",taille,&file_intel_hex_array[0]);
          sleep(10);
 
 

@@ -36,23 +36,23 @@ int main (void)
 	uint8_t my_ch, x = 0;
 
 	//Blinky!
-	for(x = 0 ; x < 30 ; x++)
+	for(x = 0 ; x < 100 ; x++)
 	{
 		sbi(PORTB, STATUS_LED);
-		delay_ms(100);
+		delay_ms(200);
 
 		cbi(PORTB, STATUS_LED);
-		delay_ms(100);
+		delay_ms(200);
 	}
 
-	printf("\n\r  JED \n\r");
+	printf("\n\r  FRANCOIS  \n\r");
 
 	while(1)
 	{
 		my_ch = getch();
 
 		if(my_ch == 'r'){
-			printf("reset \n");
+			printf("Request auto reset \n");
 			bootloader();
 		}
 		else

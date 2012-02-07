@@ -164,14 +164,19 @@
  180               	.LFE6:
  182               		.data
  183               	.LC0:
- 184 0000 0A0D 2020 		.string	"\n\r  JED \n\r"
- 184      4A45 4420 
- 184      0A0D 00
+ 184 0000 0A0D 2020 		.string	"\n\r  FRANCOIS  \n\r"
+ 184      4652 414E 
+ 184      434F 4953 
+ 184      2020 0A0D 
+ 184      00
  185               	.LC1:
- 186 000b 7265 7365 		.string	"reset "
- 186      7420 00
+ 186 0011 5265 7175 		.string	"Request auto reset "
+ 186      6573 7420 
+ 186      6175 746F 
+ 186      2072 6573 
+ 186      6574 2000 
  187               	.LC2:
- 188 0012 596F 7520 		.string	"You pressed: %c\n\r"
+ 188 0025 596F 7520 		.string	"You pressed: %c\n\r"
  188      7072 6573 
  188      7365 643A 
  188      2025 630A 
@@ -191,20 +196,20 @@
  202               	.LM37:
  203 009c 0E94 0000 		call ioinit
  204               	.LVL11:
- 205 00a0 1EE1      		ldi r17,lo8(30)
+ 205 00a0 14E6      		ldi r17,lo8(100)
  206               	.LVL12:
  207               	.L17:
  208               	.LM38:
  209 00a2 2D9A      		sbi 37-32,5
  210               	.LM39:
- 211 00a4 84E6      		ldi r24,lo8(100)
- 212 00a6 90E0      		ldi r25,hi8(100)
+ 211 00a4 88EC      		ldi r24,lo8(200)
+ 212 00a6 90E0      		ldi r25,hi8(200)
  213 00a8 0E94 0000 		call delay_ms
  214               	.LM40:
  215 00ac 2D98      		cbi 37-32,5
  216               	.LM41:
- 217 00ae 84E6      		ldi r24,lo8(100)
- 218 00b0 90E0      		ldi r25,hi8(100)
+ 217 00ae 88EC      		ldi r24,lo8(200)
+ 218 00b0 90E0      		ldi r25,hi8(200)
  219 00b2 0E94 0000 		call delay_ms
  220 00b6 1150      		subi r17,lo8(-(-1))
  221               	.LM42:
@@ -269,31 +274,31 @@
  281               	.global	bootloader
  282               		.data
  285               	bootloader:
- 286 0024 E013      		.word	5088
+ 286 0037 E013      		.word	5088
  289               	mystdout:
- 290 0026 0000 00   		.skip 3,0
- 291 0029 02        		.byte	2
- 292 002a 0000 0000 		.skip 4,0
- 293 002e 0000      		.word	gs(uart_putchar)
- 294 0030 0000      		.word	0
- 295 0032 0000      		.word	0
+ 290 0039 0000 00   		.skip 3,0
+ 291 003c 02        		.byte	2
+ 292 003d 0000 0000 		.skip 4,0
+ 293 0041 0000      		.word	gs(uart_putchar)
+ 294 0043 0000      		.word	0
+ 295 0045 0000      		.word	0
  360               	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 test.c
-     /tmp/ccUmUDjv.s:2      *ABS*:000000000000003f __SREG__
-     /tmp/ccUmUDjv.s:3      *ABS*:000000000000003e __SP_H__
-     /tmp/ccUmUDjv.s:4      *ABS*:000000000000003d __SP_L__
-     /tmp/ccUmUDjv.s:5      *ABS*:0000000000000034 __CCP__
-     /tmp/ccUmUDjv.s:6      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccUmUDjv.s:7      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccUmUDjv.s:17     .text:0000000000000000 uart_putchar
-     /tmp/ccUmUDjv.s:53     .text:0000000000000022 ioinit
-     /tmp/ccUmUDjv.s:289    .data:0000000000000026 mystdout
-     /tmp/ccUmUDjv.s:90     .text:000000000000004c delay_us
-     /tmp/ccUmUDjv.s:116    .text:000000000000005a delay_ms
-     /tmp/ccUmUDjv.s:160    .text:0000000000000086 getch
-     /tmp/ccUmUDjv.s:192    .text:0000000000000096 main
-     /tmp/ccUmUDjv.s:285    .data:0000000000000024 bootloader
+     /tmp/ccHDJIxp.s:2      *ABS*:000000000000003f __SREG__
+     /tmp/ccHDJIxp.s:3      *ABS*:000000000000003e __SP_H__
+     /tmp/ccHDJIxp.s:4      *ABS*:000000000000003d __SP_L__
+     /tmp/ccHDJIxp.s:5      *ABS*:0000000000000034 __CCP__
+     /tmp/ccHDJIxp.s:6      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccHDJIxp.s:7      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccHDJIxp.s:17     .text:0000000000000000 uart_putchar
+     /tmp/ccHDJIxp.s:53     .text:0000000000000022 ioinit
+     /tmp/ccHDJIxp.s:289    .data:0000000000000039 mystdout
+     /tmp/ccHDJIxp.s:90     .text:000000000000004c delay_us
+     /tmp/ccHDJIxp.s:116    .text:000000000000005a delay_ms
+     /tmp/ccHDJIxp.s:160    .text:0000000000000086 getch
+     /tmp/ccHDJIxp.s:192    .text:0000000000000096 main
+     /tmp/ccHDJIxp.s:285    .data:0000000000000037 bootloader
 
 UNDEFINED SYMBOLS
 __iob
