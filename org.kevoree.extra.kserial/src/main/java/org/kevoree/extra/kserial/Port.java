@@ -24,6 +24,7 @@ public abstract class Port {
 
     public void setFd(int fd) {
         this.fd = fd;
+        System.out.println(this.fd);
     }
 
     public String getPort_name() {

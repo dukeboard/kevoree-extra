@@ -30,14 +30,15 @@ void event(int fd,char *data)
 
 
 int main(int argc,char ** argv){
-    Port *ports= scan_fd();
+    //Port *ports= scan_fd();
+    /*
      int i;
      for(i=0;i<MAX_PORTS;i++)
      {
         if(strlen(ports[i].devicename) >  0)
         printf("%s\n",ports[i].devicename);
      }
-
+*/
 	fd = open_serial(argv[1],19200);
 
 	if(fd < 0)

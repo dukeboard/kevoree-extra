@@ -3,33 +3,33 @@ test.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         0000003e  00800100  000007d6  0000086a  2**0
+  0 .data         00000034  00800100  000007d6  0000086a  2**0
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         000007d6  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000006  0080013e  0080013e  000008a8  2**0
+  2 .bss          00000006  00800134  00800134  0000089e  2**0
                   ALLOC
-  3 .stab         00001fe0  00000000  00000000  000008a8  2**2
+  3 .stab         00001fe0  00000000  00000000  000008a0  2**2
                   CONTENTS, READONLY, DEBUGGING
-  4 .stabstr      00000d1f  00000000  00000000  00002888  2**0
+  4 .stabstr      00000d1f  00000000  00000000  00002880  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_aranges 00000020  00000000  00000000  000035a7  2**0
+  5 .debug_aranges 00000020  00000000  00000000  0000359f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_pubnames 00000059  00000000  00000000  000035c7  2**0
+  6 .debug_pubnames 00000059  00000000  00000000  000035bf  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   000002a6  00000000  00000000  00003620  2**0
+  7 .debug_info   000002a6  00000000  00000000  00003618  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 000001a2  00000000  00000000  000038c6  2**0
+  8 .debug_abbrev 000001a2  00000000  00000000  000038be  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   0000021a  00000000  00000000  00003a68  2**0
+  9 .debug_line   0000021a  00000000  00000000  00003a60  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  00000070  00000000  00000000  00003c84  2**2
+ 10 .debug_frame  00000070  00000000  00000000  00003c7c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    0000013e  00000000  00000000  00003cf4  2**0
+ 11 .debug_str    0000013e  00000000  00000000  00003cec  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    000000cd  00000000  00000000  00003e32  2**0
+ 12 .debug_loc    000000cd  00000000  00000000  00003e2a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_pubtypes 00000043  00000000  00000000  00003eff  2**0
+ 13 .debug_pubtypes 00000043  00000000  00000000  00003ef7  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -79,13 +79,13 @@ Disassembly of section .text:
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
-  84:	ae 33       	cpi	r26, 0x3E	; 62
+  84:	a4 33       	cpi	r26, 0x34	; 52
   86:	b1 07       	cpc	r27, r17
   88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
 
 0000008a <__do_clear_bss>:
   8a:	11 e0       	ldi	r17, 0x01	; 1
-  8c:	ae e3       	ldi	r26, 0x3E	; 62
+  8c:	a4 e3       	ldi	r26, 0x34	; 52
   8e:	b1 e0       	ldi	r27, 0x01	; 1
   90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
 
@@ -93,7 +93,7 @@ Disassembly of section .text:
   92:	1d 92       	st	X+, r1
 
 00000094 <.do_clear_bss_start>:
-  94:	a4 34       	cpi	r26, 0x44	; 68
+  94:	aa 33       	cpi	r26, 0x3A	; 58
   96:	b1 07       	cpc	r27, r17
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
   9a:	0e 94 9e 00 	call	0x13c	; 0x13c <main>
@@ -161,10 +161,10 @@ void ioinit(void)
   dc:	80 93 c1 00 	sts	0x00C1, r24
 
     stdout = &mystdout; //Required for printf init
-  e0:	8f e2       	ldi	r24, 0x2F	; 47
+  e0:	86 e2       	ldi	r24, 0x26	; 38
   e2:	91 e0       	ldi	r25, 0x01	; 1
-  e4:	90 93 41 01 	sts	0x0141, r25
-  e8:	80 93 40 01 	sts	0x0140, r24
+  e4:	90 93 37 01 	sts	0x0137, r25
+  e8:	80 93 36 01 	sts	0x0136, r24
 
     //Init Timer0 for delay_us
     //TCCR0B = (1<<CS00); //Set Prescaler to clk/1 (assume we are running at internal 1MHz). CS00=1
@@ -307,7 +307,7 @@ int main (void)
 		delay_ms(100);
 	}
 
-	printf("\n\r  RIGOEODOEEDO \n\r");
+	printf("\n\r  JED \n\r");
  160:	00 d0       	rcall	.+0      	; 0x162 <main+0x26>
  162:	80 e0       	ldi	r24, 0x00	; 0
  164:	91 e0       	ldi	r25, 0x01	; 1
@@ -326,10 +326,10 @@ int main (void)
 		}
 		else
 			printf("You pressed: %c\n\r", my_ch);
- 17a:	cb e1       	ldi	r28, 0x1B	; 27
+ 17a:	c2 e1       	ldi	r28, 0x12	; 18
  17c:	d1 e0       	ldi	r29, 0x01	; 1
 
-	printf("\n\r  RIGOEODOEEDO \n\r");
+	printf("\n\r  JED \n\r");
 
 	while(1)
 	{
@@ -340,12 +340,12 @@ int main (void)
  182:	82 37       	cpi	r24, 0x72	; 114
  184:	51 f4       	brne	.+20     	; 0x19a <main+0x5e>
 			printf("reset \n");
- 186:	84 e1       	ldi	r24, 0x14	; 20
+ 186:	8b e0       	ldi	r24, 0x0B	; 11
  188:	91 e0       	ldi	r25, 0x01	; 1
  18a:	0e 94 f6 00 	call	0x1ec	; 0x1ec <puts>
 			bootloader();
- 18e:	e0 91 2d 01 	lds	r30, 0x012D
- 192:	f0 91 2e 01 	lds	r31, 0x012E
+ 18e:	e0 91 24 01 	lds	r30, 0x0124
+ 192:	f0 91 25 01 	lds	r31, 0x0125
  196:	09 95       	icall
  198:	f2 cf       	rjmp	.-28     	; 0x17e <main+0x42>
 		}
@@ -381,8 +381,8 @@ int main (void)
  1d0:	35 96       	adiw	r30, 0x05	; 5
  1d2:	61 91       	ld	r22, Z+
  1d4:	71 91       	ld	r23, Z+
- 1d6:	80 91 40 01 	lds	r24, 0x0140
- 1da:	90 91 41 01 	lds	r25, 0x0141
+ 1d6:	80 91 36 01 	lds	r24, 0x0136
+ 1da:	90 91 37 01 	lds	r25, 0x0137
  1de:	af 01       	movw	r20, r30
  1e0:	0e 94 2b 01 	call	0x256	; 0x256 <vfprintf>
  1e4:	20 96       	adiw	r28, 0x00	; 0
@@ -397,8 +397,8 @@ int main (void)
  1f4:	cf 93       	push	r28
  1f6:	df 93       	push	r29
  1f8:	8c 01       	movw	r16, r24
- 1fa:	e0 91 40 01 	lds	r30, 0x0140
- 1fe:	f0 91 41 01 	lds	r31, 0x0141
+ 1fa:	e0 91 36 01 	lds	r30, 0x0136
+ 1fe:	f0 91 37 01 	lds	r31, 0x0137
  202:	83 81       	ldd	r24, Z+3	; 0x03
  204:	81 ff       	sbrs	r24, 1
  206:	1f c0       	rjmp	.+62     	; 0x246 <puts+0x5a>
@@ -418,8 +418,8 @@ int main (void)
  222:	f8 01       	movw	r30, r16
  224:	81 91       	ld	r24, Z+
  226:	8f 01       	movw	r16, r30
- 228:	60 91 40 01 	lds	r22, 0x0140
- 22c:	70 91 41 01 	lds	r23, 0x0141
+ 228:	60 91 36 01 	lds	r22, 0x0136
+ 22c:	70 91 37 01 	lds	r23, 0x0137
  230:	88 23       	and	r24, r24
  232:	69 f7       	brne	.-38     	; 0x20e <puts+0x22>
  234:	db 01       	movw	r26, r22

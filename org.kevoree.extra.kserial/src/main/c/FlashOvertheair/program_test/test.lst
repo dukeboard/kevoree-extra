@@ -164,16 +164,14 @@
  180               	.LFE6:
  182               		.data
  183               	.LC0:
- 184 0000 0A0D 2020 		.string	"\n\r  RIGOEODOEEDO \n\r"
- 184      5249 474F 
- 184      454F 444F 
- 184      4545 444F 
- 184      200A 0D00 
+ 184 0000 0A0D 2020 		.string	"\n\r  JED \n\r"
+ 184      4A45 4420 
+ 184      0A0D 00
  185               	.LC1:
- 186 0014 7265 7365 		.string	"reset "
+ 186 000b 7265 7365 		.string	"reset "
  186      7420 00
  187               	.LC2:
- 188 001b 596F 7520 		.string	"You pressed: %c\n\r"
+ 188 0012 596F 7520 		.string	"You pressed: %c\n\r"
  188      7072 6573 
  188      7365 643A 
  188      2025 630A 
@@ -271,31 +269,31 @@
  281               	.global	bootloader
  282               		.data
  285               	bootloader:
- 286 002d E013      		.word	5088
+ 286 0024 E013      		.word	5088
  289               	mystdout:
- 290 002f 0000 00   		.skip 3,0
- 291 0032 02        		.byte	2
- 292 0033 0000 0000 		.skip 4,0
- 293 0037 0000      		.word	gs(uart_putchar)
- 294 0039 0000      		.word	0
- 295 003b 0000      		.word	0
+ 290 0026 0000 00   		.skip 3,0
+ 291 0029 02        		.byte	2
+ 292 002a 0000 0000 		.skip 4,0
+ 293 002e 0000      		.word	gs(uart_putchar)
+ 294 0030 0000      		.word	0
+ 295 0032 0000      		.word	0
  360               	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 test.c
-     /tmp/ccI2dr2e.s:2      *ABS*:000000000000003f __SREG__
-     /tmp/ccI2dr2e.s:3      *ABS*:000000000000003e __SP_H__
-     /tmp/ccI2dr2e.s:4      *ABS*:000000000000003d __SP_L__
-     /tmp/ccI2dr2e.s:5      *ABS*:0000000000000034 __CCP__
-     /tmp/ccI2dr2e.s:6      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccI2dr2e.s:7      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccI2dr2e.s:17     .text:0000000000000000 uart_putchar
-     /tmp/ccI2dr2e.s:53     .text:0000000000000022 ioinit
-     /tmp/ccI2dr2e.s:289    .data:000000000000002f mystdout
-     /tmp/ccI2dr2e.s:90     .text:000000000000004c delay_us
-     /tmp/ccI2dr2e.s:116    .text:000000000000005a delay_ms
-     /tmp/ccI2dr2e.s:160    .text:0000000000000086 getch
-     /tmp/ccI2dr2e.s:192    .text:0000000000000096 main
-     /tmp/ccI2dr2e.s:285    .data:000000000000002d bootloader
+     /tmp/ccUmUDjv.s:2      *ABS*:000000000000003f __SREG__
+     /tmp/ccUmUDjv.s:3      *ABS*:000000000000003e __SP_H__
+     /tmp/ccUmUDjv.s:4      *ABS*:000000000000003d __SP_L__
+     /tmp/ccUmUDjv.s:5      *ABS*:0000000000000034 __CCP__
+     /tmp/ccUmUDjv.s:6      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccUmUDjv.s:7      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccUmUDjv.s:17     .text:0000000000000000 uart_putchar
+     /tmp/ccUmUDjv.s:53     .text:0000000000000022 ioinit
+     /tmp/ccUmUDjv.s:289    .data:0000000000000026 mystdout
+     /tmp/ccUmUDjv.s:90     .text:000000000000004c delay_us
+     /tmp/ccUmUDjv.s:116    .text:000000000000005a delay_ms
+     /tmp/ccUmUDjv.s:160    .text:0000000000000086 getch
+     /tmp/ccUmUDjv.s:192    .text:0000000000000096 main
+     /tmp/ccUmUDjv.s:285    .data:0000000000000024 bootloader
 
 UNDEFINED SYMBOLS
 __iob

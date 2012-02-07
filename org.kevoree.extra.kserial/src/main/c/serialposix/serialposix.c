@@ -41,7 +41,7 @@ int register_SerialEvent( void* fn){
 	return 0;
 };
 
-
+/*
 Port* scan_fd(void)
 {
 	DIR *dir;
@@ -100,7 +100,7 @@ Port* scan_fd(void)
 	}
 	return &myports[0];
 }
-
+*/
 
 /**
  *  Write a byte on the fd

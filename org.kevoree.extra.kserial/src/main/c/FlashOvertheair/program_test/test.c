@@ -45,7 +45,7 @@ int main (void)
 		delay_ms(100);
 	}
 
-	printf("\n\r  RIGOEODOEEDO \n\r");
+	printf("\n\r  JED \n\r");
 
 	while(1)
 	{
