@@ -15,7 +15,7 @@ nix32:
 
 osx:
 	$(CC) -shared -fPIC -Wl,-install_name,../../resources/osx/serialposix.so -o ../../resources/osx/serialposix.so serialposix.c
-	#$(CC) ../test.c -o test  ../../resources/osx/serialposix.so -lpthread
+	$(CC) test.c -o test  ../../resources/osx/serialposix.so -lpthread
 	
 
 

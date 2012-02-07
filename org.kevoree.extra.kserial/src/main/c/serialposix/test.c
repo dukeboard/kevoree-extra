@@ -1,7 +1,7 @@
 
 
-#include "serialposix/serialposix.h"
-
+#include "serialposix.h"
+#include <stdio.h>
 /**
  * Created by jed
  * User: jedartois@gmail.com
@@ -44,7 +44,7 @@ int main(int argc,char ** argv){
 	if(fd < 0)
 	{
 		printf("Serial device does not exist %d \n",fd);
-		exit(-2);
+
 	}
 
     register_SerialEvent( event);
@@ -67,6 +67,6 @@ int main(int argc,char ** argv){
     sleep(10);
     printf("close\n");
     close_serial(fd);
-    exit(0);
+
 	return 0;
 }
