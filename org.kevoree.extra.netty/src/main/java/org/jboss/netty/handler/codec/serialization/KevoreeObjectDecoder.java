@@ -5,7 +5,6 @@ import org.jboss.netty.buffer.ChannelBufferInputStream;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;
-import org.osgi.framework.Bundle;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,33 +16,19 @@ import java.io.InputStream;
  * Time: 19:51
  * To change this template use File | Settings | File Templates.
  */
-public class OSGIObjectDecoder extends LengthFieldBasedFrameDecoder {
+public class KevoreeObjectDecoder extends LengthFieldBasedFrameDecoder {
 
-    private Bundle bundle;
+    private ClassLoader classLoader;
 
-    public OSGIObjectDecoder(Bundle _bundle,int maxObjectSize) {
-        this(maxObjectSize,null);
-        bundle = _bundle;
-
-    }
-
-    public OSGIObjectDecoder(Bundle _bundle) {
-        this(1048576,null);
-        bundle = _bundle;
+    public KevoreeObjectDecoder(ClassLoader classLoader,int maxObjectSize) {
+		super(maxObjectSize, 0, 4, 0, 4);
+        this.classLoader= classLoader;
 
     }
 
-    public OSGIObjectDecoder(int maxObjectSize, ClassLoader classLoader) {
-        super(maxObjectSize, 0, 4, 0, 4);
-      //  this.classLoader = classLoader;
-    }
+    public KevoreeObjectDecoder(ClassLoader classLoader) {
+        this(classLoader, 1048576);
 
-    public Bundle getBundle() {
-        return bundle;
-    }
-
-    public void setBundle(Bundle bundle) {
-        this.bundle = bundle;
     }
 
     @Override
@@ -52,23 +37,23 @@ public class OSGIObjectDecoder extends LengthFieldBasedFrameDecoder {
         if (frame == null) {
             return null;
         }
-        return new OSGICompactObjectInputStream(new ChannelBufferInputStream(frame)).readObject();
+        return new KevoreeCompactObjectInputStream(new ChannelBufferInputStream(frame)).readObject();
 
     }
 
-    class OSGICompactObjectInputStream extends CompactObjectInputStream {
+    class KevoreeCompactObjectInputStream extends CompactObjectInputStream {
 
-        OSGICompactObjectInputStream(InputStream in) throws IOException {
+		KevoreeCompactObjectInputStream(InputStream in) throws IOException {
             super(in);
         }
 
-        OSGICompactObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
+		KevoreeCompactObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
             super(in, classLoader);
         }
 
         @Override
         protected Class<?> loadClass(String className) throws ClassNotFoundException {
-            return bundle.loadClass(className);
+            return classLoader.loadClass(className);
             //return super.loadClass(className);
         }
     }
