@@ -18,8 +18,8 @@ public class Test {
 
 
 
-       // System.out.println(KHelpers.getPortIdentifiers());
-        final SerialPort serial = new SerialPort("/dev/tty.usbmodem24131", 19200);
+        System.out.println(KHelpers.getPortIdentifiers());
+        final SerialPort serial = new SerialPort("/dev/tty.usbmodemfa141", 19200);
         serial.open();
         serial.addEventListener(new SerialPortEventListener(){
             public void incomingDataEvent (SerialPortEvent evt) {
@@ -35,7 +35,7 @@ public class Test {
             }
         });
 
-
+        Thread.currentThread().sleep(1000000);
 
 /*
  FlashFirmware flash = new FlashFirmware("/dev/ttyUSB0","ATMEGA328","NODE02");
