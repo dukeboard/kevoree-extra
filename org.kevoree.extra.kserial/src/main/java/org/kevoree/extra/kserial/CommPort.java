@@ -13,5 +13,5 @@ import org.kevoree.extra.kserial.SerialPort.SerialPortException;
 public abstract class CommPort extends Port
 {
 	public abstract void write(byte[] data) throws SerialPortException;
-    public abstract byte[] read() throws SerialPortException;
+   // public abstract byte[] read() throws SerialPortException;
 }

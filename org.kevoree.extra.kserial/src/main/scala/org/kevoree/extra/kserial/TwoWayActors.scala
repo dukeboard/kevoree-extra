@@ -1,7 +1,8 @@
 package org.kevoree.extra.kserial
 
-import actors.{TIMEOUT, DaemonActor}
-import SerialPort.{SerialPortDisconnectionEvent, SerialPortEvent, SerialPort, SerialPortEventListener}
+import SerialPort.{SerialPort => KSerialPort}
+import SerialPort.{SerialPortDisconnectionEvent, SerialPortEvent, SerialPortEventListener}
+import actors.{Actor, TIMEOUT, DaemonActor}
 
 /**
  * User: ffouquet
@@ -10,33 +11,6 @@ import SerialPort.{SerialPortDisconnectionEvent, SerialPortEvent, SerialPort, Se
  */
 
 class TwoWayActors(portName: String) extends SerialPortEventListener {
-
-  var serialPort: SerialPort = null
-  serialPort = new SerialPort(portName, 115200)
-  serialPort.open()
-  serialPort.addEventListener(this)
-
-  def sendAndWait(msg: String, waitMsg: String, timeout: Long): java.lang.Boolean = {
-    (replyActor !?(timeout, Tuple3(msg, waitMsg, timeout))) match {
-      case Some(e) => true
-      case None => println("timeout"); false
-    }
-  }
-
-  def send(msg: String) {
-    replyActor ! msg
-  }
-
-  case class CLOSEPORT()
-
-  case class CONTENTREC(content: String)
-
-  def killConnection() {
-    replyActor ! CLOSEPORT()
-    if (serialPort != null) {
-      serialPort.close()
-    }
-  }
 
   var replyActor = new DaemonActor {
     def act() {
@@ -74,12 +48,51 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
     }
   }.start()
 
+  var serialPort: KSerialPort = null
+  serialPort = new KSerialPort(portName, 115200)
+  serialPort.open()
+  serialPort.addEventListener(this)
+
+  def sendAndWait(msg: String, waitMsg: String, timeout: Long): java.lang.Boolean = {
+    (replyActor !?(timeout, Tuple3(msg, waitMsg, timeout))) match {
+      case Some(e) => true
+      case None => println("timeout"); false
+    }
+  }
+
+  def send(msg: String) {
+    replyActor ! msg
+  }
+
+  case class CLOSEPORT()
+  case class CONTENTREC(content: String)
+
+  var closed = false
+
+  def killConnection() {
+    replyActor ! CLOSEPORT()
+    if (serialPort != null) {
+      serialPort.close()
+    }
+    closed = true
+  }
+
   def incomingDataEvent(evt: SerialPortEvent) {
     replyActor ! CONTENTREC(new String(evt.read()))
   }
 
+
+
   def disconnectionEvent(evt: SerialPortDisconnectionEvent) {
-   // KevoreeSharedCom.
-   //   serialPort.autoReconnect(5,this)
+    closed = true
+    val selfListener : SerialPortEventListener = this
+    new Actor(){
+      def act() {
+        loopWhile(closed){
+          val result = serialPort.autoReconnect(1,selfListener)
+          closed = !result
+        }
+      }
+    }.start()
   }
 }

@@ -80,10 +80,11 @@ public class SerialPort extends CommPort {
 
     }
 
+    /*
     @Override
     public byte[] read() throws SerialPortException {
         return new byte[0];
-    }
+    }*/
 
     @Override
     public void open () throws SerialPortException {
@@ -97,33 +98,32 @@ public class SerialPort extends CommPort {
 
     }
 
-    public void autoReconnect (int tentative,SerialPortEventListener event) throws SerialPortException {
+    public boolean autoReconnect (int tentative,SerialPortEventListener event) throws SerialPortException {
+        close();
         removeEventListener(event);
-
         int i=0;
         boolean echec=true;
         while(i < tentative && echec)   {
-
             try
             {
                 System.out.print("Try reconnect N°"+i);
                 try
                 {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                 }
-
-                open ();
+                open();
                 echec=false;
+                addEventListener(event);
+                return true;
             }catch (Exception e){
                 System.out.println(" [FAIL]");
-                if(i > tentative)
-                    throw new SerialPortException("Error reconnect "+tentative);
             }
             i++;
         }
-
         addEventListener(event)  ;
+        close();
+        return false;
     }
 
     @Override
