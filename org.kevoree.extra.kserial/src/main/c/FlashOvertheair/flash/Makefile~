@@ -19,6 +19,6 @@ osx:
 
 clean :
 	rm *.o *.so test
-	../../../resources/osx/flash.so
-	../../../resources/nix32/flash.so
-	../../../resources/nix64/flash.so
+	../../resources/osx/serialposix.so
+	../../resources/nix32/serialposix.so
+	../../resources/nix64/serialposix.so

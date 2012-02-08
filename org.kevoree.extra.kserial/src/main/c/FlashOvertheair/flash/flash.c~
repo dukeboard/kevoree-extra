@@ -339,14 +339,14 @@ void *flash_firmware(Target *infos)
 	{
 
 		FlashEvent(current_memory_address);
-    	printf("\n %d/%d octets ",current_memory_address, infos->last_memory_address);
+    	//printf("\n %d/%d octets ",current_memory_address, infos->last_memory_address);
 		ready_flag =  serialport_readbyte(fd);
 		if(ready_flag == 'T')
 		{
-			printf(" The bootloader is ready :%c\n",ready_flag);
+			//printf(" The bootloader is ready :%c\n",ready_flag);
 		}else if(ready_flag = 7)
 		{
-			printf("Re-send line %d \n",ready_flag);
+			//printf("Re-send line %d \n",ready_flag);
 			FlashEvent(-36);
 			current_memory_address = current_memory_address - page_size;
 			if(current_memory_address  < 0) current_memory_address  =0;
