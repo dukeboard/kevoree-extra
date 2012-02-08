@@ -354,7 +354,7 @@ class HttpServer(val config: ServerConfig = ServerConfig())
 
   protected def handleTimedOutRequests() {
     openRequests.forAllTimedOut(config.requestTimeout) { record =>
-      log.warn("A request to '{}' timed out, dispatching to the TimeoutActor '{}'", record.uri, config.timeoutActorId)
+      log.debug("A request to '{}' timed out, dispatching to the TimeoutActor '{}'", record.uri, config.timeoutActorId)
       openRequests -= record
       openTimeouts += record
       import record._
@@ -363,7 +363,7 @@ class HttpServer(val config: ServerConfig = ServerConfig())
     }
     openTimeouts.forAllTimedOut(config.timeoutTimeout) { record =>
       import record._
-      log.warn("The TimeoutService for '{}' timed out as well, responding with the static error reponse", uri)
+      log.debug("The TimeoutService for '{}' timed out as well, responding with the static error reponse", uri)
       record.responder.asInstanceOf[DefaultRequestResponder].timeoutResponder {
         timeoutTimeoutResponse(method, uri, protocol, headers, remoteAddress)
       }
@@ -404,9 +404,9 @@ class HttpServer(val config: ServerConfig = ServerConfig())
     def complete(response: HttpResponse) {
       if (!trySend(response)) mode.get match {
         case COMPLETED =>
-          log.warn("Received an additional response for an already completed request to '{}', ignoring...", requestLine.uri)
+          log.debug("Received an additional response for an already completed request to '{}', ignoring...", requestLine.uri)
         case STREAMING =>
-          log.warn("Received a regular response for a request to '{}', " +
+          log.debug("Received a regular response for a request to '{}', " +
                    "that a chunked response has already been started/completed, ignoring...", requestLine.uri)
       }
     }
