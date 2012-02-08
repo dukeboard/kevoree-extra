@@ -24,8 +24,8 @@ package object can {
   def make[A, U](a: A)(f: A => U): A = { f(a); a }
 
   lazy val SprayCanVersion: String = {
-    "0.9.1"
-    //new BufferedReader(new InputStreamReader(getClass.getResourceAsStream("/version"))).readLine()
+    "0.9.2"
+    //new BufferedReader(new InputStreamReader(getClass.getResourceAsStream("/spray-can.version"))).readLine()
   }
 
   private[can] def actor(id: String): ActorRef = {

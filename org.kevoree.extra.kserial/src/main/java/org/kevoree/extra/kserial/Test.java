@@ -19,7 +19,7 @@ public class Test {
 
 
        System.out.println(KHelpers.getPortIdentifiers());
-       final SerialPort serial = new SerialPort("/dev/ttyACM0", 115200);
+       final SerialPort serial = new SerialPort("/dev/tty.usbmodem26231", 115200);
        serial.open();
        serial.addEventListener(new SerialPortEventListener(){
            public void incomingDataEvent (SerialPortEvent evt) {

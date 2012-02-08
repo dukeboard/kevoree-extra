@@ -286,7 +286,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	quitter = 0;
 
 	/* open the serial device */
-	fd = open(_name_device,O_RDWR |O_NOCTTY | O_NONBLOCK | O_RSYNC);
+	fd = open(_name_device,O_RDWR |O_NOCTTY | O_NONBLOCK);
 
 	if(fd < 0)
 	{

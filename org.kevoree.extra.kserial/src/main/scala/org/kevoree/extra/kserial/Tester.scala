@@ -9,7 +9,7 @@ package org.kevoree.extra.kserial
 
 object Tester extends App {
 
-  KevoreeSharedCom.addObserver("/dev/tty.usbmodem411", new ContentListener {
+  KevoreeSharedCom.addObserver("/dev/tty.usbmodem26231", new ContentListener {
     def recContent(content: String) {
       println("Rec=" + content)
     }
