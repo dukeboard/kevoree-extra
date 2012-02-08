@@ -36,7 +36,7 @@ int main (void)
 	uint8_t my_ch, x = 0;
 
 	//Blinky!
-	for(x = 0 ; x < 100 ; x++)
+	for(x = 0 ; x < 10 ; x++)
 	{
 		sbi(PORTB, STATUS_LED);
 		delay_ms(200);

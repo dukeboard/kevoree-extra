@@ -14,4 +14,4 @@ nix64:
 	$(CC) test.c -o test  ../../../resources/nix64/flash.so
 
 osx:
-	$(CC) -shared -fPIC -Wl,-install_name,../../../resources/osx/flash.so -o ../../../resources/osx/flash.so  flash.c.c -lpthread
+	$(CC) -shared -fPIC -Wl,-install_name,../../../resources/osx/flash.so -o ../../../resources/osx/flash.so  flash.c -lpthread
