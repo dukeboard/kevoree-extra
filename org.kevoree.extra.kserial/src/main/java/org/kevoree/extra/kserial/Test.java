@@ -44,7 +44,7 @@ public class Test {
      */
 
 
-        FlashFirmware flash = new FlashFirmware("/dev/ttyACM0","ATMEGA328","KS1");
+        FlashFirmware flash = new FlashFirmware("/dev/ttyUSB0","ATMEGA328","NODE0");
 
         Byte[] intel = KHelpers.read_file("/home/jed/kevoree/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
         if(flash.write_on_the_air_program(intel) >= 0){

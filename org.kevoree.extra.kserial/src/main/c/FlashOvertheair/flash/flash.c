@@ -306,7 +306,7 @@ void *flash_firmware(Target *infos)
 
 	FlashEvent(-29);
 
-	printf("Bootloader Ready ! \n");
+	//printf("Bootloader Ready ! \n");
 
 	if(serialport_writebyte(infos->fd,6) < 0)
 	{
@@ -314,7 +314,7 @@ void *flash_firmware(Target *infos)
 		FlashEvent(-32);
 		close_flash();
 	}
-    /*
+
 	int i=0;
 	for(i=0;i<MAX_SIZE_ID;i++)
 	{
@@ -325,9 +325,13 @@ void *flash_firmware(Target *infos)
 			close_flash();
 			FlashEvent(-33);
 		}
+		if(NODE_ID[i] == '\n')
+		{
+		 break;
+		}
 	}
-	*/
-//	printf("FLASH <%s>\n",NODE_ID);
+
+	printf("FLASH <%s>\n",NODE_ID);
 
 	current_memory_address = 0;
 
@@ -335,7 +339,7 @@ void *flash_firmware(Target *infos)
 	{
 
 		FlashEvent(current_memory_address);
-		printf("\n %d/%d octets ",current_memory_address, infos->last_memory_address);
+    	//printf("\n %d/%d octets ",current_memory_address, infos->last_memory_address);
 		ready_flag =  serialport_readbyte(fd);
 		if(ready_flag == 'T')
 		{
