@@ -28,19 +28,22 @@
 #define PRINT_CHAR 1
 #define MAX_SIZE_ID 5
 
+#define MAX_SIZE_DEVICE_NAME 512
 
 #define ATMEGA328 0
 #define ATMEGA1280 1
 #define ATMEGA168 2
 
 
-typedef struct _target {
- char port_device[512];
+typedef struct _target
+{
+ char port_device[MAX_SIZE_DEVICE_NAME];
+ int fd;
  int target;
  char dest_node_id[MAX_SIZE_ID];
  int taille;
- unsigned char *raw_intel_hex_array;
-
+ int last_memory_address;
+ unsigned char *intel_hex_array;
 } Target;
 
 
@@ -49,4 +52,4 @@ unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_
 int serialport_writebyte( int fd, uint8_t b);
 uint8_t  serialport_readbyte( int fd);
 
- int register_FlashEvent( void* fn);
+int register_FlashEvent( void* fn);

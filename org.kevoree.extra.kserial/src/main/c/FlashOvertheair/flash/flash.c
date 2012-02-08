@@ -172,16 +172,20 @@ unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_
 			// extract the larger
 			length = parseHex(page[0],page[1]);
 #ifdef DEBUG
-			//printf("\n Record length : %d ",length);
+		//	printf("\n Record length : %d ",length);
 #endif
 			// extract  adr high
 			memory_address_high = parseHex(page[2],page[3]);
 			// extract  adr low
 			memory_address_low =  parseHex(page[4],page[5]);
 			memory_address = memory_address_high * 256 + memory_address_low;
+
+			int tmp =   memory_address + length;
+
 			if(memory_address + length != 0)
 			{
 				last_memory_address = memory_address + length;
+				*last_memory =  last_memory_address;
 			}
 			for(y=0;y<length;y++)
 			{
@@ -201,7 +205,6 @@ unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_
 
 	}while(i < taille);
 
-	*last_memory =  last_memory_address;
 
 	return  destination_intel_hex_array;
 }
@@ -259,72 +262,6 @@ void *flash_firmware(Target *infos)
 	int flash_size;
 	char c;
 	char NODE_ID[MAX_SIZE_ID];
-	struct termios parametres;
-	struct termios original;
-	int last_memory_address;
-	unsigned char *intel_hex_array;
-
-	fd = open(infos->port_device, O_RDWR, 0);
-	if(fd < 0)
-	{
-		close_flash();
-		FlashEvent(-2);
-	}
-	flash_exit =0;
-
-	tcgetattr(fd, & original);
-	tcgetattr(fd, & parametres);
-	cfmakeraw(& parametres);
-	cfsetispeed(& parametres, B19200);
-	cfsetospeed(& parametres, B19200);
-
-	//No parity (8N1):
-	parametres.c_cflag &= ~PARENB;
-	parametres.c_cflag &= ~CSTOPB;
-	parametres.c_cflag &= ~CSIZE;
-	parametres.c_cflag |= CS8;
-
-	// no flow control
-	parametres.c_cflag &= ~CRTSCTS;
-
-	parametres.c_cflag |= CREAD | CLOCAL | IXON;  // turn on READ & ignore ctrl lines
-
-
-	parametres.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
-	parametres.c_oflag &= ~OPOST; // make raw
-
-	// see: http://unixwiz.net/techtips/termios-vmin-vtime.html
-	parametres.c_cc[VMIN]  = 0;
-	parametres.c_cc[VTIME] = 10;
-
-
-
-	if (tcsetattr(fd, TCSANOW, & parametres) != 0) {
-		perror("tcsetattr");
-		close_flash();
-		FlashEvent(-3);
-	}
-
-
-	/* flush the serial device */
-	tcflush(fd, TCIOFLUSH);
-
-
-
-	intel_hex_array =  parse_intel_hex(infos->taille,&last_memory_address,infos->raw_intel_hex_array);
-
-	//   printf("FLASH <%s> %d -->  push %d octets last adresse is %d ",dest_node_id,target,taille,last_memory_address);
-
-
-	if(infos->taille < 0){
-		close_flash();
-		FlashEvent(-30);
-	}
-
-	if(last_memory_address <= 0){
-		close_flash();
-		FlashEvent(-31);
-	}
 
 	// customize for target
 	switch(infos->target)
@@ -348,9 +285,8 @@ void *flash_firmware(Target *infos)
 	}
 
 
-
 	usleep(1000);
-	if(serialport_writebyte(fd,'r') < 0)
+	if(serialport_writebyte(infos->fd,'r') < 0)
 	{
 		//printf("ERROR\n");
 		FlashEvent(-7);
@@ -362,27 +298,27 @@ void *flash_firmware(Target *infos)
 	{
 
 
-		boot_flag =  serialport_readbyte(fd);
-				FlashEvent(-35);
-        			usleep(1000);
+		boot_flag =  serialport_readbyte(infos->fd);
+		FlashEvent(-35);
+		usleep(1000);
 
 	}while( boot_flag !=5 && flash_exit == 0);
 
 	FlashEvent(-29);
 
-	//printf("Bootloader Ready ! \n");
+	printf("Bootloader Ready ! \n");
 
-	if(serialport_writebyte(fd,6) < 0)
+	if(serialport_writebyte(infos->fd,6) < 0)
 	{
 
 		FlashEvent(-32);
 		close_flash();
 	}
-
+    /*
 	int i=0;
 	for(i=0;i<MAX_SIZE_ID;i++)
 	{
-		NODE_ID[i]= serialport_readbyte(fd);
+		NODE_ID[i]= serialport_readbyte(infos->fd);
 
 		if((NODE_ID[i]) != infos->dest_node_id[i])
 		{
@@ -390,15 +326,16 @@ void *flash_firmware(Target *infos)
 			FlashEvent(-33);
 		}
 	}
-	printf("FLASH <%s>\n",NODE_ID);
+	*/
+//	printf("FLASH <%s>\n",NODE_ID);
 
 	current_memory_address = 0;
 
-	while((current_memory_address < last_memory_address) && (flash_exit == 0))
+	while((current_memory_address < infos->last_memory_address) && (flash_exit == 0))
 	{
 
 		FlashEvent(current_memory_address);
-		//	printf("\n %d/%d octets ",current_memory_address,last_memory_address);
+		printf("\n %d/%d octets ",current_memory_address, infos->last_memory_address);
 		ready_flag =  serialport_readbyte(fd);
 		if(ready_flag == 'T')
 		{
@@ -432,7 +369,7 @@ void *flash_firmware(Target *infos)
 		int i,j;
 		for(i=0;i<page_size;i++)
 		{
-			Check_Sum = Check_Sum + intel_hex_array[current_memory_address + i];
+			Check_Sum = Check_Sum + infos->intel_hex_array[current_memory_address + i];
 		}
 
 		//Now reduce check_sum to 8 bits
@@ -446,7 +383,7 @@ void *flash_firmware(Target *infos)
 
 
 		//printf("Send the start character :\n");
-		if(serialport_writebyte(fd,':') < 0)
+		if(serialport_writebyte(infos->fd,':') < 0)
 		{
 
 			FlashEvent(-7);
@@ -457,7 +394,7 @@ void *flash_firmware(Target *infos)
 		//printf("Send page_size %d\n",page_size);
 		c = page_size;
 		//Send the record length
-		if(serialport_writebyte(fd,c) < 0){
+		if(serialport_writebyte(infos->fd,c) < 0){
 			FlashEvent(-7);
 			close_flash();
 		}
@@ -465,13 +402,13 @@ void *flash_firmware(Target *infos)
 
 		//printf("Send this block's address Low %d High %d\n",Memory_Address_Low,Memory_Address_High);
 		c=Memory_Address_Low;
-		if(serialport_writebyte(fd,c) < 0)
+		if(serialport_writebyte(infos->fd,c) < 0)
 		{
 			FlashEvent(-7);
 			close_flash();
 		}
 		c=Memory_Address_High;
-		if(serialport_writebyte(fd,Memory_Address_High) < 0)
+		if(serialport_writebyte(infos->fd,Memory_Address_High) < 0)
 		{
 			FlashEvent(-7);
 			close_flash();
@@ -481,7 +418,7 @@ void *flash_firmware(Target *infos)
 
 		//printf("Send this block's check sum %d \n",Check_Sum);
 		c=Check_Sum;
-		if(serialport_writebyte(fd,c)< 0)
+		if(serialport_writebyte(infos->fd,c)< 0)
 		{
 			FlashEvent(-7);
 			close_flash();
@@ -491,8 +428,8 @@ void *flash_firmware(Target *infos)
 		j=0;
 		while(j < (page_size))
 		{
-			char block = 	intel_hex_array[current_memory_address + j];
-			if(serialport_writebyte(fd,block) < 0)
+			char block = 	infos->intel_hex_array[current_memory_address + j];
+			if(serialport_writebyte(infos->fd,block) < 0)
 			{
 				FlashEvent(-7);
 				close_flash();
@@ -505,8 +442,6 @@ void *flash_firmware(Target *infos)
 		current_memory_address = current_memory_address + page_size;
 
 	}
-
-
 
 	if(serialport_writebyte(fd,':') < 0)
 	{
@@ -534,8 +469,8 @@ void *flash_firmware(Target *infos)
 
 	if(infos != NULL)
 		free(infos);
-	if(intel_hex_array != NULL)
-		free(intel_hex_array);
+	if(infos->intel_hex_array != NULL)
+		free(infos->intel_hex_array);
 
 	close_flash();
 
@@ -545,12 +480,83 @@ void *flash_firmware(Target *infos)
 int write_on_the_air_program(char *port_device,int target,char *dest_node_id,int taille,unsigned char *raw_intel_hex_array)
 {
 	pthread_t flash;
+	struct termios original;
+	struct termios parametres;
+	int status;
 	Target *mytarget  = (Target*)malloc(sizeof(Target));
 	strcpy(mytarget->port_device,port_device);
 	mytarget->target =  target;
 	strcpy(mytarget->dest_node_id,dest_node_id);
 	mytarget->taille = taille;
-	mytarget->raw_intel_hex_array = raw_intel_hex_array;
+
+
+	mytarget->intel_hex_array =  parse_intel_hex(mytarget->taille,&mytarget->last_memory_address,raw_intel_hex_array);
+
+    if(mytarget->last_memory_address == 0)
+    {
+
+      printf("taille %d %d  ",	mytarget->taille,mytarget->last_memory_address);
+
+    return -50;
+    }
+
+	mytarget->fd = open(mytarget->port_device, O_RDWR, 0);
+	if(fd < 0)
+	{
+		close_flash();
+		return -2;
+	}
+
+	printf("%d\n",fd);
+	fd = mytarget->fd;
+	flash_exit =0;
+
+	tcgetattr(mytarget->fd, & original);
+	tcgetattr(mytarget->fd, & parametres);
+	cfmakeraw(& parametres);
+	cfsetispeed(& parametres, B19200);
+	cfsetospeed(& parametres, B19200);
+
+	//No parity (8N1):
+	parametres.c_cflag &= ~PARENB;
+	parametres.c_cflag &= ~CSTOPB;
+	parametres.c_cflag &= ~CSIZE;
+	parametres.c_cflag |= CS8;
+
+	// no flow control
+	parametres.c_cflag &= ~CRTSCTS;
+	parametres.c_cflag |= CREAD | CLOCAL | IXON;  // turn on READ & ignore ctrl lines
+	parametres.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
+
+	parametres.c_oflag &= ~OPOST; // make raw
+
+	// see: http://unixwiz.net/techtips/termios-vmin-vtime.html
+	parametres.c_cc[VMIN]  = 0;
+	parametres.c_cc[VTIME] = 10;
+
+
+	if (tcsetattr(mytarget->fd, TCSANOW, & parametres) != 0) {
+		perror("tcsetattr");
+		close_flash();
+		return  -4;
+	}
+
+	/* flush the serial device */
+	tcflush(mytarget->fd, TCIOFLUSH);
+
+	// Set RTS
+	ioctl(mytarget->fd, TIOCMGET, &status);
+	status |= TIOCM_RTS;
+	ioctl(fd, TIOCMSET, &status);
+
+	// Set DTR
+	ioctl(mytarget->fd, TIOCMGET, &status);
+	status |= TIOCM_DTR;
+	ioctl(mytarget->fd, TIOCMSET, &status);
+
+
+	/* flush the serial device */
+	tcflush(mytarget->fd, TCIOFLUSH);
 
 	return  pthread_create (& flash, NULL,&flash_firmware, mytarget);
 }

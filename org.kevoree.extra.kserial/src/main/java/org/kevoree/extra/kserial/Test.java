@@ -17,7 +17,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
 
 
-
+          /*
        System.out.println(KHelpers.getPortIdentifiers());
        final SerialPort serial = new SerialPort("/dev/ttyACM0", 115200);
        serial.open();
@@ -41,13 +41,13 @@ public class Test {
        Thread.currentThread().sleep(10000000);
 
 
+     */
 
 
-/*
-        FlashFirmware flash = new FlashFirmware("/dev/tty.usbserial-A5005A2D","ATMEGA328","NODE0");
+        FlashFirmware flash = new FlashFirmware("/dev/ttyACM0","ATMEGA328","KS1");
 
-        Byte[] intel = KHelpers.read_file("/Users/duke/Documents/dev/dukeboard/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
-        if(flash.write_on_the_air_program(intel) == 0){
+        Byte[] intel = KHelpers.read_file("/home/jed/kevoree/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
+        if(flash.write_on_the_air_program(intel) >= 0){
             flash.addEventListener(new FlashFirmwareEventListener() {
                         // @Override
                         public void FlashEvent(FlashFirmwareEvent evt) {
@@ -59,7 +59,7 @@ public class Test {
 
         }
 
-*/
+
 
 
 
