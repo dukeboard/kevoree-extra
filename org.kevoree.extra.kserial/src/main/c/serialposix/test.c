@@ -39,7 +39,7 @@ int main(int argc,char ** argv){
         printf("%s\n",ports[i].devicename);
      }
 */
-	fd = open_serial(argv[1],19200);
+	fd = open_serial(argv[1],115200);
 
 	if(fd < 0)
 	{
@@ -64,7 +64,7 @@ int main(int argc,char ** argv){
     }
 
 	
-    sleep(10);
+    sleep(10000);
     printf("close\n");
     close_serial(fd);
 

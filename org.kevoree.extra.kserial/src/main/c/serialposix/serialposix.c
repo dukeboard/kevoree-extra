@@ -199,19 +199,20 @@ int verify_fd(char *devicename)
  */
 void *serial_monitoring(char *devicename)
 {
-	char name[1024];
+	char name[512];
 	int fd;
-	strcpy(name,devicename);
+	strcpy(name,devicename);    // store local to protect garbage collector JNA
 	while(quitter ==0)
 	{
+		sleep(1);
 		if(verify_fd(name) == -1)
+		{
 			SerialEvent(-1,"WTF 42 \n");
-
-		usleep(5000);
+			quitter == 1;
+		}
 	}
 	pthread_exit(NULL);
 }
-
 
 /**
  * throw callback event on icomming data
@@ -264,7 +265,7 @@ int open_serial(const char *_name_device,int _bitrate){
 
 	int fd,bitrate;
 	struct termios termios;
-
+    int         status = 0;
 	/* process baud rate */
 	switch (_bitrate) {
 	case 4800: bitrate = B4800; break;
@@ -285,7 +286,7 @@ int open_serial(const char *_name_device,int _bitrate){
 	quitter = 0;
 
 	/* open the serial device */
-	fd = open(_name_device,O_RDWR |O_NOCTTY | O_NONBLOCK);
+	fd = open(_name_device,O_RDWR |O_NOCTTY | O_NONBLOCK | O_RSYNC);
 
 	if(fd < 0)
 	{
@@ -294,35 +295,42 @@ int open_serial(const char *_name_device,int _bitrate){
 	}
 
 	tcgetattr(fd, & termios);
-	cfmakeraw(& termios);
-	cfsetispeed(& termios, bitrate);
-	cfsetospeed(& termios, bitrate);
+
 
 	//No parity (8N1):
-	termios.c_cflag &= ~PARENB;
-	termios.c_cflag &= ~CSTOPB;
+	termios.c_cflag &= ~(INPCK | PARMRK | BRKINT | INLCR | ICRNL | IXANY);
+	termios.c_cflag &= ~CSTOPB;    // 1 Stop Bit
 	termios.c_cflag &= ~CSIZE;
-	termios.c_cflag |= CS8;
+	termios.c_cflag |= CS8;     	// 8 Bits
+	termios.c_cflag |= CRTSCTS;				// flow ctrl
 
-	// no flow control
-	termios.c_cflag &= ~CRTSCTS;
-	termios.c_cflag |= CREAD | CLOCAL | IXON;  // turn on READ & ignore ctrl lines
-	termios.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
 	termios.c_oflag &= ~OPOST; // make raw
 
+
 	// see: http://unixwiz.net/techtips/termios-vmin-vtime.html
-	termios.c_cc[VMIN]  = 0;
+	termios.c_cc[VMIN]  = 0; 	// read() returns immediately
 	termios.c_cc[VTIME] = 0;
 
-
+    cfmakeraw(& termios);
+    cfsetispeed(& termios, bitrate);
+    cfsetospeed(& termios, bitrate);
 
 	if (tcsetattr(fd, TCSANOW, & termios) != 0) {
 		perror("tcflush");
        	return  -4;
 	}
 
+    // Set RTS
+    ioctl(fd, TIOCMGET, &status);
+    status |= TIOCM_RTS;
+    ioctl(fd, TIOCMSET, &status);
 
-	/* flush the serial device */
+    // Set DTR
+    ioctl(fd, TIOCMGET, &status);
+    status |= TIOCM_DTR;
+    ioctl(fd, TIOCMSET, &status);
+
+    /* flush the serial device */
 	if (tcflush(fd, TCIOFLUSH))
 	{
 		perror("tcflush");

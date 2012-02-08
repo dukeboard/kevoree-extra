@@ -19,7 +19,7 @@ public class Test {
 
 
        System.out.println(KHelpers.getPortIdentifiers());
-       final SerialPort serial = new SerialPort("/dev/tty.usbmodem621", 115200);
+       final SerialPort serial = new SerialPort("/dev/ttyACM0", 115200);
        serial.open();
        serial.addEventListener(new SerialPortEventListener(){
            public void incomingDataEvent (SerialPortEvent evt) {
@@ -35,10 +35,10 @@ public class Test {
            }
        });
 
-        Thread.sleep(2000);
-        serial.write("111".getBytes());
+        //Thread.sleep(2000);
+        //serial.write("111".getBytes());
 
-       Thread.currentThread().sleep(1000000);
+       Thread.currentThread().sleep(10000000);
 
 
 
