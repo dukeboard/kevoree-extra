@@ -17,9 +17,9 @@ public class Test {
     public static void main(String[] args) throws Exception {
 
 
-          /*
+
        System.out.println(KHelpers.getPortIdentifiers());
-       final SerialPort serial = new SerialPort("/dev/ttyACM0", 115200);
+       final SerialPort serial = new SerialPort("/dev/ttyUSB0", 19200);
        serial.open();
        serial.addEventListener(new SerialPortEventListener(){
            public void incomingDataEvent (SerialPortEvent evt) {
@@ -41,9 +41,9 @@ public class Test {
        Thread.currentThread().sleep(10000000);
 
 
-     */
 
 
+              /*
         FlashFirmware flash = new FlashFirmware("/dev/ttyUSB0","ATMEGA328","NODE0");
 
         Byte[] intel = KHelpers.read_file("/home/jed/kevoree/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
@@ -60,7 +60,7 @@ public class Test {
         }
 
 
-
+              */
 
 
 

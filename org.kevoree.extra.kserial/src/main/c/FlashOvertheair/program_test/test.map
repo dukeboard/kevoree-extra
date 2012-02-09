@@ -301,66 +301,66 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a
  *(.fini0)
                 0x00000000000007d6                _etext = .
 
-.data           0x0000000000800100       0x48 load address 0x00000000000007d6
+.data           0x0000000000800100       0x4a load address 0x00000000000007d6
                 0x0000000000800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x0000000000800100        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/crtm328p.o
- .data          0x0000000000800100       0x47 test.o
-                0x0000000000800137                bootloader
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_exit.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_copy_data.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(iob.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(printf.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(puts.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(vfprintf_std.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(strnlen_P.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(strnlen.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(fputc.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(ultoa_invert.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_prologue.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_epilogue.o)
- .data          0x0000000000800147        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_clear_bss.o)
+ .data          0x0000000000800100       0x49 test.o
+                0x0000000000800139                bootloader
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_exit.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_copy_data.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(iob.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(printf.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(puts.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(vfprintf_std.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(strnlen_P.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(strnlen.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(fputc.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(ultoa_invert.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_prologue.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_epilogue.o)
+ .data          0x0000000000800149        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_clear_bss.o)
  *(.data*)
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.d*)
-                0x0000000000800148                . = ALIGN (0x2)
- *fill*         0x0000000000800147        0x1 00
-                0x0000000000800148                _edata = .
-                0x0000000000800148                PROVIDE (__data_end, .)
+                0x000000000080014a                . = ALIGN (0x2)
+ *fill*         0x0000000000800149        0x1 00
+                0x000000000080014a                _edata = .
+                0x000000000080014a                PROVIDE (__data_end, .)
 
-.bss            0x0000000000800148        0x6
-                0x0000000000800148                PROVIDE (__bss_start, .)
+.bss            0x000000000080014a        0x6
+                0x000000000080014a                PROVIDE (__bss_start, .)
  *(.bss)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/crtm328p.o
- .bss           0x0000000000800148        0x0 test.o
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_exit.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_copy_data.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(iob.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(printf.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(puts.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(vfprintf_std.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(strnlen_P.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(strnlen.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(fputc.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(ultoa_invert.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_prologue.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_epilogue.o)
- .bss           0x0000000000800148        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_clear_bss.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/crtm328p.o
+ .bss           0x000000000080014a        0x0 test.o
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_exit.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_copy_data.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(iob.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(printf.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(puts.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(vfprintf_std.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(strnlen_P.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(strnlen.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(fputc.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(ultoa_invert.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_prologue.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_epilogue.o)
+ .bss           0x000000000080014a        0x0 /usr/lib/gcc/avr/4.5.3/avr5/libgcc.a(_clear_bss.o)
  *(.bss*)
  *(COMMON)
- COMMON         0x0000000000800148        0x6 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(iob.o)
-                0x0000000000800148                __iob
-                0x000000000080014e                PROVIDE (__bss_end, .)
+ COMMON         0x000000000080014a        0x6 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr5/libc.a(iob.o)
+                0x000000000080014a                __iob
+                0x0000000000800150                PROVIDE (__bss_end, .)
                 0x00000000000007d6                __data_load_start = LOADADDR (.data)
-                0x000000000000081e                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0000000000000820                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x000000000080014e        0x0
-                0x000000000080014e                PROVIDE (__noinit_start, .)
+.noinit         0x0000000000800150        0x0
+                0x0000000000800150                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x000000000080014e                PROVIDE (__noinit_end, .)
-                0x000000000080014e                _end = .
-                0x000000000080014e                PROVIDE (__heap_start, .)
+                0x0000000000800150                PROVIDE (__noinit_end, .)
+                0x0000000000800150                _end = .
+                0x0000000000800150                PROVIDE (__heap_start, .)
 
 .eeprom         0x0000000000810000        0x0
  *(.eeprom*)

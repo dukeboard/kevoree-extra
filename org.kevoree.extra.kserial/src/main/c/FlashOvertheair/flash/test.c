@@ -28,11 +28,14 @@ int lastmem;
   {
 	printf("file not found\n");
 	exit(-1);
+ }else {
+ 	printf(" taille %d \n",taille); 
  }
-            
+ 
+
 register_FlashEvent(event);
 
-   write_on_the_air_program("/dev/ttyUSB0",ATMEGA328,"NODE0",taille,&file_intel_hex_array[0]);
+  write_on_the_air_program("/dev/ttyUSB0",ATMEGA328,"NODE0",taille,&file_intel_hex_array[0]);
          sleep(10);
 
 

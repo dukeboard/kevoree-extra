@@ -11,7 +11,7 @@
 #define _POSIX_SOURCE 1 /* POSIX compliant source */
 
 
-//#define DEBUG
+///#define DEBUG
 
 /**
  * Open a file
@@ -85,14 +85,16 @@ unsigned int hex2dec( char *s )
 }
 
 
-int HexToDec(char * str)
+
+
+/*
+int HexToDec(unsigned char * str)
 {
 	unsigned int val = 0;
 	char c;
 	while(c = *str++)
 	{
 		val <<= 4;
-
 		if (c >= '0' && c <= '9')
 		{
 			val += c & 0x0F;
@@ -112,19 +114,29 @@ int HexToDec(char * str)
 	return val;
 }
 
+*/
+
+int HexToDec(char *str)
+{
+    int value;
+    // so simple WTF !
+    sscanf(str,"%x",&value);
+    return value;
+}
 
 int parseHex(char h,char l)
 {
-	char buffer[2];
+	static unsigned char buffer[2];
+	memset(buffer,0,sizeof(buffer));
 	buffer[0] = h;
 	buffer[1] = l;
-	return HexToDec(buffer);
+	return HexToDec(&buffer[0]);;
 }
 
 
 unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_hex_intel)
 {
-	int i=0,j=0,y=0,ptr=0;
+	int i=0,j=0,y=0;
 	int last_memory_address=0;
 	int memory_address_high=0;
 	int memory_address_low=0;
@@ -134,21 +146,20 @@ unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_
 	int lower_byte;
 	int upper_byte;
 
-
 	// create a clean array
 	unsigned char *destination_intel_hex_array= (unsigned char*)malloc(sizeof(unsigned char)*taille);
 	for(i=0;i<taille;i++)
 	{
 		destination_intel_hex_array[i] = 255; // FF
 	}
-
-
+	
+	// clean 
+	memset(page,0,sizeof(page));
+	
 	// cleaning step
 	i=0;
 	while(i < taille)
 	{
-
-
 		if(src_hex_intel[i] != ':' && src_hex_intel[i] != '\r')
 		{
 			destination_intel_hex_array[j] = src_hex_intel[i];
@@ -159,53 +170,41 @@ unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_
 	// parsing hex_intel
 	i=0;
 	j=0;
-	do {
-
-		if(destination_intel_hex_array[i] != '\n')
+	do 
+	{
+		if(destination_intel_hex_array[i] != '\n' )
 		{
 			page[j] = destination_intel_hex_array[i];
-			//printf("%d\n",j);
 			j++;
-		}else
+		}
+		else
 		{
 			j=0;
 			// extract the larger
 			length = parseHex(page[0],page[1]);
-#ifdef DEBUG
-		//	printf("\n Record length : %d ",length);
-#endif
+			//printf("\n Record length : %d ",length);
 			// extract  adr high
 			memory_address_high = parseHex(page[2],page[3]);
 			// extract  adr low
 			memory_address_low =  parseHex(page[4],page[5]);
-			memory_address = memory_address_high * 256 + memory_address_low;
-
-			int tmp =   memory_address + length;
-
-			if(memory_address + length != 0)
+			memory_address = (memory_address_high * 256 + memory_address_low);
+			if( memory_address + length  != 0)
 			{
-				last_memory_address = memory_address + length;
+				last_memory_address = (memory_address + length);
+			//	printf("last_memory_address  %d \n",	last_memory_address  );
 				*last_memory =  last_memory_address;
 			}
 			for(y=0;y<length;y++)
 			{
-				lower_byte = 8+y*2;
-				upper_byte = 9+y*2;
-				//printf("lower_byte %d\n upper_byte %d--> (%c%c) to base 10 (%d) \n",lower_byte,upper_byte,data[i+lower_byte],data[i+upper_byte],parseHex(data[lower_byte],data[upper_byte]));
+				lower_byte = (8+y*2);
+				upper_byte = (9+y*2);
+			//	printf("lower_byte %d\n upper_byte %d--> (%c%c) to base 10 (%d) \n",lower_byte,upper_byte,page[i+lower_byte],page[i+upper_byte],parseHex(page[lower_byte],page[upper_byte]));
 				destination_intel_hex_array[memory_address + y] = parseHex(page[lower_byte],page[upper_byte]);
-#ifdef DEBUG
-				printf("%x",destination_intel_hex_array[memory_address + y]);
-#endif
+			//	printf("%x",destination_intel_hex_array[memory_address + y]);
 			}
-
-			ptr++;
-
 		}
 		i++;
-
-	}while(i < taille);
-
-
+	}while(i < taille-1);
 	return  destination_intel_hex_array;
 }
 
@@ -235,6 +234,27 @@ void print_hex_array(int type,int taille,unsigned char *hex_array)
 
 	}
 
+}
+
+int hex2bin(char *sHexString)
+{
+    int answer;
+    char *pH;
+
+    pH = sHexString;
+    answer = 0;
+    while (*pH != '\0')
+    {
+        if (*pH >= '0' && *pH <= '9') // it's a digit
+            answer = (answer*16) + (*pH - '0');
+        else if (*pH >= 'a' && *pH <= 'f') // it's a smallcase letter a to f
+            answer = (answer*16) + (*pH - 'a') + 10;
+        else if (*pH >= 'A' && *pH <= 'F') // it's a smallcase letter a to f
+            answer = (answer*16) + (*pH - 'A') + 10;
+
+        pH++;
+    }
+    return answer;
 }
 
 void close_flash(){
@@ -293,10 +313,9 @@ void *flash_firmware(Target *infos)
 		close_flash();
 	}
 	usleep(500);
-	//printf("Waiting bootloader %d \n",last_memory_address );
+	printf("Waiting bootloader \n");
 	do
 	{
-
 
 		boot_flag =  serialport_readbyte(infos->fd);
 		FlashEvent(-35);
@@ -331,7 +350,7 @@ void *flash_firmware(Target *infos)
 		}
 	}
 
-	printf("FLASH <%s>\n",NODE_ID);
+	//printf("FLASH <%s>\n",NODE_ID);
 
 	current_memory_address = 0;
 
@@ -339,14 +358,14 @@ void *flash_firmware(Target *infos)
 	{
 
 		FlashEvent(current_memory_address);
-    	printf("\n %d/%d octets ",current_memory_address, infos->last_memory_address);
+    	//printf("\n %d/%d octets ",current_memory_address, infos->last_memory_address);
 		ready_flag =  serialport_readbyte(fd);
 		if(ready_flag == 'T')
 		{
-			printf(" The bootloader is ready :%c\n",ready_flag);
+			//printf(" The bootloader is ready :%c\n",ready_flag);
 		}else if(ready_flag = 7)
 		{
-			printf("Re-send line %d \n",ready_flag);
+			//printf("Re-send line %d \n",ready_flag);
 			FlashEvent(-36);
 			current_memory_address = current_memory_address - page_size;
 			if(current_memory_address  < 0) current_memory_address  =0;
@@ -362,7 +381,7 @@ void *flash_firmware(Target *infos)
 		Memory_Address_High =(current_memory_address / 256);
 		Memory_Address_Low = (current_memory_address % 256);
 
-		//printf("Memory_Address_High %d\n Memory_Address_Low %d \n",Memory_Address_High,Memory_Address_Low);
+	//	printf("Memory_Address_High %d\n Memory_Address_Low %d \n",Memory_Address_High,Memory_Address_Low);
 
 		//Calculate current check_sum
 		Check_Sum = 0;
@@ -404,7 +423,7 @@ void *flash_firmware(Target *infos)
 		}
 
 
-		//printf("Send this block's address Low %d High %d\n",Memory_Address_Low,Memory_Address_High);
+		//printf("Send this block's address Low %d \n",Memory_Address_Low);
 		c=Memory_Address_Low;
 		if(serialport_writebyte(infos->fd,c) < 0)
 		{
@@ -473,9 +492,7 @@ void *flash_firmware(Target *infos)
 
 	if(infos != NULL)
 		free(infos);
-	if(infos->intel_hex_array != NULL)
-		free(infos->intel_hex_array);
-
+		
 	close_flash();
 
 	pthread_exit(NULL);
@@ -496,13 +513,10 @@ int write_on_the_air_program(char *port_device,int target,char *dest_node_id,int
 
 	mytarget->intel_hex_array =  parse_intel_hex(mytarget->taille,&mytarget->last_memory_address,raw_intel_hex_array);
 
-    if(mytarget->last_memory_address == 0)
-    {
-
-      printf("taille %d %d  ",	mytarget->taille,mytarget->last_memory_address);
-
-    return -50;
-    }
+	if(mytarget->last_memory_address <= 0)
+	{
+		return -1;
+	}
 
 	mytarget->fd = open(mytarget->port_device, O_RDWR, 0);
 	if(fd < 0)

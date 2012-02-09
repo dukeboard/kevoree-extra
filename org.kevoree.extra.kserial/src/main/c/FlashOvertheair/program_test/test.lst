@@ -164,19 +164,19 @@
  180               	.LFE6:
  182               		.data
  183               	.LC0:
- 184 0000 0A0D 2020 		.string	"\n\r  FRANCOIS  \n\r"
- 184      4652 414E 
- 184      434F 4953 
- 184      2020 0A0D 
- 184      00
+ 184 0000 0A0D 2020 		.string	"\n\r  JEAN-EMILE  \n\r"
+ 184      4A45 414E 
+ 184      2D45 4D49 
+ 184      4C45 2020 
+ 184      0A0D 00
  185               	.LC1:
- 186 0011 5265 7175 		.string	"Request auto reset "
+ 186 0013 5265 7175 		.string	"Request auto reset "
  186      6573 7420 
  186      6175 746F 
  186      2072 6573 
  186      6574 2000 
  187               	.LC2:
- 188 0025 596F 7520 		.string	"You pressed: %c\n\r"
+ 188 0027 596F 7520 		.string	"You pressed: %c\n\r"
  188      7072 6573 
  188      7365 643A 
  188      2025 630A 
@@ -274,31 +274,31 @@
  281               	.global	bootloader
  282               		.data
  285               	bootloader:
- 286 0037 E013      		.word	5088
+ 286 0039 E013      		.word	5088
  289               	mystdout:
- 290 0039 0000 00   		.skip 3,0
- 291 003c 02        		.byte	2
- 292 003d 0000 0000 		.skip 4,0
- 293 0041 0000      		.word	gs(uart_putchar)
- 294 0043 0000      		.word	0
- 295 0045 0000      		.word	0
+ 290 003b 0000 00   		.skip 3,0
+ 291 003e 02        		.byte	2
+ 292 003f 0000 0000 		.skip 4,0
+ 293 0043 0000      		.word	gs(uart_putchar)
+ 294 0045 0000      		.word	0
+ 295 0047 0000      		.word	0
  360               	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 test.c
-     /tmp/ccT7ABhn.s:2      *ABS*:000000000000003f __SREG__
-     /tmp/ccT7ABhn.s:3      *ABS*:000000000000003e __SP_H__
-     /tmp/ccT7ABhn.s:4      *ABS*:000000000000003d __SP_L__
-     /tmp/ccT7ABhn.s:5      *ABS*:0000000000000034 __CCP__
-     /tmp/ccT7ABhn.s:6      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccT7ABhn.s:7      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccT7ABhn.s:17     .text:0000000000000000 uart_putchar
-     /tmp/ccT7ABhn.s:53     .text:0000000000000022 ioinit
-     /tmp/ccT7ABhn.s:289    .data:0000000000000039 mystdout
-     /tmp/ccT7ABhn.s:90     .text:000000000000004c delay_us
-     /tmp/ccT7ABhn.s:116    .text:000000000000005a delay_ms
-     /tmp/ccT7ABhn.s:160    .text:0000000000000086 getch
-     /tmp/ccT7ABhn.s:192    .text:0000000000000096 main
-     /tmp/ccT7ABhn.s:285    .data:0000000000000037 bootloader
+     /tmp/ccnT64DC.s:2      *ABS*:000000000000003f __SREG__
+     /tmp/ccnT64DC.s:3      *ABS*:000000000000003e __SP_H__
+     /tmp/ccnT64DC.s:4      *ABS*:000000000000003d __SP_L__
+     /tmp/ccnT64DC.s:5      *ABS*:0000000000000034 __CCP__
+     /tmp/ccnT64DC.s:6      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccnT64DC.s:7      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccnT64DC.s:17     .text:0000000000000000 uart_putchar
+     /tmp/ccnT64DC.s:53     .text:0000000000000022 ioinit
+     /tmp/ccnT64DC.s:289    .data:000000000000003b mystdout
+     /tmp/ccnT64DC.s:90     .text:000000000000004c delay_us
+     /tmp/ccnT64DC.s:116    .text:000000000000005a delay_ms
+     /tmp/ccnT64DC.s:160    .text:0000000000000086 getch
+     /tmp/ccnT64DC.s:192    .text:0000000000000096 main
+     /tmp/ccnT64DC.s:285    .data:0000000000000039 bootloader
 
 UNDEFINED SYMBOLS
 __iob
