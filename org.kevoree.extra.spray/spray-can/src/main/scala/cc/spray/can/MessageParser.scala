@@ -185,7 +185,7 @@ private[can] class HeaderNameParser(config: MessageParserConfig, messageLine: Me
   def handleChar(cursor: Char) = {
     if (headerName.length <= config.maxHeaderNameLength) {
       cursor match {
-        case x if isTokenChar(x) => headerName.append(toLowerCase(x)); this
+        case x if isTokenChar(x) => headerName.append(/*toLowerCase(x)*/x); this // Kevoree modification
         case ':' => new LwsParser(valueParser)
         case '\r' if headerName.length == 0 => this
         case '\n' if headerName.length == 0 => headersComplete
@@ -202,7 +202,7 @@ private[can] class HeaderNameParser(config: MessageParserConfig, messageLine: Me
     @tailrec def traverse(remaining: List[HttpHeader], connection: Option[String], contentLength: Option[String],
                           transferEncoding: Option[String], hostHeaderPresent: Boolean): MessageParser = {
       if (!remaining.isEmpty) {
-        remaining.head.name match {
+        remaining.head.name/**/.toLowerCase/*kevoree modification*/ match {
           case "content-length" =>
             if (contentLength.isEmpty) {
               traverse(remaining.tail, connection, Some(remaining.head.value), transferEncoding, hostHeaderPresent)
