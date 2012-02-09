@@ -16,48 +16,48 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
+        /*
 
-          /*
-       System.out.println(KHelpers.getPortIdentifiers());
-       final SerialPort serial = new SerialPort("/dev/ttyACM0", 115200);
-       serial.open();
-       serial.addEventListener(new SerialPortEventListener(){
-           public void incomingDataEvent (SerialPortEvent evt) {
-               System.out.println("event="+evt.getSize()+"/"+new String(evt.read()));
-           }
+ System.out.println(KHelpers.getPortIdentifiers());
+ final SerialPort serial = new SerialPort("/dev/ttyUSB0", 19200);
+ serial.open();
+ serial.addEventListener(new SerialPortEventListener(){
+     public void incomingDataEvent (SerialPortEvent evt) {
+         System.out.println("event="+evt.getSize()+"/"+new String(evt.read()));
+     }
 
-           public void disconnectionEvent (SerialPortDisconnectionEvent evt) {
-               System.out.println("device " + serial.getPort_name() + " is not connected anymore ");
-               try {
-                   serial.autoReconnect(20,this);
-               } catch (SerialPortException e) {
-               }
-           }
-       });
+     public void disconnectionEvent (SerialPortDisconnectionEvent evt) {
+         System.out.println("device " + serial.getPort_name() + " is not connected anymore ");
+         try {
+             serial.autoReconnect(20,this);
+         } catch (SerialPortException e) {
+         }
+     }
+ });
 
-        //Thread.sleep(2000);
-        //serial.write("111".getBytes());
+  //Thread.sleep(2000);
+  //serial.write("111".getBytes());
 
-       Thread.currentThread().sleep(10000000);
+ Thread.currentThread().sleep(10000000);
 
-
-     */
+                 */
 
 
-        FlashFirmware flash = new FlashFirmware("/dev/ttyUSB0","ATMEGA328","NODE0");
 
-        Byte[] intel = KHelpers.read_file("/home/jed/kevoree/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
-        if(flash.write_on_the_air_program(intel) >= 0){
-            flash.addEventListener(new FlashFirmwareEventListener() {
-                        // @Override
-                        public void FlashEvent(FlashFirmwareEvent evt) {
-                            System.out.println("sent "+evt.getSize_uploaded());
-                        }
-                    });
+  FlashFirmware flash = new FlashFirmware("/dev/tty.usbserial-A400g2wl","ATMEGA328","NODE0");
 
-            Thread.currentThread().sleep(1000000);
+  Byte[] intel = KHelpers.read_file("/Users/oxyss35/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
+  if(flash.write_on_the_air_program(intel) >= 0){
+      flash.addEventListener(new FlashFirmwareEventListener() {
+                  // @Override
+                  public void FlashEvent(FlashFirmwareEvent evt) {
+                      System.out.println("Callback Event received :  "+evt.getSize_uploaded());
+                  }
+              });
 
-        }
+      Thread.currentThread().sleep(1000000);
+
+  }
 
 
 

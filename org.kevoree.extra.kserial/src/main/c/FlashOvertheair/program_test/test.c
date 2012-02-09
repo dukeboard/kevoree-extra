@@ -45,7 +45,7 @@ int main (void)
 		delay_ms(200);
 	}
 
-	printf("\n\r  FRANCOIS  \n\r");
+	printf("\n\r  JEAN-EMILE  \n\r");
 
 	while(1)
 	{
