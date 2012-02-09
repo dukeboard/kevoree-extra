@@ -263,7 +263,6 @@ void close_flash(){
 		close(fd);
 
 	flash_exit = 1;
-
 }
 
 
@@ -296,7 +295,8 @@ void *flash_firmware(Target *infos)
 		break;
 
 	case ATMEGA168:
-
+         page_size = 168;
+         flash_size = 131072;  // TODO
 		break;
 	default :
 		FlashEvent(-32);
@@ -304,19 +304,14 @@ void *flash_firmware(Target *infos)
 		break;
 	}
 
-
-	usleep(1000);
 	if(serialport_writebyte(infos->fd,'r') < 0)
 	{
-		//printf("ERROR\n");
 		FlashEvent(-7);
 		close_flash();
 	}
-	usleep(500);
-	printf("Waiting bootloader \n");
+
 	do
 	{
-
 		boot_flag =  serialport_readbyte(infos->fd);
 		FlashEvent(-35);
 		usleep(1000);
@@ -325,7 +320,6 @@ void *flash_firmware(Target *infos)
 
 	FlashEvent(-29);
 
-	//printf("Bootloader Ready ! \n");
 
 	if(serialport_writebyte(infos->fd,6) < 0)
 	{
@@ -371,11 +365,10 @@ void *flash_firmware(Target *infos)
 			if(current_memory_address  < 0) current_memory_address  =0;
 		}else
 		{
-
-			close_flash();
 			FlashEvent(-34);
+			usleep(1000);
+			// WTF ?!!
 		}
-
 
 		//  Convert 16-bit current_memory_address into two 8-bit characters
 		Memory_Address_High =(current_memory_address / 256);
@@ -403,27 +396,19 @@ void *flash_firmware(Target *infos)
 		//Now take 2's compliment
 		Check_Sum = 256 - Check_Sum;
 
-
-
 		//printf("Send the start character :\n");
 		if(serialport_writebyte(infos->fd,':') < 0)
 		{
-		  perror("write byte ':'");
-
+		  perror("write byte");
 			FlashEvent(-7);
-			close_flash();
 		}
-
-
 		//printf("Send page_size %d\n",page_size);
 		c = page_size;
 		//Send the record length
 		if(serialport_writebyte(infos->fd,c) < 0){
 		  perror("write byte page length");
 			FlashEvent(-7);
-			close_flash();
 		}
-
 
 		//printf("Send this block's address Low %d \n",Memory_Address_Low);
 		c=Memory_Address_Low;
@@ -431,17 +416,13 @@ void *flash_firmware(Target *infos)
 		{
 		    perror("write byte mem low");
 			FlashEvent(-7);
-			close_flash();
 		}
 		c=Memory_Address_High;
 		if(serialport_writebyte(infos->fd,Memory_Address_High) < 0)
 		{
 		           perror("write byte mem high");
 			FlashEvent(-7);
-			close_flash();
-
 		}
-
 
 		//printf("Send this block's check sum %d \n",Check_Sum);
 		c=Check_Sum;
@@ -449,24 +430,22 @@ void *flash_firmware(Target *infos)
 		{
 		  perror("write byte check sum");
 			FlashEvent(-7);
-			close_flash();
 		}
 
 		//Send the block
 		j=0;
 		while(j < (page_size)  && (flash_exit == 0) )
 		{
-			char block = 	infos->intel_hex_array[current_memory_address + j];
+			unsigned char block = 	infos->intel_hex_array[current_memory_address + j];
 			if(serialport_writebyte(infos->fd,block) < 0)
 			{
 			  perror("write byte hex");
 				FlashEvent(-7);
 			}
 			//printf("%c",block);
-
+            usleep(50);
 			j++;
 		}
-
 		current_memory_address = current_memory_address + page_size;
 
 	}
@@ -474,23 +453,19 @@ void *flash_firmware(Target *infos)
 	if(serialport_writebyte(infos->fd,':') < 0)
 	{
 		FlashEvent(-7);
-		close_flash();
 	}
 
 	if(serialport_writebyte(infos->fd,'S') < 0)
 	{
 		FlashEvent(-7);
-		close_flash();
 	}
 	if(serialport_writebyte(infos->fd,'S') < 0)
 	{
 		FlashEvent(-7);
-		close_flash();
 	}
 	if(serialport_writebyte(infos->fd,'S') < 0)
 	{
 		FlashEvent(-7);
-		close_flash();
 	}
 
 	FlashEvent(-38);
@@ -524,7 +499,8 @@ int write_on_the_air_program(char *port_device,int target,char *dest_node_id,int
 	}
 
 	mytarget->fd = open(mytarget->port_device, O_RDWR | O_NONBLOCK );
-	if(fd < 0)
+	fd = mytarget->fd;
+	if(mytarget->fd < 0)
 	{
 		close_flash();
 		return -2;
@@ -595,7 +571,6 @@ uint8_t  serialport_readbyte( int fd)
 }
 int serialport_writebyte( int fd, uint8_t b)
 {
-    usleep(100);
 	int n = write(fd,&b,1);
 	if( n!=1)
 		return -1;
