@@ -69,7 +69,7 @@ public class FlashFirmware extends FoaAbstract {
         byte c = '\n';
         inipar.getPointer().setByte((raw_intel_hex_array.length + 1) * Byte.SIZE / 8, c);
 
-        System.out.println("taille ="+raw_intel_hex_array.length);
+     //   System.out.println("taille ="+raw_intel_hex_array.length);
         return      NativeLoader.getINSTANCE_Foa().write_on_the_air_program(this.getDevice_name(),this.getDevice_target(),this.getNode_target(),raw_intel_hex_array.length,inipar);
     }
 }

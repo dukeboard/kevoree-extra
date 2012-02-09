@@ -51,13 +51,13 @@ public class FlashFirmwareEvent extends EventObject implements FlashEvent {
             System.out.println(Constants.messages.get(taille));
         }
         else if(taille == -36)
-                {
-                    System.out.println("Ready..");
-                }
+        {
+            //System.out.println("Ready..");
+        }
         else if (taille <0)
         {
 
-           System.out.println(Constants.messages.get(taille));
+            System.out.println(Constants.messages.get(taille));
 
         }  else {
             this.size_uploaded = taille;
