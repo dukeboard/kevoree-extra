@@ -263,7 +263,6 @@ void close_flash(){
 		close(fd);
 
 	flash_exit = 1;
-
 }
 
 
@@ -296,7 +295,8 @@ void *flash_firmware(Target *infos)
 		break;
 
 	case ATMEGA168:
-
+         page_size = 168;
+         flash_size = 131072;  // TODO
 		break;
 	default :
 		FlashEvent(-32);
@@ -304,19 +304,14 @@ void *flash_firmware(Target *infos)
 		break;
 	}
 
-
-	usleep(1000);
 	if(serialport_writebyte(infos->fd,'r') < 0)
 	{
-		//printf("ERROR\n");
 		FlashEvent(-7);
 		close_flash();
 	}
-	usleep(500);
-	printf("Waiting bootloader \n");
+
 	do
 	{
-
 		boot_flag =  serialport_readbyte(infos->fd);
 		FlashEvent(-35);
 		usleep(1000);
@@ -325,7 +320,6 @@ void *flash_firmware(Target *infos)
 
 	FlashEvent(-29);
 
-	//printf("Bootloader Ready ! \n");
 
 	if(serialport_writebyte(infos->fd,6) < 0)
 	{
@@ -376,7 +370,6 @@ void *flash_firmware(Target *infos)
 			// WTF ?!!
 		}
 
-
 		//  Convert 16-bit current_memory_address into two 8-bit characters
 		Memory_Address_High =(current_memory_address / 256);
 		Memory_Address_Low = (current_memory_address % 256);
@@ -403,16 +396,12 @@ void *flash_firmware(Target *infos)
 		//Now take 2's compliment
 		Check_Sum = 256 - Check_Sum;
 
-
-
 		//printf("Send the start character :\n");
 		if(serialport_writebyte(infos->fd,':') < 0)
 		{
 		  perror("write byte");
 			FlashEvent(-7);
 		}
-
-
 		//printf("Send page_size %d\n",page_size);
 		c = page_size;
 		//Send the record length
@@ -420,7 +409,6 @@ void *flash_firmware(Target *infos)
 		  perror("write byte page length");
 			FlashEvent(-7);
 		}
-
 
 		//printf("Send this block's address Low %d \n",Memory_Address_Low);
 		c=Memory_Address_Low;
@@ -435,7 +423,6 @@ void *flash_firmware(Target *infos)
 		           perror("write byte mem high");
 			FlashEvent(-7);
 		}
-
 
 		//printf("Send this block's check sum %d \n",Check_Sum);
 		c=Check_Sum;
@@ -466,23 +453,19 @@ void *flash_firmware(Target *infos)
 	if(serialport_writebyte(infos->fd,':') < 0)
 	{
 		FlashEvent(-7);
-		close_flash();
 	}
 
 	if(serialport_writebyte(infos->fd,'S') < 0)
 	{
 		FlashEvent(-7);
-		close_flash();
 	}
 	if(serialport_writebyte(infos->fd,'S') < 0)
 	{
 		FlashEvent(-7);
-		close_flash();
 	}
 	if(serialport_writebyte(infos->fd,'S') < 0)
 	{
 		FlashEvent(-7);
-		close_flash();
 	}
 
 	FlashEvent(-38);
