@@ -371,9 +371,9 @@ void *flash_firmware(Target *infos)
 			if(current_memory_address  < 0) current_memory_address  =0;
 		}else
 		{
-
-			close_flash();
 			FlashEvent(-34);
+			usleep(1000);
+			// WTF ?!!
 		}
 
 
@@ -408,10 +408,8 @@ void *flash_firmware(Target *infos)
 		//printf("Send the start character :\n");
 		if(serialport_writebyte(infos->fd,':') < 0)
 		{
-		  perror("write byte ':'");
-
+		  perror("write byte");
 			FlashEvent(-7);
-			close_flash();
 		}
 
 
@@ -421,7 +419,6 @@ void *flash_firmware(Target *infos)
 		if(serialport_writebyte(infos->fd,c) < 0){
 		  perror("write byte page length");
 			FlashEvent(-7);
-			close_flash();
 		}
 
 
@@ -431,15 +428,12 @@ void *flash_firmware(Target *infos)
 		{
 		    perror("write byte mem low");
 			FlashEvent(-7);
-			close_flash();
 		}
 		c=Memory_Address_High;
 		if(serialport_writebyte(infos->fd,Memory_Address_High) < 0)
 		{
 		           perror("write byte mem high");
 			FlashEvent(-7);
-			close_flash();
-
 		}
 
 
@@ -449,24 +443,22 @@ void *flash_firmware(Target *infos)
 		{
 		  perror("write byte check sum");
 			FlashEvent(-7);
-			close_flash();
 		}
 
 		//Send the block
 		j=0;
 		while(j < (page_size)  && (flash_exit == 0) )
 		{
-			char block = 	infos->intel_hex_array[current_memory_address + j];
+			unsigned char block = 	infos->intel_hex_array[current_memory_address + j];
 			if(serialport_writebyte(infos->fd,block) < 0)
 			{
 			  perror("write byte hex");
 				FlashEvent(-7);
 			}
 			//printf("%c",block);
-
+            usleep(50);
 			j++;
 		}
-
 		current_memory_address = current_memory_address + page_size;
 
 	}
@@ -524,7 +516,8 @@ int write_on_the_air_program(char *port_device,int target,char *dest_node_id,int
 	}
 
 	mytarget->fd = open(mytarget->port_device, O_RDWR | O_NONBLOCK );
-	if(fd < 0)
+	fd = mytarget->fd;
+	if(mytarget->fd < 0)
 	{
 		close_flash();
 		return -2;
@@ -595,7 +588,6 @@ uint8_t  serialport_readbyte( int fd)
 }
 int serialport_writebyte( int fd, uint8_t b)
 {
-    usleep(100);
 	int n = write(fd,&b,1);
 	if( n!=1)
 		return -1;

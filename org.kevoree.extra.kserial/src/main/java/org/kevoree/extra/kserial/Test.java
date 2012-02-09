@@ -44,14 +44,14 @@ public class Test {
 
 
 
-  FlashFirmware flash = new FlashFirmware("/dev/tty.usbserial-A400fXsq","ATMEGA328","NODE0");
+  FlashFirmware flash = new FlashFirmware("/dev/tty.usbserial-A400g2wl","ATMEGA328","NODE0");
 
   Byte[] intel = KHelpers.read_file("/Users/oxyss35/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
   if(flash.write_on_the_air_program(intel) >= 0){
       flash.addEventListener(new FlashFirmwareEventListener() {
                   // @Override
                   public void FlashEvent(FlashFirmwareEvent evt) {
-                      System.out.println("sent "+evt.getSize_uploaded());
+                      System.out.println("Callback Event received :  "+evt.getSize_uploaded());
                   }
               });
 
