@@ -44,20 +44,26 @@ public class Test {
 
 
 
-  FlashFirmware flash = new FlashFirmware("/dev/tty.usbserial-A400g2wl","ATMEGA328","NODE0");
+        FlashFirmware flash = new FlashFirmware("/dev/ttyUSB0","ATMEGA328","KS1");
+        int rt;
+        Byte[] intel = KHelpers.read_file("/home/jed/kevoree/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
 
-  Byte[] intel = KHelpers.read_file("/Users/oxyss35/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
-  if(flash.write_on_the_air_program(intel) >= 0){
-      flash.addEventListener(new FlashFirmwareEventListener() {
-                  // @Override
-                  public void FlashEvent(FlashFirmwareEvent evt) {
-                      System.out.println("Callback Event received :  "+evt.getSize_uploaded());
-                  }
-              });
+        if(( rt= flash.write_on_the_air_program(intel)) < 0)
+        {
+            System.out.println(Constants.messages.get(rt)+" "+flash.getDevice_name());
+            System.exit(0);
 
-      Thread.currentThread().sleep(1000000);
+        }
+        flash.addEventListener(new FlashFirmwareEventListener() {
+            // @Override
+            public void FlashEvent(FlashFirmwareEvent evt) {
+                System.out.println("Callback Event received :  "+evt.getSize_uploaded());
+            }
+        });
 
-  }
+        Thread.currentThread().sleep(1000000);
+
+
 
 
 
