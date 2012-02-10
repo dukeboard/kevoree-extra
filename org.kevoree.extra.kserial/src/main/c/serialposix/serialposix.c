@@ -208,7 +208,6 @@ void *serial_monitoring(char *devicename)
 		if(verify_fd(name) == -1)
 		{
 			SerialEvent(-1,"WTF 42 \n");
-			quitter == 1;
 		}
 	}
 	pthread_exit(NULL);
