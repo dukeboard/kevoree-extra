@@ -327,24 +327,23 @@ void *flash_firmware(Target *infos)
 		FlashEvent(-32);
 		close_flash();
 	}
-     /*
+
 	int i=0;
+    memset(NODE_ID,0,sizeof(NODE_ID));
 	for(i=0;i<MAX_SIZE_ID;i++)
 	{
 		NODE_ID[i]= serialport_readbyte(infos->fd);
-
-		if((NODE_ID[i]) != infos->dest_node_id[i])
-		{
-			close_flash();
-			FlashEvent(-33);
-		}
-		if(NODE_ID[i] == '\n')
-		{
-		 break;
-		}
+        if(NODE_ID[i] != 0 && (i < MAX_SIZE_ID-1))
+        {
+                  if((NODE_ID[i]) != infos->dest_node_id[i])
+           		{
+           			FlashEvent(-33);
+           		}
+        }
+        usleep(80);
 	}
 
-	printf("FLASH <%s>\n",NODE_ID);        */
+	//printf("FLASH <%s>\n",NODE_ID);
 
 	current_memory_address = 0;
 
@@ -443,7 +442,9 @@ void *flash_firmware(Target *infos)
 				FlashEvent(-7);
 			}
 			//printf("%c",block);
-            usleep(50);
+			  #ifdef OSX
+                 usleep(50);
+              #endif
 			j++;
 		}
 		current_memory_address = current_memory_address + page_size;
@@ -459,16 +460,21 @@ void *flash_firmware(Target *infos)
 	{
 		FlashEvent(-7);
 	}
-	if(serialport_writebyte(infos->fd,'S') < 0)
-	{
-		FlashEvent(-7);
-	}
-	if(serialport_writebyte(infos->fd,'S') < 0)
-	{
-		FlashEvent(-7);
-	}
 
-	FlashEvent(-38);
+	serialport_readbyte(infos->fd);
+
+   	if(serialport_writebyte(infos->fd,'S') < 0)
+   	{
+   		FlashEvent(-7);
+   	}
+
+    if(serialport_readbyte(infos->fd) == 8)
+    {
+      	FlashEvent(-38);
+    }else
+    {
+        FlashEvent(-39);
+    }
 
 	if(infos != NULL)
 		free(infos);
@@ -483,13 +489,12 @@ int write_on_the_air_program(char *port_device,int target,char *dest_node_id,int
 	pthread_t flash;
 	struct termios original;
 	struct termios parametres;
-	int status;
+	int status,i;
 	Target *mytarget  = (Target*)malloc(sizeof(Target));
 	strcpy(mytarget->port_device,port_device);
 	mytarget->target =  target;
 	strcpy(mytarget->dest_node_id,dest_node_id);
 	mytarget->taille = taille;
-
 
 	mytarget->intel_hex_array =  parse_intel_hex(mytarget->taille,&mytarget->last_memory_address,raw_intel_hex_array);
 
@@ -498,7 +503,15 @@ int write_on_the_air_program(char *port_device,int target,char *dest_node_id,int
 		return -1;
 	}
 
-	mytarget->fd = open(mytarget->port_device, O_RDWR | O_NONBLOCK );
+    #ifdef OSX
+    	mytarget->fd = open(mytarget->port_device, O_RDWR | O_NONBLOCK );
+    #endif
+
+    #ifdef NUX
+        mytarget->fd = open(mytarget->port_device, O_RDWR ,0 );
+	#endif
+
+
 	fd = mytarget->fd;
 	if(mytarget->fd < 0)
 	{
@@ -506,7 +519,6 @@ int write_on_the_air_program(char *port_device,int target,char *dest_node_id,int
 		return -2;
 	}
 
-	printf("%d\n",fd);
 	fd = mytarget->fd;
 	flash_exit =0;
 
