@@ -8,12 +8,13 @@ mkdir -p $ROOT
 cd $ROOT
 mkdir arduino
 cd arduino
-curl -o arduino-0022.dmg http://arduino.googlecode.com/files/arduino-0022.dmg
-hdiutil attach arduino-0022.dmg
-cp -R /Volumes/Arduino/Arduino.app/Contents/Resources/Java/hardware .
-cp -R /Volumes/Arduino/Arduino.app/Contents/Resources/Java/libraries .
+curl -o arduino-1.0.zip http://arduino.googlecode.com/files/arduino-1.0-macosx.zip
+unzip arduino-1.0.zip
+cp -R Arduino.app/Contents/Resources/Java/hardware .
+cp -R Arduino.app/Contents/Resources/Java/libraries .
 echo `pwd`
-rm arduino-0022.dmg
+rm arduino-1.0.zip
+rm -Rf Arduino.app
 rm -Rf hardware/__MACOSX
 rm -Rf firmwares
 rm -Rf bootloaders
@@ -26,4 +27,3 @@ rm -Rf hardware/tools/avr/doc
 rm -Rf hardware/tools/avr/libexec/gcc/avr/3.4.6
 rm -Rf hardware/tools/avr/lib/gcc/avr/3.4.6
 rm -rf hardware/tools/avr/etc/options
-hdiutil detach -force /Volumes/Arduino/

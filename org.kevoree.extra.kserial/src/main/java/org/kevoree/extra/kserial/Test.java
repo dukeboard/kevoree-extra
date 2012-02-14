@@ -16,10 +16,10 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        /*
+
 
  System.out.println(KHelpers.getPortIdentifiers());
- final SerialPort serial = new SerialPort("/dev/ttyUSB0", 19200);
+ final SerialPort serial = new SerialPort("/dev/tty.usbmodem26231", 115200);
  serial.open();
  serial.addEventListener(new SerialPortEventListener(){
      public void incomingDataEvent (SerialPortEvent evt) {
@@ -38,12 +38,12 @@ public class Test {
   //Thread.sleep(2000);
   //serial.write("111".getBytes());
 
- Thread.currentThread().sleep(10000000);
-
-                 */
+ Thread.currentThread().sleep(3000);
 
 
 
+
+/*
   FlashFirmware flash = new FlashFirmware("/dev/tty.usbserial-A400g2wl","ATMEGA328","NODE0");
 
   Byte[] intel = KHelpers.read_file("/Users/oxyss35/kevoree-extra/org.kevoree.extra.kserial/src/main/c/FlashOvertheair/program_test/test.hex");
@@ -57,7 +57,7 @@ public class Test {
 
       Thread.currentThread().sleep(1000000);
 
-  }
+  }*/
 
 
 
