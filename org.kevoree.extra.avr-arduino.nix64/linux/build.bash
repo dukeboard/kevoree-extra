@@ -175,12 +175,13 @@ fi
 cd $ROOT
 mkdir arduino
 cd arduino
-echo -n "Downloading arduino-0022-64-2 "
-wget --quiet http://arduino.googlecode.com/files/arduino-0022-64-2.tgz
-if  [ -f "arduino-0022-64-2.tgz" ]; then
+echo -n "Downloading arduino 1.0 64bits "
+wget --quiet http://arduino.googlecode.com/files/arduino-1.0-linux64.tgz
+if  [ -f "arduino-1.0-linux64.tgz" ]; then
 echo "[OK]"
 else
 echo "[FAIL]"
 exit -1
 fi
-tar xzf arduino-0022-64-2.tgz
+tar xzf arduino-1.0-linux64.tgz
+
