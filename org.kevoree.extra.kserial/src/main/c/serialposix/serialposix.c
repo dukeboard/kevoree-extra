@@ -143,6 +143,7 @@ int serialport_write(int fd,  char* str)
 	{
 	    perror("write");
 	   	return -1;
+	}
 	return serialport_writebyte(fd,'\n'); /* finish */
 }
 
