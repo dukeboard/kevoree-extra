@@ -68,7 +68,7 @@ public class SerialPort extends CommPort {
             }
             byte c = '\n';
             inipar.getPointer().setByte((bs.length + 1) * Byte.SIZE / 8, c);
-
+            System.out.println("fd  : "+getFd());
             if (NativeLoader.getINSTANCE_SerialPort().serialport_write(getFd(), inipar) != 0) {
                 throw new SerialPortException("Write " + bs);
             }

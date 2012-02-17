@@ -9,11 +9,18 @@ package org.kevoree.extra.kserial
 
 object Tester extends App {
 
-  KevoreeSharedCom.addObserver("/dev/tty.usbmodem411", new ContentListener {
+  KevoreeSharedCom.addObserver("/dev/tty.usbmodem26231", new ContentListener {
     def recContent(content: String) {
       println("Rec=" + content)
     }
   })
+
+  Thread.sleep(2000)
+  
+  
+  KevoreeSharedCom.send("/dev/tty.usbmodem26231","$8{udi:t1:period=500}")
+
+
   Thread.sleep(20000)
   //KevoreeSharedCom.send("/dev/tty.usbmodem621", "1")
  // KevoreeSharedCom.send("/dev/tty.usbmodem621", "1")
