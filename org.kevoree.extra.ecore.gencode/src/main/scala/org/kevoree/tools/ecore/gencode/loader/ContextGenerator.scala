@@ -23,7 +23,7 @@ class ContextGenerator(genDir: String, genPackage: String, elementType: EClass, 
     pr.println("import " + modelPackage + "._")
     pr.println()
 
-    pr.println("object " + elementType.getName + "LoadContext {")
+    pr.println("class " + elementType.getName + "LoadContext {")
 
     pr.println()
     pr.println("\t\tvar xmiContent : NodeSeq = null")

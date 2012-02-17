@@ -53,7 +53,7 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
     pr.println("")
     generateLoadElementsMethod(pr, context, rootContainerName)
     pr.println("")
-    generateResolveElementsMethod(pr)
+    generateResolveElementsMethod(pr, context)
 
     pr.println("")
     pr.println("}")
@@ -130,41 +130,41 @@ class RootLoader(genDir: String, genPackage: String, elementNameInParent: String
     factory = factory.substring(0, 1).toUpperCase + factory.substring(1) + "Factory"
 
     pr.println("\t\tprivate def deserialize(rootNode: NodeSeq): ContainerRoot = {")
+    pr.println("\t\t\t\tval context = new " + context)
+    pr.println("\t\t\t\tcontext." + rootContainerName + " = " + factory + ".create" + elementType.getName)
+    pr.println("\t\t\t\tcontext.xmiContent = rootNode")
+    pr.println("\t\t\t\tcontext.map = Map[String, Any]()")
+    pr.println("\t\t\t\tcontext.stats = Map[String, Int]()")
 
-    pr.println("\t\t\t\t" + context + "." + rootContainerName + " = " + factory + ".create" + elementType.getName)
-    pr.println("\t\t\t\t" + context + ".xmiContent = rootNode")
-    pr.println("\t\t\t\t" + context + ".map = Map[String, Any]()")
-    pr.println("\t\t\t\t" + context + ".stats = Map[String, Int]()")
-
-    pr.println("\t\t\t\tload" + elementType.getName + "(rootNode)")
-    pr.println("\t\t\t\tresolveElements(rootNode)")
-    pr.println("\t\t\t\t" + context + "." + rootContainerName)
+    pr.println("\t\t\t\tload" + elementType.getName + "(rootNode, context)")
+    pr.println("\t\t\t\tresolveElements(rootNode, context)")
+    pr.println("\t\t\t\tcontext." + rootContainerName)
 
     pr.println("\t\t}")
   }
 
 
-  private def generateLoadElementsMethod(pr: PrintWriter, context: String, rootContainerName: String) {
+  private def generateLoadElementsMethod(pr: PrintWriter, context : String, rootContainerName: String) {
 
-    pr.println("\t\tprivate def load" + elementType.getName + "(rootNode: NodeSeq) {")
+    pr.println("\t\tprivate def load" + elementType.getName + "(rootNode: NodeSeq, context : " + context + ") {")
     pr.println("")
     elementType.getEAllContainments.foreach {
       ref =>
-        pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(\"/\", rootNode, \"" + ref.getName + "\")")
-        pr.println("\t\t\t\t" + context + "." + rootContainerName + ".set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
+        pr.println("\t\t\t\tval " + ref.getName + " = load" + ref.getEReferenceType.getName + "(\"/\", rootNode, \"" + ref.getName + "\", context)")
+        pr.println("\t\t\t\tcontext." + rootContainerName + ".set" + ref.getName.substring(0, 1).toUpperCase + ref.getName.substring(1) + "(" + ref.getName + ")")
 //        pr.println("\t\t\t\t" + ref.getName + ".foreach{e=>e.eContainer=" + context + "." + rootContainerName + " }")
         pr.println("")
     }
     pr.println("\t\t}")
   }
 
-  private def generateResolveElementsMethod(pr: PrintWriter) {
+  private def generateResolveElementsMethod(pr: PrintWriter, context : String) {
     //val context = elementType.getName + "LoadContext"
     //val rootContainerName = elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1)
-    pr.println("\t\tprivate def resolveElements(rootNode: NodeSeq) {")
+    pr.println("\t\tprivate def resolveElements(rootNode: NodeSeq, context : " + context + ") {")
     elementType.getEAllContainments.foreach {
       ref =>
-        pr.println("\t\t\t\tresolve" + ref.getEReferenceType.getName + "(\"/\", rootNode, \"" + ref.getName + "\")")
+        pr.println("\t\t\t\tresolve" + ref.getEReferenceType.getName + "(\"/\", rootNode, \"" + ref.getName + "\", context)")
     }
     pr.println("\t\t}")
   }

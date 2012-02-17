@@ -85,7 +85,7 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
   }
 
   private def generateLoadingMethod(pr: PrintWriter) {
-    pr.println("\t\tdef load" + elementType.getName + "(parentId : String, parentNode : NodeSeq, refNameInParent : String) : List[" + elementType.getName + "] = {")
+    pr.println("\t\tdef load" + elementType.getName + "(parentId : String, parentNode : NodeSeq, refNameInParent : String, context : " + context + ") : List[" + elementType.getName + "] = {")
     pr.println("\t\t\t\tvar loadedElements = List[" + elementType.getName + "]()")
     pr.println("\t\t\t\tvar i = 0")
     pr.println("\t\t\t\tval " + elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1) + "List = (parentNode \\\\ refNameInParent)") //\"" + elementNameInParent + "\")")
@@ -97,7 +97,7 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
     ProcessorHelper.getConcreteSubTypes(elementType).foreach {
       concreteType =>
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\tcase \"" + modelingPackage.getName + ":" + concreteType.getName + "\" => {")
-        pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tloadedElements = loadedElements ++ List(load" + concreteType.getName + "Element(currentElementId,xmiElem))")
+        pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tloadedElements = loadedElements ++ List(load" + concreteType.getName + "Element(currentElementId,xmiElem,context))")
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t}")
     }
     pr.println("\t\t\t\t\t\t\t\t\t\t\t\tcase _@e => throw new UnsupportedOperationException(\"Processor for TypeDefinitions has no mapping for type:\" + e)")
@@ -113,7 +113,7 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
   }
 
   private def generateResolvingMethod(pr: PrintWriter) {
-    pr.println("\t\tdef resolve" + elementType.getName + "(parentId : String, parentNode : NodeSeq, refNameInParent : String) {")
+    pr.println("\t\tdef resolve" + elementType.getName + "(parentId : String, parentNode : NodeSeq, refNameInParent : String, context : " + context + ") {")
     pr.println("\t\t\t\tvar i = 0")
     pr.println("\t\t\t\tval " + elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1) + "List = (parentNode \\\\ refNameInParent)") //\"" + elementNameInParent + "\")")
     pr.println("\t\t\t\t" + elementType.getName.substring(0, 1).toLowerCase + elementType.getName.substring(1) + "List.foreach { xmiElem =>")
@@ -124,7 +124,7 @@ class InterfaceElementLoader(genDir: String, genPackage: String, elementType: EC
     ProcessorHelper.getConcreteSubTypes(elementType).foreach {
       concreteType =>
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\tcase \"" + modelingPackage.getName + ":" + concreteType.getName + "\" => {")
-        pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tresolve" + concreteType.getName + "Element(currentElementId,xmiElem)")
+        pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tresolve" + concreteType.getName + "Element(currentElementId,xmiElem,context)")
         pr.println("\t\t\t\t\t\t\t\t\t\t\t\t\t}")
     }
     pr.println("\t\t\t\t\t\t\t\t\t\t\t\tcase _@e => throw new UnsupportedOperationException(\"Processor for TypeDefinitions has no mapping for type:\" + e)")
