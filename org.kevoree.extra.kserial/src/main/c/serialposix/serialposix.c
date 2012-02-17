@@ -140,7 +140,9 @@ int serialport_write(int fd,  char* str)
 
 	n = write(fd, str, len);
 	if( n!=len )
-		return -1;
+	{
+	    perror("write");
+	   	return -1;
 	return serialport_writebyte(fd,'\n'); /* finish */
 }
 
@@ -294,40 +296,23 @@ int open_serial(const char *_name_device,int _bitrate){
 	}
 
 	tcgetattr(fd, & termios);
+    cfmakeraw(& termios);
+    cfsetispeed(& termios, bitrate);
+    cfsetospeed(& termios, bitrate);
 
-
-	//No parity (8N1):
-	termios.c_cflag &= ~(INPCK | PARMRK | BRKINT | INLCR | ICRNL | IXANY);
-	termios.c_cflag &= ~CSTOPB;    // 1 Stop Bit
-	termios.c_cflag &= ~CSIZE;
-	termios.c_cflag |= CS8;     	// 8 Bits
-	termios.c_cflag |= CRTSCTS;				// flow ctrl
-
-	termios.c_oflag &= ~OPOST; // make raw
-
+	termios.c_cflag = CREAD | CLOCAL;	 // turn on READ and ignore modem control lines
+    termios.c_cflag |= CS8;
 
 	// see: http://unixwiz.net/techtips/termios-vmin-vtime.html
 	termios.c_cc[VMIN]  = 0; 	// read() returns immediately
 	termios.c_cc[VTIME] = 0;
 
-    cfmakeraw(& termios);
-    cfsetispeed(& termios, bitrate);
-    cfsetospeed(& termios, bitrate);
 
 	if (tcsetattr(fd, TCSANOW, & termios) != 0) {
 		perror("tcflush");
        	return  -4;
 	}
 
-    // Set RTS
-    ioctl(fd, TIOCMGET, &status);
-    status |= TIOCM_RTS;
-    ioctl(fd, TIOCMSET, &status);
-
-    // Set DTR
-    ioctl(fd, TIOCMGET, &status);
-    status |= TIOCM_DTR;
-    ioctl(fd, TIOCMSET, &status);
 
     /* flush the serial device */
 	if (tcflush(fd, TCIOFLUSH))
