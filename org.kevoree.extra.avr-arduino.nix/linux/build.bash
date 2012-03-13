@@ -1,7 +1,7 @@
 #!/bin/bash
 set -m
 echo ""
-echo "-----------------------------[ Building Arduino nix64 ]-----------------------------"
+echo "-----------------------------[ Building Arduino nix32 ]-----------------------------"
 echo ""
 
 # general setup
@@ -55,8 +55,7 @@ mkdir build
 cd build
 export CC=gcc
 ../configure --target=avr --prefix=$BINARY --disable-nsl --enable-install-libbfd --disable-werror --disable-shared --quiet
-make >> messages.log
-#2>&1
+make >> messages.log 2>&1
 echo '0
 0' | make install >> messages.log
 if [ "$?" != "0" ]; then
@@ -165,7 +164,8 @@ echo "Build avr-libc-1.6.4 "
 export CC=$BINARY/bin/avr-gcc
 export "PATH=$PATH:$BINARY/bin"
 ../configure --build=`../config.guess` --host=avr --prefix=$BINARY --enable-languages=c,c++ --disable-shared
-make >> messages.log 2>&1
+make >> messages.log
+#2>&1
 # again, it might work best to "sudo su" then "make install"
 # be sure to 'exit' from the root account before continuing!
 echo '0
@@ -178,7 +178,7 @@ fi
 cd $ROOT
 mkdir arduino
 cd arduino
-echo -n "Downloading arduino-0022"
+echo -n "Downloading arduino-1.0"
 wget  http://arduino.googlecode.com/files/arduino-0022.tgz
 if  [ -f "arduino-0022.tgz" ]; then
 echo "[OK]"
