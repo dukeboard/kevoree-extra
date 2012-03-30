@@ -12,7 +12,7 @@
 
     <artifactId>org.kevoree.extra.avr-arduino.nix</artifactId>
     <packaging>jar</packaging>
-    <version>0022</version>
+    <version>1.0</version>
     <name>Kevoree :: Extra :: AVR-ARDUINO :: Unix</name>
 
     <properties>
@@ -53,12 +53,12 @@
                         <targetPath>arduino</targetPath>
                     </resource>
                     <resource>
-                        <directory>${project.build.directory}/avr_build/arduino/arduino-0022/libraries</directory>
+                        <directory>${project.build.directory}/avr_build/arduino/arduino-1.0/libraries</directory>
                         <targetPath>arduino/libraries</targetPath>
                     </resource>
                     <resource>
                         <directory>
-                            ${project.build.directory}/avr_build/arduino/arduino-0022/hardware/
+                            ${project.build.directory}/avr_build/arduino/arduino-1.0/hardware/
                         </directory>
                         <targetPath>arduino/hardware</targetPath>
                     </resource>
@@ -80,7 +80,7 @@
                     </resource>
                     <resource>
                         <directory>
-                            ${project.build.directory}/avr_build/arduino/arduino-0022/hardware/tools
+                            ${project.build.directory}/avr_build/arduino/arduino-1.0/hardware/tools
                         </directory>
                         <includes>
                             <include>avrdude</include>
