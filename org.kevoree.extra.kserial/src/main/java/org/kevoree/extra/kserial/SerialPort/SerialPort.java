@@ -22,8 +22,9 @@ public class SerialPort extends CommPort {
     private SerialPortEvent SerialPortEvent;
     protected javax.swing.event.EventListenerList listenerList = new javax.swing.event.EventListenerList();
 
-    private int sizefifo = 1024;
-    private ByteFIFO fifo_out = new ByteFIFO(sizefifo);
+    private int sizefifo_out = 1024;
+
+    private ByteFIFO fifo_out = new ByteFIFO(sizefifo_out);
 
 
     public SerialPort (String portname, int bitrate) throws Exception {
@@ -54,30 +55,49 @@ public class SerialPort extends CommPort {
         }
     }
 
-    @Override
-    public void write (byte[] bs) throws SerialPortException {
+    public void storeData(byte[]bs){
+        try
+        {
+            fifo_out.add(bs);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
-        if (this.getFd() > 0) {
-            Memory mem = new Memory(Byte.SIZE * bs.length + 1);
-            mem.clear();
 
-            PointerByReference inipar = new PointerByReference();
-            inipar.setPointer(mem);
-            for (int i = 0; i < bs.length; i++) {
-                inipar.getPointer().setByte(i * Byte.SIZE / 8, bs[i]);
-            }
-            byte c = '\n';
-            inipar.getPointer().setByte((bs.length + 1) * Byte.SIZE / 8, c);
-            System.out.println("fd  : "+getFd());
-            if (NativeLoader.getINSTANCE_SerialPort().serialport_write(getFd(), inipar) != 0) {
-                throw new SerialPortException("Write " + bs);
-            }
+    public void send(byte [] bs){
+        Memory mem = new Memory(Byte.SIZE * bs.length + 1);
+        mem.clear();
 
-        } else {
-            throw new SerialPortException("not open " + bs);
+        PointerByReference inipar = new PointerByReference();
+        inipar.setPointer(mem);
+        for (int i = 0; i < bs.length; i++) {
+            inipar.getPointer().setByte(i * Byte.SIZE / 8, bs[i]);
+        }
+        byte c = '\n';
+        inipar.getPointer().setByte((bs.length + 1) * Byte.SIZE / 8, c);
+        if (NativeLoader.getINSTANCE_SerialPort().serialport_write(getFd(), inipar) != 0)
+        {
+            System.out.println("Warning fail to write store "+bs.length);
+            storeData(bs);
         }
 
-
+    }
+    @Override
+    public void write (byte[] bs)
+    {
+        if (this.getFd() > 0)
+        {
+            if(fifo_out.getSize() > 0)
+            {
+                send(fifo_out.removeAll());
+            }
+            send(bs);
+        } else
+        {
+            System.out.println("Warning fail to write "+bs.length);
+            storeData(bs);
+        }
     }
 
     /*
@@ -88,6 +108,8 @@ public class SerialPort extends CommPort {
 
     @Override
     public void open () throws SerialPortException {
+
+
         setFd(NativeLoader.getINSTANCE_SerialPort().open_serial(this.getPort_name(), this.getPort_bitrate()));
 
         if (getFd() < 0) {

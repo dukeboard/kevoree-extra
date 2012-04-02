@@ -21,8 +21,8 @@
 
 #define _POSIX_SOURCE 1 /* POSIX compliant source */
 
-#define BUFFER_SIZE 1024
-#define PROC_BASE  "/dev/"
+#define BUFFER_SIZE 512
+//#define PROC_BASE  "/dev/"
 
 static int quitter=0;
 
@@ -211,6 +211,7 @@ void *serial_monitoring(char *devicename)
 		if(verify_fd(name) == -1)
 		{
 			SerialEvent(-1,"WTF 42 \n");
+		    pthread_exit(NULL);
 		}
 	}
 	pthread_exit(NULL);
@@ -233,7 +234,6 @@ void *serial_reader(int fd)
 		}
 
 	}
-	printf("reader exit\n");
 	pthread_exit(NULL);
 }
 
@@ -243,7 +243,13 @@ void *serial_reader(int fd)
  */
 int reader_serial(int fd){
 	pthread_t lecture;
-	return  pthread_create (& lecture, NULL,&serial_reader, fd);
+	if(quitter == 0)
+	{
+		return  pthread_create (& lecture, NULL,&serial_reader, fd);
+	} else {
+
+	return 0;
+	}
 
 }
 

@@ -49,6 +49,7 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
 
     public void serial_reader_callback(int taille, Pointer data) throws SerialPortException {
         if(taille < 0){
+            System.out.println("Message = "+taille);
             NativeLoader.getINSTANCE_SerialPort().close_serial(serialPort.getFd());
 			serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
         }
