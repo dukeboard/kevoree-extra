@@ -57,7 +57,7 @@ export CC=gcc
 ../configure --target=avr --prefix=$BINARY --disable-nsl --enable-install-libbfd --disable-werror --disable-shared --quiet
 make >> messages.log 2>&1
 echo '0
-0' | make install 
+0' | make install  >> messages.log
 if [ "$?" != "0" ]; then
 	exit -1
 else
@@ -176,12 +176,12 @@ cd $ROOT
 mkdir arduino
 cd arduino
 echo -n "Downloading arduino 1.0 64bits "
-wget --quiet http://arduino.googlecode.com/files/arduino-1.0-linux64.tgz
-if  [ -f "arduino-1.0-linux64.tgz" ]; then
+wget --quiet http://arduino.googlecode.com/files/arduino-1.0-linux.tgz
+if  [ -f "arduino-1.0-linux.tgz" ]; then
 echo "[OK]"
 else
 echo "[FAIL]"
 exit -1
 fi
-tar xzf arduino-1.0-linux64.tgz
+tar xzf arduino-1.0-linux.tgz
 

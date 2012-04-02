@@ -50,7 +50,7 @@ public class Util {
         return (path.delete());
     }
 
-    public static void createGenModel(File ecore, File genmodel, File sourcePath, Log log,Boolean bool) {
+    public static void createGenModel(File ecore, File genmodel, File sourcePath, Log log, Boolean bool, String basePackage) {
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().
                 put("ecore", new org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl());
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().
@@ -75,14 +75,11 @@ public class Util {
             genModelModel.initialize(Collections.singleton(ePackage));
 
         } else {
-            if(genmodel == null){
+            if (genmodel == null) {
                 genmodel = new File("outputfileName");
             }
 
             URI genModelURI = URI.createFileURI(genmodel.getAbsolutePath());
-
-            System.out.println(genModelURI);
-
             Resource genModelResource = Resource.Factory.Registry.INSTANCE.getFactory(genModelURI).createResource(genModelURI);
 
             genModelModel = GenModelFactory.eINSTANCE.createGenModel();
@@ -93,6 +90,17 @@ public class Util {
             genModelModel.initialize(Collections.singleton(ePackage));
             genModelModel.setModelName(genModelURI.trimFileExtension().lastSegment());
 
+
+
+            if (basePackage != null && !basePackage.equals("")) {
+                for (GenPackage gp : genModelModel.getGenPackages()) {
+                    gp.setBasePackage(basePackage);
+
+                }
+
+            }
+
+
             try {
                 genModelResource.save(Collections.EMPTY_MAP);
             } catch (IOException e) {
@@ -100,8 +108,8 @@ public class Util {
             }
         }
 
-        if(bool) {
-            log.info("Clear output directory , "+sourcePath.getAbsolutePath());
+        if (bool) {
+            log.info("Clear output directory , " + sourcePath.getAbsolutePath());
             deleteDirectory(sourcePath);
         }
         sourcePath.mkdir();

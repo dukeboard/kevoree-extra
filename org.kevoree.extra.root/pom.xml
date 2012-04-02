@@ -10,7 +10,7 @@
 
     <properties>
         <emf.version>2.7.0</emf.version>
-        <scala.version>2.9.1</scala.version>
+        <scala.version>2.10.0-M2</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
         <releaseUrl>http://maven.kevoree.org/release</releaseUrl>
     </properties>

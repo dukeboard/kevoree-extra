@@ -270,16 +270,16 @@ private[can] class HeaderValueParser(config: MessageParserConfig, messageLine: M
 
 private[can] class ChunkParser(config: MessageParserConfig) extends CharacterParser {
   var chunkSize = -1
-  def handle(digit: Int) = {
+  def handle(digit: Int) : MessageParser = {
     chunkSize = if (chunkSize == -1) digit else chunkSize * 16 + digit
     if (chunkSize > config.maxChunkSize)
       ErrorParser("HTTP message chunk size exceeds the configured limit of " + config.maxChunkSize + " bytes")
     else this
   }
-  def handleChar(cursor: Char) = cursor match {
-    case x if '0' <= cursor && cursor <= '9' => handle(x - '0')
-    case x if 'A' <= cursor && cursor <= 'F' => handle(x - 'A' + 10)
-    case x if 'a' <= cursor && cursor <= 'f' => handle(x - 'a' + 10)
+  def handleChar(cursor: Char) : MessageParser = cursor match {
+    case x if ('0' <= cursor && cursor <= '9') => handle((x - '0'))
+    case x if ('A' <= cursor && cursor <= 'F') => handle((x - 'A' + 10))
+    case x if ('a' <= cursor && cursor <= 'f') => handle((x - 'a' + 10))
     case ' ' | '\t' | '\r' => this
     case '\n' => chunkSize match {
       case -1 => ErrorParser("Chunk size expected")

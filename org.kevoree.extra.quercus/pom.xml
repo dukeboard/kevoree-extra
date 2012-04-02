@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.quercus</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Kevoree :: Extra :: Quercus</name>
     <version>4.0.18</version>
     <url>http://quercus.caucho.com/</url>
@@ -15,6 +15,7 @@
         <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
     </parent>
 
+<!--
     <build>
         <plugins>
             <plugin>
@@ -63,11 +64,10 @@
             </plugin>
         </plugins>
     </build>
+    
+    -->
 
     <dependencies>
-
-
-
         <dependency>
             <groupId>org.jboss.spec</groupId>
             <artifactId>jboss-javaee-6.0</artifactId>

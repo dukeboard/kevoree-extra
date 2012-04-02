@@ -18,7 +18,7 @@
     <properties>
         <builder>${basedir}/linux/build.bash</builder>
     </properties>
-  <profiles>
+    <profiles>
         <profile>
             <id>Unix</id>
             <activation>
@@ -78,7 +78,7 @@
                         <directory>${project.build.directory}/binary/libexec</directory>
                         <targetPath>arduino/hardware/tools/libexec</targetPath>
                     </resource>
-                     <resource>
+                    <resource>
                         <directory>
                             ${project.build.directory}/avr_build/arduino/arduino-1.0/hardware/tools
                         </directory>
@@ -89,6 +89,6 @@
                     </resource>
                 </resources>
             </build>
-       </profile>
+        </profile>
     </profiles>
 </project>

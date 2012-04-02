@@ -128,7 +128,7 @@ case class ServerConfig(
 
   def endpoint = new InetSocketAddress(host, port)
 
-  override def toString =
+  override def toString :String = {
     "ServerConfig(\n" +
     "  endpoint       : " + endpoint + "\n" +
     "  serverActorId  : " + serverActorId + "\n" +
@@ -142,6 +142,7 @@ case class ServerConfig(
     "  requestTimeout : " + requestTimeout + " ms\n" +
     "  timeoutCycle   : " + timeoutCycle + " ms\n"
     ")"
+}
 }
 
 object ServerConfig {
@@ -193,7 +194,7 @@ case class ClientConfig(
 
   require(!clientActorId.isEmpty, "clientActorId must not be empty")
 
-  override def toString =
+  override def toString : String = {
     "ClientConfig(\n" +
     "  clientActorId  : " + clientActorId + "\n" +
     "  userAgentHeader: " + userAgentHeader + "\n" +
@@ -203,6 +204,7 @@ case class ClientConfig(
     "  requestTimeout : " + requestTimeout + " ms\n" +
     "  timeoutCycle   : " + timeoutCycle + " ms\n"
     ")"
+  }
 }
 
 object ClientConfig {

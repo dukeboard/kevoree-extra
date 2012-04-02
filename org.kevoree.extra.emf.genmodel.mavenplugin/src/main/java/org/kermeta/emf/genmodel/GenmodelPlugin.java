@@ -7,6 +7,7 @@ package org.kermeta.emf.genmodel;
 import java.io.File;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 
 /**
  * Generates files based on grammar files with Antlr tool.
@@ -28,14 +29,14 @@ public class GenmodelPlugin extends AbstractMojo {
     /**
      * Source base directory
      *
-     * @parameter
+     * @parameter default-value="${project.build.directory}/generated-sources/emf"
      */
     private File output;
     
     /**
      * Genmodel file
      *
-     * @parameter
+     * @parameter default-value="${project.build.directory}/generated-sources/model.genmodel"
      */
     private File genmodel;
 
@@ -46,12 +47,29 @@ public class GenmodelPlugin extends AbstractMojo {
      * @parameter
      */
     private Boolean clearOutput=true;
+    
+    
+        /**
+     * Base Package
+     *
+     * @parameter
+     */
+    private String basePackage="";
+    
 
 
+        /**
+     * The maven project.
+     *
+     * @parameter expression="${project}"
+     * @required
+     * @readonly
+     */
+    private MavenProject project;
+    
     @Override
     public void execute() throws MojoExecutionException {
-        
-
-        Util.createGenModel(ecore, genmodel, output, getLog(),clearOutput);
+        Util.createGenModel(ecore, genmodel, output, getLog(),clearOutput,basePackage);
+        project.addCompileSourceRoot(output.getAbsolutePath());
     }
 }
