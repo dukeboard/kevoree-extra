@@ -14,7 +14,6 @@
 #include <termios.h>
 #include <unistd.h>
 #include <sys/select.h>
-#include "../utils/utils.h"
 #include "serialposix.h"
 #include <dirent.h>
 

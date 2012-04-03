@@ -15,7 +15,7 @@ public class Test {
 
 
         System.out.println(KHelpers.getPortIdentifiers());
-        final SerialPort serial = new SerialPort("/dev/tty.usbserial-A400g2AP", 115200);
+        final SerialPort serial = new SerialPort("/dev/tty.usbmodemfa141", 115200);
         serial.open();
 
 
@@ -34,16 +34,9 @@ public class Test {
         });
 
 
-        Thread.sleep(2000);
 
-        serial.write("123456".getBytes());
 
-       // serial.write("$8{udi:t1:period=500}".getBytes());
-
-        Thread.sleep(2000);
-       // serial.write("$8{udi:t1:period=200}".getBytes());
-
-        Thread.currentThread().sleep(3000);
+        Thread.currentThread().sleep(8000);
 
 
 /*
