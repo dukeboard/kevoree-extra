@@ -15,6 +15,12 @@ import java.util.List;
 public class KHelpers {
 
 
+    public final static int baudrates[] = {4800, 9600,19200,38400,57600,115200,230400};
+
+    public static int [] getbaudrates() {
+        return baudrates;
+    }
+
     public static List<String> getPortIdentifiers() {
         List<String> ports = new ArrayList<String>();
         File file = new File("/dev");
@@ -44,6 +50,24 @@ public class KHelpers {
         }
         return ports;
     }
+
+
+
+    inputTextField.addKeyListener(new KeyAdapter() {
+                  public void keyReleased(KeyEvent e) {
+                      JTextField textField = (JTextField) e.getSource();
+                      String text = textField.getText();
+                      textField.setText(text.toUpperCase());
+                  }
+
+                  public void keyTyped(KeyEvent e) {
+                      // TODO: Do something for the keyTyped event
+                  }
+
+                  public void keyPressed(KeyEvent e) {
+                      // TODO: Do something for the keyPressed event
+                  }
+              });
 
 
     public static Byte[] read_file(String filename) throws IOException {
