@@ -7,6 +7,8 @@ import org.kevoree.extra.kserial.Constants;
 import org.kevoree.extra.kserial.Utils.ByteFIFO;
 import org.kevoree.extra.kserial.Utils.KHelpers;
 import org.kevoree.extra.kserial.jna.NativeLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by jed
@@ -21,26 +23,27 @@ public class SerialPort extends CommPort {
 
     private SerialPortEvent SerialPortEvent;
     protected javax.swing.event.EventListenerList listenerList = new javax.swing.event.EventListenerList();
-
+    private boolean exit = false;
     private int sizefifo_out = 1024;
-
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ByteFIFO fifo_out = new ByteFIFO(sizefifo_out);
-
 
     public SerialPort (String portname, int bitrate) throws Exception {
         this.setPort_bitrate(bitrate);
         this.setPort_name(portname);
     }
 
-
     public void addEventListener (SerialPortEventListener listener) {
-        listenerList.add(SerialPortEventListener.class, listener);
+        if(listenerList != null){
+            listenerList.add(SerialPortEventListener.class, listener);
+        }
     }
 
     public void removeEventListener (SerialPortEventListener listener) {
-        listenerList.remove(SerialPortEventListener.class, listener);
+        if(listenerList != null){
+            listenerList.remove(SerialPortEventListener.class, listener);
+        }
     }
-
 
     void fireSerialEvent (SerialPortEvent evt) {
         Object[] listeners = listenerList.getListenerList();
@@ -60,7 +63,7 @@ public class SerialPort extends CommPort {
         {
             fifo_out.add(bs);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("The program has failed to backup data "+new String(bs));
         }
     }
 
@@ -78,11 +81,11 @@ public class SerialPort extends CommPort {
         inipar.getPointer().setByte((bs.length + 1) * Byte.SIZE / 8, c);
         if (NativeLoader.getINSTANCE_SerialPort().serialport_write(getFd(), inipar) != 0)
         {
-            System.out.println("Warning fail to write store "+bs.length);
+            logger.error("Warning fail to write store " + bs.length);
             storeData(bs);
         }
-
     }
+
     @Override
     public void write (byte[] bs)
     {
@@ -95,23 +98,14 @@ public class SerialPort extends CommPort {
             send(bs);
         } else
         {
-            System.out.println("Warning fail to write "+bs.length);
+            logger.error("The program has failed write "+new String(bs)+" "+bs.length+" octects on "+this.getPort_name());
             storeData(bs);
         }
     }
 
-    /*
-    @Override
-    public byte[] read() throws SerialPortException {
-        return new byte[0];
-    }*/
-
     @Override
     public void open () throws SerialPortException {
-
-
         setFd(NativeLoader.getINSTANCE_SerialPort().open_serial(this.getPort_name(), this.getPort_bitrate()));
-
         if (getFd() < 0) {
             NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
             throw new SerialPortException(this.getPort_name()+"- [" + getFd() + "] " + Constants.messages.get(getFd())+" Ports : "+ KHelpers.getPortIdentifiers());
@@ -120,42 +114,50 @@ public class SerialPort extends CommPort {
         {
             SerialPortEvent = new SerialPortEvent(this);
         }
-
-
     }
 
     public boolean autoReconnect (int tentative,SerialPortEventListener event) throws SerialPortException {
         close();
         removeEventListener(event);
         int i=0;
-        boolean echec=true;
-        while(i < tentative && echec)   {
+        while(i < tentative && exit == false)   {
             try
             {
-                System.out.print("Try reconnect N°"+i);
                 try
                 {
                     Thread.sleep(1000);
                 } catch (Exception e) {
+                    //ignore
                 }
                 open();
-                echec=false;
                 addEventListener(event);
                 return true;
             }catch (Exception e){
-                System.out.println(" [FAIL]");
+                logger.error("Try ["+i+"/"+tentative+" ]-> the program has not successfully reconnect automatically to port " + this.getPort_name());
+                close();
             }
             i++;
         }
-        addEventListener(event)  ;
-        close();
         return false;
     }
 
     @Override
     public void close () throws SerialPortException {
         NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
+    }
 
+    public void exit()
+    {
+        exit = true;
+        try
+        {
+            close();
+            listenerList = null;
+            SerialPortEvent =null;
+            fifo_out = null;
+        } catch (SerialPortException e) {
+            // ignore
+        }
     }
 
 }
