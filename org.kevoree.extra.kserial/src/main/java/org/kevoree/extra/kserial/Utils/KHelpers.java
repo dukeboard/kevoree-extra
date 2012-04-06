@@ -52,24 +52,6 @@ public class KHelpers {
     }
 
 
-
-    inputTextField.addKeyListener(new KeyAdapter() {
-                  public void keyReleased(KeyEvent e) {
-                      JTextField textField = (JTextField) e.getSource();
-                      String text = textField.getText();
-                      textField.setText(text.toUpperCase());
-                  }
-
-                  public void keyTyped(KeyEvent e) {
-                      // TODO: Do something for the keyTyped event
-                  }
-
-                  public void keyPressed(KeyEvent e) {
-                      // TODO: Do something for the keyPressed event
-                  }
-              });
-
-
     public static Byte[] read_file(String filename) throws IOException {
         FileInputStream reader =null;
 

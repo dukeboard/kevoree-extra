@@ -301,18 +301,16 @@ int open_serial(const char *_name_device,int _bitrate){
 		return -2;
 	}
 
-	tcgetattr(fd, & termios);
-    cfmakeraw(& termios);
-    cfsetispeed(& termios, bitrate);
-    cfsetospeed(& termios, bitrate);
-
-	termios.c_cflag = CREAD | CLOCAL;	 // turn on READ and ignore modem control lines
-    termios.c_cflag |= CS8;
-
-	// see: http://unixwiz.net/techtips/termios-vmin-vtime.html
-	termios.c_cc[VMIN]  = 0; 	// read() returns immediately
-	termios.c_cc[VTIME] = 0;
-
+    tcgetattr(fd, &termios);
+    termios.c_iflag       = INPCK;
+    termios.c_lflag       = 0;
+    termios.c_oflag       = 0;
+    termios.c_cflag       = CREAD | CS8 | CLOCAL;
+    termios.c_cc[ VMIN ]  = 0;
+    termios.c_cc[ VTIME ] = 0;
+    cfsetispeed(&termios, bitrate);
+    cfsetospeed(&termios, bitrate);
+    tcsetattr(fd, TCSANOW, &termios);
 
 	if (tcsetattr(fd, TCSANOW, & termios) != 0) {
 		perror("tcflush");
