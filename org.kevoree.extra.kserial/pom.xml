@@ -12,7 +12,7 @@
 
     <artifactId>org.kevoree.extra.kserial</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.1</version>
     <name>Kevoree :: Extra :: KSerial</name>
 
     <dependencies>
@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
+            <artifactId>slf4j-api</artifactId>
             <version>1.6.4</version>
         </dependency>
     </dependencies>
