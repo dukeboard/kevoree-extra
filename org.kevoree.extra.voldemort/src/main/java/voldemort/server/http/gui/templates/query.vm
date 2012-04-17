@@ -1,0 +1,67 @@
+##
+## Copyright 2008-2009 LinkedIn, Inc
+## 
+## Licensed under the Apache License, Version 2.0 (the "License"); you may not
+## use this file except in compliance with the License. You may obtain a copy of
+## the License at
+## 
+## http://www.apache.org/licenses/LICENSE-2.0
+## 
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+## WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+## License for the specific language governing permissions and limitations under
+## the License.
+##
+
+<html>
+  <head>
+    <title>Voldemort Administration</title>
+    <style>
+      h1 {font-weight: bold; 
+        font-size: 30pt; 
+        text-align: center}
+      h2 {font-weight: bold; 
+        font-size: 20pt; 
+        text-align: center}
+      body {background-color: darkred}
+      .vTable {margin: auto}
+      .content {background-color: white; 
+            border: 3px solid black; 
+            margin: 20px; 
+            margin-left: 100px; 
+            margin-right: 100px; 
+            padding: 10px;
+            min-height: 800px}
+    </style>
+  </head>
+  <body>
+  
+    <div class="content">
+      <h1>Voldemort Query Page</h1>
+      
+      <form action="#" method="post">
+         Key type
+         <select name="key_type">
+             <option>string</option>
+             <option>int8</option>
+             <option>int16</option>
+             <option>int32</option>
+             <option>int64</option>
+             <option>float32</option>
+             <option>float64</option>
+             <option>date</option>
+         </select>
+         <select name="action">
+            <option>get</option>
+            <option>put</option>
+            <option>delete</option>
+         </select> from 
+         <input name="store" type="text" value="store name"/>
+         <input name="key" type="text" value="key"/>
+         <input name="value" type="text" value="value"/>
+         <input type="submit" value="submit"/>
+      </form>
+  </div>
+  </body>
+</html>

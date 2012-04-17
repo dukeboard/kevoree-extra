@@ -50,6 +50,8 @@
         <module>../org.kevoree.extra.winstone</module>
         <module>../org.kevoree.extra.jcl</module>
         <module>../org.kevoree.extra.kserial</module>
+        <module>../org.kevoree.extra.freePastry</module>
+        <module>../org.kevoree.extra.voldemort</module>
     </modules>
 
     <distributionManagement>
