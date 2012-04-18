@@ -4,6 +4,7 @@
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.voldemort</artifactId>
     <name>Kevoree :: Extra :: Voldemort</name>
+    <packaging>jar</packaging>
     <version>2.1</version>
 
     <parent>
@@ -15,13 +16,13 @@
 
 
     <properties>
-        <avro.local.file>${basedir}/src/ressources/libs/avro-1.4.0.jar</avro.local.file>
-        <catalina.local.file>${basedir}/src/ressources/libs/catalina-ant.jar</catalina.local.file>
-        <colt.local.file>${basedir}/src/ressources/libs/colt-1.2.0.jar</colt.local.file>
-        <mockito.local.file>${basedir}/src/ressources/libs/mockito-all-1.8.5.jar</mockito.local.file>
-        <libthrift.local.file>${basedir}/src/ressources/libs/libthrift-0.5.0.jar</libthrift.local.file>
-        <jopt.local.file>${basedir}/src/ressources/libs/jopt-simple-3.1.jar</jopt.local.file>
-        <jecat.local.file>${basedir}/src/ressources/libs/jecat-4.0.92.jar</jecat.local.file>
+        <avro.local.file>${basedir}/src/main/resources/libs/avro-1.4.0.jar</avro.local.file>
+        <catalina.local.file>${basedir}/src/main/resources/libs/catalina-ant.jar</catalina.local.file>
+        <colt.local.file>${basedir}/src/main/resources/libs/colt-1.2.0.jar</colt.local.file>
+        <mockito.local.file>${basedir}/src/main/resources/libs/mockito-all-1.8.5.jar</mockito.local.file>
+        <libthrift.local.file>${basedir}/src/main/resources/libs/libthrift-0.5.0.jar</libthrift.local.file>
+        <jopt.local.file>${basedir}/src/main/resources/libs/jopt-simple-3.1.jar</jopt.local.file>
+        <jecat.local.file>${basedir}/src/main/resources/libs/jecat-4.0.92.jar</jecat.local.file>
     </properties>
 
     <dependencies>
@@ -42,11 +43,7 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>1.0</version>
-        </dependency>
+
 
         <dependency>
             <groupId>   org.apache.thrift</groupId>
@@ -74,11 +71,7 @@
             <systemPath>${avro.local.file}</systemPath>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <version>2.4.1</version>
-        </dependency>
+
 
         <dependency>
             <groupId>org.apache.avro</groupId>
@@ -103,6 +96,20 @@
             <scope>system</scope>
             <systemPath>${avro.local.file}</systemPath>
         </dependency>
+
+
+
+        <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>2.4.1</version>
+        </dependency>
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -191,6 +198,17 @@
             <groupId>com.sleepycat</groupId>
             <artifactId>je</artifactId>
             <version>4.1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging-api</artifactId>
+            <version>1.1</version>
         </dependency>
 
     </dependencies>

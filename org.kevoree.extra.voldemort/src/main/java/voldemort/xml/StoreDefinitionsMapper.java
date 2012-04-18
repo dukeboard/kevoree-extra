@@ -16,22 +16,7 @@
 
 package voldemort.xml;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -41,7 +26,6 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.transform.JDOMSource;
 import org.xml.sax.SAXException;
-
 import voldemort.client.RoutingTier;
 import voldemort.routing.RoutingStrategyType;
 import voldemort.serialization.Compression;
@@ -53,7 +37,20 @@ import voldemort.store.slop.strategy.HintedHandoffStrategyType;
 import voldemort.store.views.ViewStorageConfiguration;
 import voldemort.utils.Utils;
 
-import com.google.common.collect.Lists;
+import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Parses a stores.xml file
@@ -102,7 +99,7 @@ public class StoreDefinitionsMapper {
     public StoreDefinitionsMapper() {
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Source source = new StreamSource(StoreDefinitionsMapper.class.getResourceAsStream("stores.xsd"));
+            Source source = new StreamSource(StoreDefinitionsMapper.class.getClassLoader().getResourceAsStream("xsd/stores.xsd"));
             this.schema = factory.newSchema(source);
         } catch(SAXException e) {
             throw new MappingException(e);

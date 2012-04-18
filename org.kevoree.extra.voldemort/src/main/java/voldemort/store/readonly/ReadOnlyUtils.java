@@ -1,5 +1,11 @@
 package voldemort.store.readonly;
 
+import org.apache.log4j.Logger;
+import voldemort.VoldemortException;
+import voldemort.utils.ByteUtils;
+import voldemort.utils.Pair;
+import voldemort.utils.Utils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -9,13 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-
-import voldemort.VoldemortException;
-import voldemort.utils.ByteUtils;
-import voldemort.utils.Pair;
-import voldemort.utils.Utils;
 
 public class ReadOnlyUtils {
 
@@ -176,7 +175,7 @@ public class ReadOnlyUtils {
         try {
             return Long.parseLong(versionDir.replace("version-", ""));
         } catch(NumberFormatException e) {
-            logger.trace("Cannot parse version directory to obtain id " + versionDir);
+            logger.info("Cannot parse version directory to obtain id " + versionDir);
             return -1;
         }
     }

@@ -28,7 +28,7 @@ import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
 
 /**
- * Server-side request handler for voldemort native client protocol
+ * EmbeddedServer-side request handler for voldemort native client protocol
  * 
  * 
  */

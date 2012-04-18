@@ -216,7 +216,7 @@ public class NioSocketService extends AbstractSocketService {
 
         public void run() {
             if(logger.isInfoEnabled())
-                logger.info("Server now listening for connections on port " + port);
+                logger.info("EmbeddedServer now listening for connections on port " + port);
 
             AtomicInteger counter = new AtomicInteger();
 
@@ -254,7 +254,7 @@ public class NioSocketService extends AbstractSocketService {
             }
 
             if(logger.isInfoEnabled())
-                logger.info("Server has stopped listening for connections on port " + port);
+                logger.info("EmbeddedServer has stopped listening for connections on port " + port);
         }
 
     }

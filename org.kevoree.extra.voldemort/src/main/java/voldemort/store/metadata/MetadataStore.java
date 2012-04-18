@@ -63,7 +63,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 /**
- * MetadataStore maintains metadata for Voldemort Server. <br>
+ * MetadataStore maintains metadata for Voldemort EmbeddedServer. <br>
  * Metadata is persisted as strings in inner store for ease of readability.<br>
  * Metadata Store keeps an in memory write-through-cache for performance.
  */

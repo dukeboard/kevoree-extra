@@ -1340,7 +1340,7 @@ public class AdminClient {
      * eg.<br>
      * <li>cluster metadata (cluster.xml as string)
      * <li>stores definitions (stores.xml as string)
-     * <li>Server states <br <br>
+     * <li>EmbeddedServer states <br <br>
      * See {@link voldemort.store.metadata.MetadataStore} for more information.
      * 
      * @param remoteNodeId Id of the node
@@ -1374,7 +1374,7 @@ public class AdminClient {
      * eg.<br>
      * <li>cluster metadata (cluster.xml as string)
      * <li>stores definitions (stores.xml as string)
-     * <li>Server states <br <br>
+     * <li>EmbeddedServer states <br <br>
      * See {@link voldemort.store.metadata.MetadataStore} for more information.
      * 
      * @param remoteNodeId Id of the node

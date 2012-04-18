@@ -16,12 +16,7 @@
 
 package voldemort.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Properties;
-
+import com.google.common.collect.ImmutableList;
 import voldemort.client.protocol.RequestFormatType;
 import voldemort.cluster.failuredetector.FailureDetectorConfig;
 import voldemort.server.scheduler.slop.StreamingSlopPusherJob;
@@ -31,13 +26,13 @@ import voldemort.store.memory.InMemoryStorageConfiguration;
 import voldemort.store.mysql.MysqlStorageConfiguration;
 import voldemort.store.readonly.BinarySearchStrategy;
 import voldemort.store.readonly.ReadOnlyStorageConfiguration;
-import voldemort.utils.ConfigurationException;
-import voldemort.utils.Props;
-import voldemort.utils.Time;
-import voldemort.utils.UndefinedPropertyException;
-import voldemort.utils.Utils;
+import voldemort.utils.*;
 
-import com.google.common.collect.ImmutableList;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Configuration parameters for the voldemort server.
@@ -388,7 +383,7 @@ public class VoldemortConfig implements Serializable {
             throw new ConfigurationException("Must have at least 1 scheduler thread, "
                                              + this.schedulerThreads + " set.");
         if(enableServerRouting && !enableSocketServer)
-            throw new ConfigurationException("Server-side routing is enabled, this requires the socket server to also be enabled.");
+            throw new ConfigurationException("EmbeddedServer-side routing is enabled, this requires the socket server to also be enabled.");
     }
 
     private int getIntEnvVariable(String name) {

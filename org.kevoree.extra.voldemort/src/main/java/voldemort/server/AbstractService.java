@@ -56,7 +56,7 @@ public abstract class AbstractService implements VoldemortService {
     public void start() {
         boolean isntStarted = isStarted.compareAndSet(false, true);
         if(!isntStarted)
-            throw new IllegalStateException("Server is already started!");
+            throw new IllegalStateException("EmbeddedServer is already started!");
 
         logger.info("Starting " + getType().getDisplayName());
         startInner();
