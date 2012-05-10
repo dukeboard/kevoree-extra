@@ -35,14 +35,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 case class RichJSONObject (obj: Any) {
   def toJSON: String = {
-    println("titi")
     if (obj.isInstanceOf[Unit] || obj.isInstanceOf[BoxedUnit]) {
       return "<void>"
     }
-    println("1" + obj) // TODO the following line is locked
-    val result = JacksonSerializer.mapper.writeValueAsString(obj)
-    println("2")
-    result
+    JacksonSerializer.mapper.writeValueAsString(obj)
   }
 }
 
@@ -60,7 +56,7 @@ case class RichString (s: String) {
 
 
 object JacksonSerializer {
-  var mapper = new ObjectMapper();
+  var mapper = new ObjectMapper()
 
   mapper.registerModule(DefaultScalaModule)
 
