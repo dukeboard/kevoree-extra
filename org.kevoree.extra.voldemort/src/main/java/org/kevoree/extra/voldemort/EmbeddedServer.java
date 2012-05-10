@@ -37,6 +37,10 @@ public class EmbeddedServer implements  Runnable{
 
         props.put("bdb.cache.size", 1 * 1024 * 1024);
         props.put("jmx.enable", "false");
+
+
+        props.put("enable.rebalancing","true");
+
         VoldemortConfig config = new VoldemortConfig(props);
 
 
@@ -63,33 +67,23 @@ public class EmbeddedServer implements  Runnable{
 
             List<Integer> partitions =  new ArrayList<Integer>();
             partitions.add(0);
-            partitions.add(1);
-            partitions.add(2);
-            partitions.add(3);
-            partitions.add(4);
-
             List<Integer> partitions1 =  new ArrayList<Integer>();
-            partitions1.add(5);
-            partitions1.add(6);
-            partitions1.add(7);
-
-
+            partitions1.add(1);
             List<Integer> partitions2 =  new ArrayList<Integer>();
-            partitions2.add(8);
-            partitions2.add(9);
+            partitions2.add(2);
 
 
-
-            Node node0 = new Node(0,"localhost",8081,6666,9000,partitions);
-            Node node1 = new Node(1,"localhost",8082,6667,9001,partitions1);
-            Node node2 = new Node(2,"localhost",8083,6668,9002,partitions2);
+            Node node0 = new Node(0,"localhost",8084,6669,9003,partitions);
+            Node node1 = new Node(1,"localhost",8085,6610,9004,partitions1);
+            Node node2 = new Node(2,"localhost",8086,6611,9005,partitions2);
 
             nodes.add(node0);
             nodes.add(node1);
             nodes.add(node2);
 
-
             cluster = new Cluster("Kcluster",nodes);
+
+
 
 
             config = createServerConfig(nodeid);

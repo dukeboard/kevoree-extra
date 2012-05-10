@@ -1,8 +1,11 @@
 package org.kevoree.extra.voldemort;
 
+import voldemort.client.ClientConfig;
+import voldemort.client.SocketStoreClientFactory;
+import voldemort.client.StoreClient;
+import voldemort.client.StoreClientFactory;
 import voldemort.cluster.Node;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +18,7 @@ public class Client {
 
     public static void  main(String[] args){
 
-        /*
+        /*              */
         String bootstrapUrl = "tcp://localhost:6666";
         StoreClientFactory factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrapUrl));
 
@@ -33,14 +36,60 @@ public class Client {
         StoreClient client2 = factory2.getStoreClient("kevoree");
         StoreClient client3 = factory3.getStoreClient("kevoree");
 
+            /*
+        AdminClientConfig config =  new AdminClientConfig();
+
+
+        AdminClient t2 = new AdminClient(bootstrapUrl,config);
+        Cluster current = t2.getAdminClientCluster();
+        System.out.println("Number of node "+current.getNodes().size());
+
+
+        Node newNode = new Node(11,"localhost",8081,6666,9000, new ArrayList<Integer>());
+        List<Node> nodes = Lists.newArrayList();
+
+
+
+        Cluster newCluster = new Cluster(current.getName(),nodes,Lists.newArrayList(current.getZones()));
+
+
+
+        Cluster generatedCluster = RebalanceUtils.getClusterWithNewNodes(current, newCluster);
 
 
 
 
-        System.out.println(client.get("id"));
-        System.out.println(client2.get("id"));
+        RebalanceClientConfig config2 = new RebalanceClientConfig();
+        config2.setMaxParallelRebalancing(1);
+        config2.setDeleteAfterRebalancingEnabled(false);
+        config2.setEnableShowPlan(false);
+        config2.setMaxTriesRebalancing(100);
+        config2.setRebalancingClientTimeoutSeconds(500);
+        config2.setPrimaryPartitionBatchSize(1000);
+        config2.setStealerBasedRebalancing(false);
 
-        System.out.println(client3.get("id"));
+
+        RebalanceController   rebalanceController = new RebalanceController(bootstrapUrl, config2);
+
+        rebalanceController.rebalance(generatedCluster);
+        rebalanceController.stop();
+
+        AdminClient t3 = new AdminClient(bootstrapUrl,config);
+        Cluster current3 = t2.getAdminClientCluster();
+        System.out.println("Number of node "+current3.getNodes().size());
+
+           */
+
+        client2.put("pompier1", "jed2");
+
+        List<Node> t =       client2.getResponsibleNodes("id2");
+
+
+
+        System.out.println(t);
+
+
+
 
         factory.close();
 
@@ -51,37 +100,10 @@ public class Client {
 
         //System.out.println(client.get("some_key"));
 
-        */
-
-
-        List<Node>  nodes = new ArrayList<Node>();
-
-        List<Integer> partitions =  new ArrayList<Integer>();
-        partitions.add(0);
-        partitions.add(1);
-        partitions.add(2);
-        partitions.add(3);
-        partitions.add(4);
-
-        List<Integer> partitions1 =  new ArrayList<Integer>();
-        partitions1.add(5);
-        partitions1.add(6);
-        partitions1.add(7);
-
-
-        List<Integer> partitions2 =  new ArrayList<Integer>();
-        partitions2.add(8);
-        partitions2.add(9);
 
 
 
-        Node node0 = new Node(0,"localhost",8081,6666,9000,partitions);
-        Node node1 = new Node(1,"localhost",8082,6667,9001,partitions1);
-        Node node2 = new Node(2,"localhost",8083,6668,9002,partitions2);
 
-        nodes.add(node0);
-        nodes.add(node1);
-        nodes.add(node2);
 
 
 
