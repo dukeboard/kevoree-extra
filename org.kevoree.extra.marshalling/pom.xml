@@ -34,6 +34,12 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-scala</artifactId>
             <version>2.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -86,7 +92,7 @@
                 </configuration>
             </plugin>
 
-     <!-- android dex phase -->
+            <!-- android dex phase -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -126,7 +132,7 @@
                     </execution>
                 </executions>
             </plugin>
-			
+
         </plugins>
     </build>
 
