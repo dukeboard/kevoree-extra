@@ -5,7 +5,7 @@
     <artifactId>org.kevoree.extra.marshalling</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Extra :: Marshalling</name>
-    <version>1.0</version>
+    <version>1.1</version>
 
     <parent>
         <artifactId>org.kevoree.extra.root</artifactId>
@@ -20,15 +20,20 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-lgpl</artifactId>
-            <version>1.6.1</version>
+        <!--<dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-lgpl</artifactId>
-            <version>1.6.1</version>
+            <version>1.9.4</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -75,8 +80,8 @@
                 <version>2.3.5</version>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.codehaus.jackson.*,org.kevoree.extra.marshalling.*,org.joda.time.*</Export-Package>
-                        <Import-Package>!javax.xml.datatype,!org.codehaus.jackson.*,!org.joda.time.*,!org.w3c.*,*</Import-Package>
+                        <Export-Package>com.fasterxml.jackson.*,org.kevoree.extra.marshalling.*,org.joda.time.*</Export-Package>
+                        <Import-Package>!javax.xml.datatype,!com.fasterxml.jackson.*,!org.joda.time.*,!org.w3c.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
