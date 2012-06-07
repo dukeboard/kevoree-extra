@@ -14,7 +14,6 @@ import java.io.InputStream;
  * User: duke
  * Date: 16/11/11
  * Time: 19:51
- * To change this template use File | Settings | File Templates.
  */
 public class KevoreeObjectDecoder extends LengthFieldBasedFrameDecoder {
 
@@ -37,24 +36,29 @@ public class KevoreeObjectDecoder extends LengthFieldBasedFrameDecoder {
         if (frame == null) {
             return null;
         }
-        return new KevoreeCompactObjectInputStream(new ChannelBufferInputStream(frame)).readObject();
+        return new KevoreeCompactObjectInputStream(new ChannelBufferInputStream(frame),new KevoreeClassResolver()).readObject();
 
     }
 
-    class KevoreeCompactObjectInputStream extends CompactObjectInputStream {
+    class KevoreeClassResolver implements org.jboss.netty.handler.codec.serialization.ClassResolver {
 
+        public Class<?> resolve(String s) throws ClassNotFoundException {
+            return classLoader.loadClass(s);
+        }
+    }
+
+    class KevoreeCompactObjectInputStream extends CompactObjectInputStream {
+        /*
 		KevoreeCompactObjectInputStream(InputStream in) throws IOException {
             super(in);
         }
 
 		KevoreeCompactObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
             super(in, classLoader);
-        }
+        }   */
 
-        @Override
-        protected Class<?> loadClass(String className) throws ClassNotFoundException {
-            return classLoader.loadClass(className);
-            //return super.loadClass(className);
+        KevoreeCompactObjectInputStream(InputStream in, ClassResolver classResolver) throws IOException {
+            super(in, classResolver);
         }
     }
 
