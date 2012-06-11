@@ -179,11 +179,11 @@ cd $ROOT
 mkdir arduino
 cd arduino
 echo -n "Downloading arduino-1.0"
-wget  http://arduino.googlecode.com/files/arduino-0022.tgz
-if  [ -f "arduino-0022.tgz" ]; then
+wget  https://arduino.googlecode.com/files/arduino-1.0-linux.tgz
+if  [ -f "arduino-1.0-linux.tgz" ]; then
 echo "[OK]"
 else
 echo "[FAIL]"
 exit -1
 fi
-tar xzf arduino-0022.tgz
+tar xzf arduino-1.0-linux.tgz
