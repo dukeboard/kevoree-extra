@@ -15,7 +15,7 @@ public class Test {
 
 
         System.out.println(KHelpers.getPortIdentifiers());
-        final SerialPort serial = new SerialPort("/dev/tty.usbmodemfa141", 115200);
+        final SerialPort serial = new SerialPort("*", 19200);
         serial.open();
 
 

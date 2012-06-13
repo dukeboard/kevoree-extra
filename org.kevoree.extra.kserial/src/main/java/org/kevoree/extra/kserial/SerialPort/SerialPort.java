@@ -10,6 +10,8 @@ import org.kevoree.extra.kserial.jna.NativeLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+
 /**
  * Created by jed
  * User: jedartois@gmail.com
@@ -29,8 +31,23 @@ public class SerialPort extends CommPort {
     private ByteFIFO fifo_out = new ByteFIFO(sizefifo_out);
 
     public SerialPort (String portname, int bitrate) throws Exception {
+
+        if(portname.equals("*"))
+        {
+            if(KHelpers.getPortIdentifiers().size() > 0)
+            {
+                this.setPort_name(KHelpers.getPortIdentifiers().get(0));
+            }
+            else
+            {
+                this.setPort_name("null");
+            }
+
+        } else {
+            this.setPort_name(portname);
+        }
         this.setPort_bitrate(bitrate);
-        this.setPort_name(portname);
+
     }
 
     public void addEventListener (SerialPortEventListener listener) {
@@ -45,17 +62,26 @@ public class SerialPort extends CommPort {
         }
     }
 
-    void fireSerialEvent (SerialPortEvent evt) {
-        Object[] listeners = listenerList.getListenerList();
-        for (int i = 0; i < listeners.length; i += 2) {
-            if (listeners[i] == SerialPortEventListener.class) {
-                if (evt instanceof SerialPortDisconnectionEvent) {
-                    ((SerialPortEventListener) listeners[i + 1]).disconnectionEvent((SerialPortDisconnectionEvent)evt);
-                } else {
-                    ((SerialPortEventListener) listeners[i + 1]).incomingDataEvent(evt);
+    void fireSerialEvent (SerialPortEvent evt)
+    {
+        if(listenerList !=null ) {
+            Object[] listeners = listenerList.getListenerList();
+            if(listeners != null)
+            {
+                for (int i = 0; i < listeners.length; i += 2) {
+                    if (listeners[i] == SerialPortEventListener.class)
+                    {
+                        if (evt instanceof SerialPortDisconnectionEvent)
+                        {
+                            ((SerialPortEventListener) listeners[i + 1]).disconnectionEvent((SerialPortDisconnectionEvent)evt);
+                        } else {
+                            ((SerialPortEventListener) listeners[i + 1]).incomingDataEvent(evt);
+                        }
+                    }
                 }
             }
         }
+
     }
 
     public void storeData(byte[]bs){
@@ -68,7 +94,8 @@ public class SerialPort extends CommPort {
     }
 
 
-    public void send(byte [] bs){
+    public void send(byte [] bs)
+    {
         Memory mem = new Memory(Byte.SIZE * bs.length + 1);
         mem.clear();
 
@@ -103,16 +130,48 @@ public class SerialPort extends CommPort {
         }
     }
 
+    public String getTmpfilePath(){
+        String path_tmpdir = System.getProperty("java.io.tmpdir");
+        String name =this.getPort_name().replace("/","");
+        return path_tmpdir+"/"+name+"lock";
+    }
+
     @Override
-    public void open () throws SerialPortException {
-        setFd(NativeLoader.getINSTANCE_SerialPort().open_serial(this.getPort_name(), this.getPort_bitrate()));
-        if (getFd() < 0) {
-            NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
-            throw new SerialPortException(this.getPort_name()+"- [" + getFd() + "] " + Constants.messages.get(getFd())+" Ports : "+ KHelpers.getPortIdentifiers());
-        }
-        else
+    public void open () throws SerialPortException
+    {
+        File   tmpfile=null;
+        try
         {
-            SerialPortEvent = new SerialPortEvent(this);
+            tmpfile = new File(getTmpfilePath());
+            if(tmpfile.exists())
+            {
+                logger.warn("The serial port is locked " + tmpfile.getAbsolutePath());
+                close();
+            }else
+            {
+                logger.debug("Creating lock file "+tmpfile.getAbsolutePath());
+                tmpfile.createNewFile();
+                tmpfile.deleteOnExit();
+            }
+            setFd(NativeLoader.getINSTANCE_SerialPort().open_serial(this.getPort_name(), this.getPort_bitrate()));
+            if (getFd() < 0) {
+                NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
+                throw new SerialPortException(this.getPort_name()+"- [" + getFd() + "] " + Constants.messages.get(getFd())+" Ports : "+ KHelpers.getPortIdentifiers());
+            }
+            else
+            {
+                SerialPortEvent = new SerialPortEvent(this);
+            }
+
+        }catch (Exception e)
+        {
+            if(tmpfile !=null)
+            {
+
+                tmpfile.delete();
+            }
+            close();
+            throw  new SerialPortException(e.getMessage());
         }
     }
 
@@ -143,7 +202,21 @@ public class SerialPort extends CommPort {
 
     @Override
     public void close () throws SerialPortException {
-        NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
+        File   tmpfile=null;
+        try
+        {
+            NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
+
+            tmpfile = new File(getTmpfilePath());
+            if(tmpfile != null && tmpfile.exists())
+            {
+                logger.debug("Removing lock file "+tmpfile.getAbsolutePath());
+                tmpfile.delete();
+            }
+        }catch (Exception e)
+        {
+            logger.error("Closing serial port ",e);
+        }
     }
 
     public void exit()

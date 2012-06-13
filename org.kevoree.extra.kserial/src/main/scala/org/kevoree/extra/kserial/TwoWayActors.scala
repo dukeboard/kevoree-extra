@@ -49,7 +49,7 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
   }.start()
 
   var serialPort: KSerialPort = null
-  serialPort = new KSerialPort(portName, 115200)
+  serialPort = new KSerialPort(portName, 19200)
   serialPort.open()
   serialPort.addEventListener(this)
 
@@ -72,7 +72,8 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
   def killConnection() {
     replyActor ! CLOSEPORT()
     if (serialPort != null) {
-      serialPort.close()
+      println("Closing "+serialPort.getPort_name+" "+serialPort.getPort_bitrate)
+      serialPort.exit()
     }
     closed = true
   }
