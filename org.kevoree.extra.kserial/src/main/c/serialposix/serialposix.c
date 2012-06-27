@@ -4,6 +4,10 @@
  * Date: 25/01/12
  * Time: 11:47
  Simple an robust posix serial interface
+
+ChangeLog:
+- fix concurrent JVM (open the same file descriptor)   27 juin 2012 jed
+
  */
 
 #include <ctype.h>
@@ -21,8 +25,18 @@
 
 
 #define _POSIX_SOURCE 1 /* POSIX compliant source */
+#define VERSION 1.5
 #define JED_IPC_PRIVATE 24011985
 #define BUFFER_SIZE 512
+#define OK 0
+#define ERROR -1
+#define ALIVE 0
+#define EXIT 1
+
+#define FD_DISCONNECTED -10
+
+#define EXIT_CONCURRENT_VM -42
+#define FD_ALREADY_CLOSED -12
 //#define PROC_BASE  "/dev/"
 
 int shmid;
@@ -40,11 +54,11 @@ void (*SerialEvent) (int taille,unsigned char *data);
  */
 int register_SerialEvent( void* fn){
 	SerialEvent=fn;
-	return 0;
+	return OK;
 };
 
 
-/*
+/*                     -
 Port* scan_fd(void)
 {
 	DIR *dir;
@@ -115,7 +129,7 @@ int serialport_writebyte( int fd, uint8_t b)
 	int n = write(fd,&b,1);
 	if( n!=1)
 		return -1;
-	return 0;
+	return OK;
 }
 
 /**
@@ -127,8 +141,8 @@ int serialport_readbyte( int fd, uint8_t *b)
 {
 	int n = read(fd,&b,1);
 	if( n!=1)
-		return -1;
-	return 0;
+		return ERROR;
+	return OK;
 }
 
 /**
@@ -145,7 +159,7 @@ int serialport_write(int fd,  char* str)
 	if( n!=len )
 	{
 	    perror("write");
-	   	return -1;
+	   	return ERROR;
 	}
 	return serialport_writebyte(fd,'\n'); /* finish */
 }
@@ -189,7 +203,7 @@ int verify_fd(char *devicename)
 	int fd;
 	if((fd = open(devicename,O_RDONLY|  O_NONBLOCK )) == -1)
 	{
-		return -1;
+		return ERROR;
 	}
 	else
 	{
@@ -213,7 +227,7 @@ void *serial_monitoring(char *devicename)
 		sleep(1);
 		if(verify_fd(name) == -1)
 		{
-			SerialEvent(-1,"WTF 42 \n");
+			SerialEvent(FD_DISCONNECTED,"");
 		    pthread_exit(NULL);
 		}
 	}
@@ -235,7 +249,11 @@ void *serial_reader(int fd)
 			SerialEvent(taille,byte);
 			memset(byte,0,sizeof(byte));
 		}
+	}
 
+	if(*quitter == EXIT_CONCURRENT_VM)
+	{
+	 	SerialEvent(EXIT_CONCURRENT_VM,"");
 	}
 	pthread_exit(NULL);
 }
@@ -249,11 +267,10 @@ int reader_serial(int fd){
 	if(*quitter == 0)
 	{
 		return  pthread_create (& lecture, NULL,&serial_reader, fd);
-	} else {
-
-	return 0;
+	} else
+	{
+	    return ERROR;
 	}
-
 }
 
 /**
@@ -263,7 +280,14 @@ int reader_serial(int fd){
 int monitoring_serial(char *name_device)
 {
 	pthread_t monitor;
-	return pthread_create (& monitor, NULL,&serial_monitoring, name_device);
+	if(*quitter == 0)
+    {
+     	return pthread_create (& monitor, NULL,&serial_monitoring, name_device);
+    }
+    else
+    {
+        return ERROR;
+   }
 }
 
 
@@ -274,6 +298,7 @@ int monitoring_serial(char *name_device)
  */
 int open_serial(const char *_name_device,int _bitrate){
 
+    char *addr;
 	int fd,bitrate;
 	struct termios termios;
     int         status = 0;
@@ -289,27 +314,36 @@ int open_serial(const char *_name_device,int _bitrate){
 	default:
 		return -1;
 	}
-     char *addr;
+      // create memory shared
      shmid = shmget(JED_IPC_PRIVATE,sizeof(int), 0666 | IPC_CREAT );
      if(shmid < 0)
      {
          perror("shmid");
-         return -13;
+         return -1;
      }
       addr = shmat(shmid, 0, 0);
       if(addr < 0)
       {
           perror("shmat");
-         return -14;
+         return -1;
       }
-     quitter = (int *) addr;
-
-    (*quitter) = 1;
-    printf("%d\n",*quitter);
-    usleep(950000);
+     // bind to memory shared
+    quitter = (int *) addr;
+    if(quitter == NULL)
+    {
+        return -1;
+    }
+    if(quitter != NULL)
+    {
+       if(*quitter == ALIVE)
+        {
+           	*quitter = EXIT_CONCURRENT_VM;
+            sleep(1);
+        }
+    }
 
 	// init  loop variable
-	*quitter = 0;
+	*quitter = ALIVE;
 
 	/* open the serial device */
 	fd = open(_name_device,O_RDWR |O_NOCTTY | O_NONBLOCK );
@@ -336,7 +370,6 @@ int open_serial(const char *_name_device,int _bitrate){
        	return  -4;
 	}
 
-
     /* flush the serial device */
 	if (tcflush(fd, TCIOFLUSH))
 	{
@@ -350,22 +383,21 @@ int open_serial(const char *_name_device,int _bitrate){
 	}
 
 	return fd;
-
 }
 
 int close_serial(int fd)
 {
-	if(*quitter ==0)
+    // todo destroy memory shared if there is no more clients
+	if(*quitter ==ALIVE)
 	{
 		close(fd);
-		*quitter = 1;
+		*quitter = EXIT;
 	}else
 	{
-		*quitter = 1;
-		return -12;
+		*quitter = EXIT;
+		return FD_ALREADY_CLOSED;
 	}
-
-	return 0;
+	return OK;
 }
 
 

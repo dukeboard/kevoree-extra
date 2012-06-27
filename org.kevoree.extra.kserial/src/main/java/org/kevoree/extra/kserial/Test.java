@@ -19,28 +19,32 @@ public class Test {
         serial.open();
 
 
-        serial.addEventListener(new SerialPortEventListener() {
-            public void incomingDataEvent(SerialPortEvent evt) {
+        serial.addEventListener(new SerialPortEventListener()
+        {
+            public void incomingDataEvent(SerialPortEvent evt)
+            {
                 System.out.println("event=" + evt.getSize() + "/" + new String(evt.read()));
             }
 
-            public void disconnectionEvent(SerialPortDisconnectionEvent evt) {
+            public void disconnectionEvent(SerialPortDisconnectionEvent evt)
+            {
                 System.out.println("device " + serial.getPort_name() + " is not connected anymore ");
                 try {
                     serial.autoReconnect(20, this);
                 } catch (SerialPortException e) {
                 }
             }
+
+            @Override
+            public void concurrentOpenEvent(SerialConcurrentOpenEvent evt) {
+                  System.out.println("Tu viens te faire deco par une autre vm ! WTF ");
+            }
         });
 
-        while(true){
-
-            serial.write("Hello World".getBytes());
-            Thread.sleep(5000);
-        }
 
 
-   //     Thread.currentThread().sleep(8000000);
+
+     Thread.currentThread().sleep(8000000);
 
 
 /*
