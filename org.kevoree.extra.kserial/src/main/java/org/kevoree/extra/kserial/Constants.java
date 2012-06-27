@@ -21,7 +21,7 @@ public final class Constants {
             put(-1, "The SerialPort bitrate choosen is out of scope");
             put(-2, "SerialPort device does not exist");
             put(-3," Attributes and fill termios structure");
-            put(-4, " set baud rate ");
+            put(-4, "The port does not exist\n");
             put(-7, " Fail to write byte");
             put(-8, " Fail to read byte");
 
