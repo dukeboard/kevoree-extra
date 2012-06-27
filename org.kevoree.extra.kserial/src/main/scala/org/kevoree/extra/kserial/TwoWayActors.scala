@@ -2,6 +2,7 @@ package org.kevoree.extra.kserial
 
 import SerialPort.{SerialPort => KSerialPort, SerialConcurrentOpenEvent, SerialPortDisconnectionEvent, SerialPortEvent, SerialPortEventListener}
 import actors.{Actor, TIMEOUT, DaemonActor}
+import org.slf4j.{LoggerFactory, Logger}
 
 /**
  * User: ffouquet
@@ -10,6 +11,7 @@ import actors.{Actor, TIMEOUT, DaemonActor}
  */
 
 class TwoWayActors(portName: String) extends SerialPortEventListener {
+  private var logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   var replyActor = new DaemonActor {
     def act() {
@@ -21,7 +23,7 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
           case CLOSEPORT() => exit()
           case msg: Tuple3[String, String, Long] => {
             val originalSender = sender
-            if (serialPort != null) {
+            if (serialPort != null && !closed) {
               try {
                 serialPort.write(msg._1.getBytes)
                 reactWithin(msg._3) {
@@ -29,7 +31,7 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
                     originalSender ! true
                     KevoreeSharedCom.notifyObservers(portName, recString)
                   }
-                  case TIMEOUT => println("TimeOut internal") //LOST NEXT MESSAGE
+                  case TIMEOUT => logger.debug("TimeOut internal") //LOST NEXT MESSAGE
                   case CLOSEPORT() => exit()
                 }
               } catch {
@@ -38,8 +40,17 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
             }
           }
           case simpleMsg: String => {
-            if (serialPort != null) {
-              serialPort.write(simpleMsg.getBytes)
+            if (serialPort != null && !closed)
+            {
+              try {
+                serialPort.write(simpleMsg.getBytes)
+              } catch {
+                case _@ e =>
+                {
+                  logger.debug("the serial port is not available",e)
+                  killConnection()
+                }
+              }
             }
           }
         }
@@ -71,7 +82,7 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
   def killConnection() {
     replyActor ! CLOSEPORT()
     if (serialPort != null) {
-      println("Closing "+serialPort.getPort_name+" "+serialPort.getPort_bitrate)
+      logger.debug("Closing "+serialPort.getPort_name+" "+serialPort.getPort_bitrate)
       serialPort.exit()
     }
     closed = true
@@ -98,7 +109,7 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
 
   def concurrentOpenEvent(evt: SerialConcurrentOpenEvent)
   {
-    println("Concurrent VM open serial port")
+    logger.warn("Concurrent VM open serial port")
     KevoreeSharedCom.killAll()
   }
 }
