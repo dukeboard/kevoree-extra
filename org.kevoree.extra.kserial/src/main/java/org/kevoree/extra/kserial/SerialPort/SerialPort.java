@@ -10,7 +10,7 @@ import org.kevoree.extra.kserial.jna.NativeLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * Created by jed
@@ -94,8 +94,7 @@ public class SerialPort extends CommPort {
     }
 
 
-    public void send(byte [] bs)
-    {
+    public void send(byte [] bs) throws SerialPortException {
         Memory mem = new Memory(Byte.SIZE * bs.length + 1);
         mem.clear();
 
@@ -109,13 +108,13 @@ public class SerialPort extends CommPort {
         if (NativeLoader.getINSTANCE_SerialPort().serialport_write(getFd(), inipar) != 0)
         {
             logger.error("Warning fail to write store " + bs.length);
-            storeData(bs);
+            //   storeData(bs);
+            throw new SerialPortException("The serial port is closed");
         }
     }
 
     @Override
-    public void write (byte[] bs)
-    {
+    public void write (byte[] bs) throws SerialPortException {
         if (this.getFd() > 0)
         {
             if(fifo_out.getSize() > 0)
@@ -126,7 +125,8 @@ public class SerialPort extends CommPort {
         } else
         {
             logger.error("The program has failed write "+new String(bs)+" "+bs.length+" octects on "+this.getPort_name());
-            storeData(bs);
+            // storeData(bs);
+            throw new SerialPortException("The serial port is closed");
         }
     }
 
@@ -143,23 +143,67 @@ public class SerialPort extends CommPort {
         try
         {
             tmpfile = new File(getTmpfilePath());
+            System.out.println("OPEN "+tmpfile.getAbsolutePath()+" "+tmpfile.exists());
             if(tmpfile.exists())
             {
-                logger.warn("The serial port is locked " + tmpfile.getAbsolutePath());
-                close();
-            }else
-            {
-                logger.debug("Creating lock file "+tmpfile.getAbsolutePath());
-                tmpfile.createNewFile();
-                tmpfile.deleteOnExit();
+
+                FileReader fstream=null;
+                BufferedReader in=null;
+                try
+                {
+                    fstream = new FileReader(tmpfile);
+                    in = new BufferedReader(fstream);
+                    String readline = in.readLine();
+                    Integer fdlock  =   Integer.parseInt(readline);
+                    setFd(fdlock);
+                    logger.error("The serial port is locked " + tmpfile.getAbsolutePath()+" fd "+fdlock );
+                    close();
+                    System.out.println("LOCKED");
+                }   catch (Exception e)
+                {
+                    logger.error("parse file descriptor locked ",e);
+                }   finally
+                {
+                    in.close();
+                }
+                try
+                {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    //ignore
+                }
             }
             setFd(NativeLoader.getINSTANCE_SerialPort().open_serial(this.getPort_name(), this.getPort_bitrate()));
-            if (getFd() < 0) {
+            if (getFd() < 0)
+            {
                 NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
                 throw new SerialPortException(this.getPort_name()+"- [" + getFd() + "] " + Constants.messages.get(getFd())+" Ports : "+ KHelpers.getPortIdentifiers());
             }
             else
             {
+                logger.debug("Creating lock file "+tmpfile.getAbsolutePath()+" "+getFd());
+
+                tmpfile.createNewFile();
+                FileWriter fstream=null;
+                BufferedWriter out =null;
+                try
+                {
+                    fstream = new FileWriter(tmpfile);
+                    out = new BufferedWriter(fstream);
+                    // write the file descriptor number
+                    out.write(getFd());
+                }   catch (Exception e){
+                    logger.error("Write file descriptor number ",e);
+                }   finally
+                {
+                    if(out != null)
+                    {
+                        out.close();
+
+                    }
+                }
+
+
                 SerialPortEvent = new SerialPortEvent(this);
             }
 
@@ -192,7 +236,7 @@ public class SerialPort extends CommPort {
                 addEventListener(event);
                 return true;
             }catch (Exception e){
-                logger.error("Try ["+i+"/"+tentative+" ]-> the program has not successfully reconnect automatically to port " + this.getPort_name());
+                logger.error("/home/jed/KEVOREE_PROJECT/kevoree-extra/org.kevoree.extra.kserial/pom.xmlThe reconnection on port "+this.getPort_name()+" failed");
                 close();
             }
             i++;
@@ -203,10 +247,14 @@ public class SerialPort extends CommPort {
     @Override
     public void close () throws SerialPortException {
         File   tmpfile=null;
+        int rt =0;
         try
         {
-            NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
+            if((rt= NativeLoader.getINSTANCE_SerialPort().close_serial(getFd())) != 0){
 
+                logger.debug("An error occurred while closing ");
+            }
+            System.out.println("CLOSE RT "+rt);
             tmpfile = new File(getTmpfilePath());
             if(tmpfile != null && tmpfile.exists())
             {

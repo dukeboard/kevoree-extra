@@ -16,15 +16,18 @@
 #include <sys/select.h>
 #include "serialposix.h"
 #include <dirent.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 
 #define _POSIX_SOURCE 1 /* POSIX compliant source */
-
+#define JED_IPC_PRIVATE 24011985
 #define BUFFER_SIZE 512
 //#define PROC_BASE  "/dev/"
 
-static int quitter=0;
-
+int shmid;
+// memory shared
+static int *quitter;
 
 /**
  *  function to throw event
@@ -39,6 +42,7 @@ int register_SerialEvent( void* fn){
 	SerialEvent=fn;
 	return 0;
 };
+
 
 /*
 Port* scan_fd(void)
@@ -170,7 +174,7 @@ int serialport_read(int fd, char *ptr){
 			ptr[i] = b[0];
 			i++;
 		}
-	} while( (b[0] != '\n') && (quitter == 0) && (i < BUFFER_SIZE)); /* detect finish and protect overflow*/
+	} while( (b[0] != '\n') && (*quitter == 0) && (i < BUFFER_SIZE)); /* detect finish and protect overflow*/
 
 	return i;
 }
@@ -204,7 +208,7 @@ void *serial_monitoring(char *devicename)
 	char name[512];
 	int fd;
 	strcpy(name,devicename);    // store local to protect garbage collector JNA
-	while(quitter ==0)
+	while(*quitter ==0)
 	{
 		sleep(1);
 		if(verify_fd(name) == -1)
@@ -224,9 +228,9 @@ void *serial_reader(int fd)
 {
 	char byte[BUFFER_SIZE];
 	int taille;
-	while(quitter ==0)
+	while(*quitter ==0)
 	{
-		if((taille =serialport_read(fd,byte)) > 0 && quitter == 0)
+		if((taille =serialport_read(fd,byte)) > 0 && *quitter == 0)
 		{
 			SerialEvent(taille,byte);
 			memset(byte,0,sizeof(byte));
@@ -242,7 +246,7 @@ void *serial_reader(int fd)
  */
 int reader_serial(int fd){
 	pthread_t lecture;
-	if(quitter == 0)
+	if(*quitter == 0)
 	{
 		return  pthread_create (& lecture, NULL,&serial_reader, fd);
 	} else {
@@ -285,12 +289,27 @@ int open_serial(const char *_name_device,int _bitrate){
 	default:
 		return -1;
 	}
+     char *addr;
+     shmid = shmget(JED_IPC_PRIVATE,sizeof(int), 0666 | IPC_CREAT );
+     if(shmid < 0)
+     {
+         perror("shmid");
+         return -13;
+     }
+      addr = shmat(shmid, 0, 0);
+      if(addr < 0)
+      {
+          perror("shmat");
+         return -14;
+      }
+     quitter = (int *) addr;
 
-    quitter = 1;
-    usleep(2000);
+    (*quitter) = 1;
+    printf("%d\n",*quitter);
+    usleep(950000);
 
 	// init  loop variable
-	quitter = 0;
+	*quitter = 0;
 
 	/* open the serial device */
 	fd = open(_name_device,O_RDWR |O_NOCTTY | O_NONBLOCK );
@@ -330,21 +349,19 @@ int open_serial(const char *_name_device,int _bitrate){
 		return -5;
 	}
 
-
-
 	return fd;
 
 }
 
 int close_serial(int fd)
 {
-	if(quitter ==0)
+	if(*quitter ==0)
 	{
 		close(fd);
-		quitter = 1;
+		*quitter = 1;
 	}else
 	{
-		quitter = 1;
+		*quitter = 1;
 		return -12;
 	}
 

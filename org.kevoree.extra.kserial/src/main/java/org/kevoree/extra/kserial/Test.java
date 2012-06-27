@@ -33,10 +33,14 @@ public class Test {
             }
         });
 
+        while(true){
+
+            serial.write("Hello World".getBytes());
+            Thread.sleep(5000);
+        }
 
 
-
-        Thread.currentThread().sleep(8000000);
+   //     Thread.currentThread().sleep(8000000);
 
 
 /*
