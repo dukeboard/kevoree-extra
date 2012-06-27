@@ -1,7 +1,6 @@
 package org.kevoree.extra.kserial
 
-import SerialPort.{SerialPort => KSerialPort}
-import SerialPort.{SerialPortDisconnectionEvent, SerialPortEvent, SerialPortEventListener}
+import SerialPort.{SerialPort => KSerialPort, SerialConcurrentOpenEvent, SerialPortDisconnectionEvent, SerialPortEvent, SerialPortEventListener}
 import actors.{Actor, TIMEOUT, DaemonActor}
 
 /**
@@ -95,5 +94,11 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
         }
       }
     }.start()
+  }
+
+  def concurrentOpenEvent(evt: SerialConcurrentOpenEvent)
+  {
+    println("Concurrent VM open serial port")
+    KevoreeSharedCom.killAll()
   }
 }
