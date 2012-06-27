@@ -26,7 +26,7 @@ ChangeLog:
 
 #define _POSIX_SOURCE 1 /* POSIX compliant source */
 #define VERSION 1.5
-#define JED_IPC_PRIVATE 24011985
+#define JED_IPC_PRIVATE 24011986
 #define BUFFER_SIZE 512
 #define OK 0
 #define ERROR -1
@@ -387,6 +387,11 @@ int open_serial(const char *_name_device,int _bitrate){
 
 int close_serial(int fd)
 {
+    if(quitter == NULL)
+    {
+      	close(fd);
+        return ERROR;
+    }
     // todo destroy memory shared if there is no more clients
 	if(*quitter ==ALIVE)
 	{

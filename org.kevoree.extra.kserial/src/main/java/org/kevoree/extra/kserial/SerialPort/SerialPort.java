@@ -149,7 +149,6 @@ public class SerialPort extends CommPort {
             tmpfile = new File(getTmpfilePath());
             if(tmpfile.exists())
             {
-
                 FileReader fstream=null;
                 BufferedReader in=null;
                 try
@@ -163,7 +162,7 @@ public class SerialPort extends CommPort {
                     close();
                 }   catch (Exception e)
                 {
-                    logger.error("parse file descriptor locked ",e);
+                    //ignore
                 }   finally
                 {
                     in.close();
