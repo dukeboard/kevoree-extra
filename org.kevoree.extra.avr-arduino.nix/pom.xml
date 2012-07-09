@@ -53,34 +53,36 @@
                         <targetPath>arduino</targetPath>
                     </resource>
                     <resource>
-                        <directory>${project.build.directory}/avr_build/arduino/arduino-1.0/libraries</directory>
+                        <directory>${project.build.directory}/avr_build/arduino/arduino-1.0.1/libraries</directory>
                         <targetPath>arduino/libraries</targetPath>
                     </resource>
                     <resource>
                         <directory>
-                            ${project.build.directory}/avr_build/arduino/arduino-1.0/hardware/
+                            ${project.build.directory}/avr_build/arduino/arduino-1.0.1/hardware/
                         </directory>
                         <targetPath>arduino/hardware</targetPath>
                     </resource>
-                    <resource>
-                        <directory>${project.build.directory}/binary/avr</directory>
-                        <targetPath>arduino/hardware/tools/avr</targetPath>
-                    </resource>
-                    <resource>
-                        <directory>${project.build.directory}/binary/bin</directory>
-                        <targetPath>arduino/hardware/tools/bin</targetPath>
-                    </resource>
-                    <resource>
-                        <directory>${project.build.directory}/binary/lib</directory>
-                        <targetPath>arduino/hardware/tools/lib</targetPath>
-                    </resource>
-                    <resource>
-                        <directory>${project.build.directory}/binary/libexec</directory>
-                        <targetPath>arduino/hardware/tools/libexec</targetPath>
-                    </resource>
+                    <!--
+                        <resource>
+                            <directory>${project.build.directory}/binary/avr</directory>
+                            <targetPath>arduino/hardware/tools/avr</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>${project.build.directory}/binary/bin</directory>
+                            <targetPath>arduino/hardware/tools/bin</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>${project.build.directory}/binary/lib</directory>
+                            <targetPath>arduino/hardware/tools/lib</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>${project.build.directory}/binary/libexec</directory>
+                            <targetPath>arduino/hardware/tools/libexec</targetPath>
+                        </resource>
+                    -->
                     <resource>
                         <directory>
-                            ${project.build.directory}/avr_build/arduino/arduino-1.0/hardware/tools
+                            ${project.build.directory}/avr_build/arduino/arduino-1.0.1/hardware/tools
                         </directory>
                         <includes>
                             <include>avrdude</include>
