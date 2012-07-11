@@ -26,7 +26,7 @@ ChangeLog:
 
 #define _POSIX_SOURCE 1 /* POSIX compliant source */
 #define VERSION 1.5
-#define JED_IPC_PRIVATE 24011986
+#define JED_IPC_PRIVATE 24011950
 #define BUFFER_SIZE 512
 #define OK 0
 #define ERROR -1
@@ -40,9 +40,22 @@ ChangeLog:
 //#define PROC_BASE  "/dev/"
 
 int shmid;
-// memory shared
-static int *quitter;
 
+typedef struct _device
+{
+  char device_name[512];
+  int fd;
+  int alive;
+} Device;
+
+typedef struct _context
+{
+        Device devices[25];
+        int nb;
+} Context;
+
+static Context *ctx;
+static char current_device[512];
 /**
  *  function to throw event
  */
@@ -188,7 +201,7 @@ int serialport_read(int fd, char *ptr){
 			ptr[i] = b[0];
 			i++;
 		}
-	} while( (b[0] != '\n') && (*quitter == 0) && (i < BUFFER_SIZE)); /* detect finish and protect overflow*/
+	} while( (b[0] != '\n') && (isAlive(search_device(current_device)) == ALIVE) && (i < BUFFER_SIZE)); /* detect finish and protect overflow*/
 
 	return i;
 }
@@ -222,7 +235,7 @@ void *serial_monitoring(char *devicename)
 	char name[512];
 	int fd;
 	strcpy(name,devicename);    // store local to protect garbage collector JNA
-	while(*quitter ==0)
+	while(isAlive(search_device(devicename))==ALIVE)
 	{
 		sleep(1);
 		if(verify_fd(name) == -1)
@@ -240,18 +253,19 @@ void *serial_monitoring(char *devicename)
  */
 void *serial_reader(int fd)
 {
+
 	char byte[BUFFER_SIZE];
 	int taille;
-	while(*quitter ==0)
+	while(isAlive(search_device(current_device)) ==ALIVE)
 	{
-		if((taille =serialport_read(fd,byte)) > 0 && *quitter == 0)
+		if((taille =serialport_read(fd,byte)) > 0 && isAlive(search_device(current_device)) ==ALIVE)
 		{
 			SerialEvent(taille,byte);
 			memset(byte,0,sizeof(byte));
 		}
 	}
 
-	if(*quitter == EXIT_CONCURRENT_VM)
+	if(isAlive(search_device(current_device)) == EXIT_CONCURRENT_VM)
 	{
 	 	SerialEvent(EXIT_CONCURRENT_VM,"");
 	}
@@ -264,7 +278,7 @@ void *serial_reader(int fd)
  */
 int reader_serial(int fd){
 	pthread_t lecture;
-	if(*quitter == 0)
+	if(isAlive(search_device(current_device)) ==ALIVE)
 	{
 		return  pthread_create (& lecture, NULL,&serial_reader, fd);
 	} else
@@ -280,7 +294,7 @@ int reader_serial(int fd){
 int monitoring_serial(char *name_device)
 {
 	pthread_t monitor;
-	if(*quitter == 0)
+	if(isAlive(search_device(name_device)) ==ALIVE)
     {
      	return pthread_create (& monitor, NULL,&serial_monitoring, name_device);
     }
@@ -291,6 +305,68 @@ int monitoring_serial(char *name_device)
 }
 
 
+int search_device(char *device_name)
+{
+int i=0;
+    for(i=0;i<ctx->nb;i++)
+    {
+        if(strcmp(ctx->devices[i].device_name,device_name) == 0)
+        {
+       // printf("%s == %s\n",ctx->devices[i].device_name,device_name);
+            return i;
+         break;
+        }
+     }
+    return -1;
+}
+/*
+
+int search_device_fd(int fd)
+{
+    int i =0;
+     for(i=0;i<ctx->nb;i++)
+     {
+         if(ctx->devices[i].fd ==fd)
+         {
+             return i;
+          break;
+         }
+      }
+     return -1;
+}
+ */
+
+int isAlive(int indice)
+{
+    if(indice != -1)
+    {
+     return ctx->devices[indice].alive;
+    }
+    else
+     {
+        return EXIT;
+    }
+}
+
+Context * getContext()
+{
+    char *addr;
+   // create memory shared
+   shmid = shmget(JED_IPC_PRIVATE,sizeof(Context), 0666 | IPC_CREAT );
+   if(shmid < 0)
+   {
+       perror("shmid");
+       return NULL;
+   }
+   addr = shmat(shmid, 0, 0);
+   if(addr < 0)
+   {
+      perror("shmat");
+      return NULL;
+   }
+    // bind to memory shared
+  return  (Context *) addr;
+}
 /**
  * Open a file descriptor
  * @param devicename the name of serial port  eg: /dev/ttyUSB0
@@ -298,7 +374,7 @@ int monitoring_serial(char *name_device)
  */
 int open_serial(const char *_name_device,int _bitrate){
 
-    char *addr;
+
 	int fd,bitrate;
 	struct termios termios;
     int         status = 0;
@@ -314,36 +390,42 @@ int open_serial(const char *_name_device,int _bitrate){
 	default:
 		return -1;
 	}
-      // create memory shared
-     shmid = shmget(JED_IPC_PRIVATE,sizeof(int), 0666 | IPC_CREAT );
-     if(shmid < 0)
-     {
-         perror("shmid");
-         return -1;
-     }
-      addr = shmat(shmid, 0, 0);
-      if(addr < 0)
-      {
-          perror("shmat");
-         return -1;
-      }
-     // bind to memory shared
-    quitter = (int *) addr;
-    if(quitter == NULL)
+
+	ctx = getContext();
+    if(ctx == NULL)
     {
         return -1;
     }
-    if(quitter != NULL)
+
+    memset(current_device,0,sizeof(current_device));
+    strcpy(current_device,_name_device);
+    int indice = search_device((char*)_name_device);
+    if(indice == -1)
     {
-       if(*quitter == ALIVE)
+         ctx->nb = ctx->nb +1;
+         indice =   ctx->nb;
+         strcpy(ctx->devices[indice].device_name,_name_device);
+         ctx->devices[indice].alive = ALIVE;
+    }
+    else
+    {
+      //  printf("device %s found %d alive %d\n",_name_device,indice,ctx->devices[indice].alive);
+
+        if(ctx->devices[indice].alive ==ALIVE)
         {
-           	*quitter = EXIT_CONCURRENT_VM;
-            sleep(1);
+          printf("was alive \n");
+          ctx->devices[indice].alive = EXIT_CONCURRENT_VM;;
+          sleep(2);
+          ctx->devices[indice].alive = ALIVE;
         }
+        else
+        {
+                printf("Creating \n");
+          ctx->devices[indice].alive = ALIVE;
+        }
+
     }
 
-	// init  loop variable
-	*quitter = ALIVE;
 
 	/* open the serial device */
 	fd = open(_name_device,O_RDWR |O_NOCTTY | O_NONBLOCK );
@@ -353,6 +435,8 @@ int open_serial(const char *_name_device,int _bitrate){
 		close_serial(fd);
 		return -2;
 	}
+     // set context
+    ctx->devices[indice].fd = fd;
 
     tcgetattr(fd, &termios);
     termios.c_iflag       = INPCK;
@@ -387,21 +471,21 @@ int open_serial(const char *_name_device,int _bitrate){
 
 int close_serial(int fd)
 {
-    if(quitter == NULL)
+    if(ctx == NULL)
     {
       	close(fd);
         return ERROR;
     }
     // todo destroy memory shared if there is no more clients
-	if(*quitter ==ALIVE)
+	if(isAlive(search_device(current_device)) ==ALIVE)
 	{
 		close(fd);
-		*quitter = EXIT;
+		ctx->devices[search_device(current_device)].alive = EXIT;
 	}else
 	{
-		*quitter = EXIT;
 		return FD_ALREADY_CLOSED;
 	}
+
 	return OK;
 }
 
