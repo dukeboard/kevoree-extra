@@ -37,14 +37,12 @@ public class Test {
 
             @Override
             public void concurrentOpenEvent(SerialConcurrentOpenEvent evt) {
-                  System.out.println("Tu viens te faire deco par une autre vm ! WTF ");
+
             }
         });
 
 
 
-
-     Thread.currentThread().sleep(8000000);
 
 
 /*

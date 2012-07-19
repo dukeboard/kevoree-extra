@@ -15,7 +15,7 @@ public abstract class Port {
     private int port_bitrate;
 
     public abstract void open()throws SerialPortException;
-    public abstract void close()throws SerialPortException;
+    public abstract void exit()throws SerialPortException;
 
 
     public int getFd() {

@@ -36,15 +36,15 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
     public void subscribeNativeC(){
         try
         {
-            NativeLoader.getINSTANCE_SerialPort().register_SerialEvent(this);
-            if((pthreadid=NativeLoader.getINSTANCE_SerialPort().reader_serial(serialPort.getFd())) != 0)
+            NativeLoader.getInstance().register_SerialEvent(this);
+            if((pthreadid=NativeLoader.getInstance().reader_serial(serialPort.getFd())) != 0)
             {
-                NativeLoader.getINSTANCE_SerialPort().close_serial(serialPort.getFd());
+                NativeLoader.getInstance().close_serial(serialPort.getFd());
                 serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
             }
-            if((monitorid=NativeLoader.getINSTANCE_SerialPort().monitoring_serial(serialPort.getPort_name())) != 0)
+            if((monitorid=NativeLoader.getInstance().monitoring_serial(serialPort.getPort_name())) != 0)
             {
-                NativeLoader.getINSTANCE_SerialPort().close_serial(serialPort.getFd());
+                NativeLoader.getInstance().close_serial(serialPort.getFd());
                 serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
 
             }
@@ -58,13 +58,13 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
         {
             if (taille == Constants.EXIT_CONCURRENT_VM)
             {
-                NativeLoader.getINSTANCE_SerialPort().register_SerialEvent(null);
+                NativeLoader.getInstance().register_SerialEvent(null);
                 serialPort.fireSerialEvent(new SerialConcurrentOpenEvent(serialPort));
             } else if(taille == Constants.FD_DISCONNECTED)
             {
                 if(serialPort != null)
                 {
-                    NativeLoader.getINSTANCE_SerialPort().close_serial(serialPort.getFd());
+                    NativeLoader.getInstance().close_serial(serialPort.getFd());
                     serialPort.fireSerialEvent(new SerialPortDisconnectionEvent(serialPort));
                 }
             }

@@ -62,9 +62,8 @@ public class SerialPort extends CommPort {
         }
     }
 
-    void fireSerialEvent (SerialPortEvent evt)
+    protected void fireSerialEvent (SerialPortEvent evt)
     {
-
         if(listenerList !=null ) {
             Object[] listeners = listenerList.getListenerList();
             if(listeners != null)
@@ -88,7 +87,7 @@ public class SerialPort extends CommPort {
 
     }
 
-    public void storeData(byte[]bs){
+    private void storeData(byte[]bs){
         try
         {
             fifo_out.add(bs);
@@ -98,7 +97,7 @@ public class SerialPort extends CommPort {
     }
 
 
-    public void send(byte [] bs) throws SerialPortException {
+    private void send(byte [] bs) throws SerialPortException {
         Memory mem = new Memory(Byte.SIZE * bs.length + 1);
         mem.clear();
 
@@ -109,7 +108,7 @@ public class SerialPort extends CommPort {
         }
         byte c = '\n';
         inipar.getPointer().setByte((bs.length + 1) * Byte.SIZE / 8, c);
-        if (NativeLoader.getINSTANCE_SerialPort().serialport_write(getFd(), inipar) != 0)
+        if (NativeLoader.getInstance().serialport_write(getFd(), inipar) != 0)
         {
             logger.error("Warning fail to write store " + bs.length);
             //   storeData(bs);
@@ -134,7 +133,7 @@ public class SerialPort extends CommPort {
         }
     }
 
-    public String getTmpfilePath(){
+    private String getTmpfilePath(){
         String path_tmpdir = System.getProperty("java.io.tmpdir");
         String name =this.getPort_name().replace("/","");
         return path_tmpdir+"/"+name+"lock";
@@ -174,10 +173,10 @@ public class SerialPort extends CommPort {
                     //ignore
                 }
             }
-            setFd(NativeLoader.getINSTANCE_SerialPort().open_serial(this.getPort_name(), this.getPort_bitrate()));
+            setFd(NativeLoader.getInstance().open_serial(this.getPort_name(), this.getPort_bitrate()));
             if (getFd() < 0)
             {
-                NativeLoader.getINSTANCE_SerialPort().close_serial(getFd());
+                NativeLoader.getInstance().close_serial(getFd());
                 throw new SerialPortException(this.getPort_name()+"- [" + getFd() + "] " + Constants.messages.get(getFd())+" Ports : "+ KHelpers.getPortIdentifiers());
             }
             else
@@ -224,7 +223,8 @@ public class SerialPort extends CommPort {
         close();
         removeEventListener(event);
         int i=0;
-        while(i < tentative && exit == false)   {
+        while(i < tentative && exit == false)
+        {
             try
             {
                 try
@@ -234,7 +234,7 @@ public class SerialPort extends CommPort {
                     //ignore
                 }
                 open();
-                NativeLoader.getINSTANCE_SerialPort().register_SerialEvent(SerialPortEvent);
+                NativeLoader.getInstance().register_SerialEvent(SerialPortEvent);
                 addEventListener(event);
 
                 return true;
@@ -247,17 +247,15 @@ public class SerialPort extends CommPort {
         return false;
     }
 
-    @Override
-    public void close () throws SerialPortException {
+    private void close () throws SerialPortException {
         File   tmpfile=null;
         int rt =0;
         try
         {
-            if((rt= NativeLoader.getINSTANCE_SerialPort().close_serial(getFd())) != 0){
+            if((rt= NativeLoader.getInstance().close_serial(getFd())) != 0){
 
                 logger.debug("An error occurred while closing ");
             }
-
             tmpfile = new File(getTmpfilePath());
             if(tmpfile != null && tmpfile.exists())
             {
@@ -269,7 +267,7 @@ public class SerialPort extends CommPort {
             logger.error("Closing serial port ",e);
         }
     }
-
+    @Override
     public void exit()
     {
         exit = true;
@@ -279,7 +277,10 @@ public class SerialPort extends CommPort {
             listenerList = null;
             SerialPortEvent =null;
             fifo_out = null;
-        } catch (SerialPortException e) {
+            // wait native to close
+            Thread.sleep(3000);
+            NativeLoader.destroy();
+        } catch (Exception e) {
             // ignore
         }
     }

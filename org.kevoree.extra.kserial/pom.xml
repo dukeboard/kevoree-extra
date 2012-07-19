@@ -9,9 +9,9 @@
         <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.kserial</artifactId>
-    <version>1.4</version>
+    <version>1.6-SNAPSHOT</version>
     <name>Kevoree :: Extra :: KSerial</name>
 
     <dependencies>

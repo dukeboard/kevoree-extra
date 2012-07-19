@@ -1,44 +1,47 @@
 package org.kevoree.extra.kserial.jna;
 
 import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
 
 import java.io.*;
 import java.util.HashMap;
 
-/**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 30/01/12
- * Time: 11:50
- * To change this template use File | Settings | File Templates.
- */
+
 public class NativeLoader {
 
-    public static synchronized SerialPortJNA getINSTANCE_SerialPort() {
-        configureSerialPort();
-        return INSTANCE_SerialPort;
+    public static synchronized SerialPortJNA getInstance() {
+        configure();
+        return singleton;
     }
 
-    private static SerialPortJNA INSTANCE_SerialPort = null;
+    private static SerialPortJNA singleton = null;
 
-    private static void configureSerialPort() {
-        if (INSTANCE_SerialPort == null) {
+    private static void configure()
+    {
+        if (singleton == null) {
             try {
-                File folder = new File(System.getProperty("java.io.tmpdir") + File.separator + "kserial");
+                File folder = new File(System.getProperty("java.io.tmpdir") + File.separator + "native");
                 if (folder.exists()) {
                     deleteOldFile(folder);
                 }
                 folder.mkdirs();
                 String absolutePath = copyFileFromStream(getPath("serialposix.so"), folder.getAbsolutePath(), "serialposix" + getExtension());
-                NativeLibrary.addSearchPath("serialposix", folder.getAbsolutePath());
-                INSTANCE_SerialPort = (SerialPortJNA) Native.loadLibrary(absolutePath, SerialPortJNA.class, new HashMap());
+                //NativeLibrary.addSearchPath("serialposix", folder.getAbsolutePath());
+                singleton = (SerialPortJNA) Native.loadLibrary(absolutePath, SerialPortJNA.class, new HashMap());
+
+
             } catch (IOException e) {
+
                 e.printStackTrace();
             }
         }
     }
 
+
+    public static void destroy()
+    {
+        Native.unregister(SerialPortJNA.class);
+        singleton = null;
+    }
     public static String getExtension() {
         if (System.getProperty("os.name").toLowerCase().contains("nux")) {
             return ".so";
