@@ -373,11 +373,9 @@ Context * getContext()
  * @param bitrate the speed of the serial port
  */
 int open_serial(const char *_name_device,int _bitrate){
-
-
 	int fd,bitrate;
 	struct termios termios;
-    int         status = 0;
+    int  status = 0;
 	/* process baud rate */
 	switch (_bitrate) {
 	case 4800: bitrate = B4800; break;
@@ -413,14 +411,14 @@ int open_serial(const char *_name_device,int _bitrate){
 
         if(ctx->devices[indice].alive ==ALIVE)
         {
-          printf("was alive \n");
+       //   printf("was alive \n");
           ctx->devices[indice].alive = EXIT_CONCURRENT_VM;;
           sleep(2);
           ctx->devices[indice].alive = ALIVE;
         }
         else
         {
-                printf("Creating \n");
+              //  printf("Creating \n");
           ctx->devices[indice].alive = ALIVE;
         }
 
