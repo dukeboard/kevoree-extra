@@ -35,6 +35,9 @@ ChangeLog:
 
 #define FD_DISCONNECTED -10
 
+#define CLOSED_THREAD_READER -11
+#define CLOSED_THREAD_MONITEUR -12
+
 #define EXIT_CONCURRENT_VM -42
 #define FD_ALREADY_CLOSED -12
 //#define PROC_BASE  "/dev/"
@@ -244,6 +247,7 @@ void *serial_monitoring(char *devicename)
 		    pthread_exit(NULL);
 		}
 	}
+    SerialEvent(CLOSED_THREAD_MONITEUR,"");
 	pthread_exit(NULL);
 }
 
@@ -264,7 +268,7 @@ void *serial_reader(int fd)
 			memset(byte,0,sizeof(byte));
 		}
 	}
-
+    SerialEvent(CLOSED_THREAD_READER,"");
 	if(isAlive(search_device(current_device)) == EXIT_CONCURRENT_VM)
 	{
 	 	SerialEvent(EXIT_CONCURRENT_VM,"");
@@ -469,8 +473,11 @@ int open_serial(const char *_name_device,int _bitrate){
 
 int close_serial(int fd)
 {
+
+	ctx = getContext();
     if(ctx == NULL)
     {
+         printf("ERROR\n") ;
       	close(fd);
         return ERROR;
     }

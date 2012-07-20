@@ -84,6 +84,7 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
     if (serialPort != null) {
       logger.debug("Closing "+serialPort.getPort_name+" "+serialPort.getPort_bitrate)
       serialPort.exit()
+      serialPort = null;
     }
     closed = true
   }
@@ -91,7 +92,6 @@ class TwoWayActors(portName: String) extends SerialPortEventListener {
   def incomingDataEvent(evt: SerialPortEvent) {
     replyActor ! CONTENTREC(new String(evt.read()))
   }
-
 
 
   def disconnectionEvent(evt: SerialPortDisconnectionEvent) {

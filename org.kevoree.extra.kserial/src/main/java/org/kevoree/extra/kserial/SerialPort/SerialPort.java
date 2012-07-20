@@ -277,8 +277,8 @@ public class SerialPort extends CommPort {
             listenerList = null;
             SerialPortEvent =null;
             fifo_out = null;
-            // wait native to close
-            Thread.sleep(3000);
+          // TODO 
+            Thread.sleep(2000);
             NativeLoader.destroy();
         } catch (Exception e) {
             // ignore
