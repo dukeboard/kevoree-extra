@@ -1,0 +1,83 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.kevoree.extra</groupId>
+        <artifactId>org.kevoree.extra.fota</artifactId>
+        <version>1.1-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.kevoree.extra</groupId>
+    <artifactId>org.kevoree.extra.fota.native</artifactId>
+    <version>1.1-SNAPSHOT</version>
+
+
+    <name>native ROOT</name>
+    <packaging>pom</packaging>
+
+    <profiles>
+          <!--
+        <profile>
+            <id>win32</id>
+            <activation>
+                <property>
+                    <name>platform</name>
+                    <value>win32</value>
+                </property>
+            </activation>
+            <modules>
+                <module>win32</module>
+            </modules>
+        </profile>    -->
+
+        <profile>
+            <id>nix32</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                    <arch>x86</arch>
+                </os>
+                <property>
+                    <name>sun.arch.data.model</name>
+                    <value>32</value>
+                </property>
+            </activation>
+            <modules>
+                <module>nix32</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>nix64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                    <arch>x64</arch>
+                </os>
+                <property>
+                    <name>sun.arch.data.model</name>
+                    <value>64</value>
+                </property>
+            </activation>
+            <modules>
+                <module>nix64</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>osx</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <modules>
+                <module>osx</module>
+            </modules>
+        </profile>
+
+    </profiles>
+
+</project>

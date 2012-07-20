@@ -1,0 +1,95 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.kevoree.extra</groupId>
+        <artifactId>org.kevoree.extra.fota.native</artifactId>
+        <version>1.1-SNAPSHOT</version>
+    </parent>
+
+
+    <groupId>org.kevoree.extra</groupId>
+    <artifactId>org.kevoree.extra.fota.native.nix64</artifactId>
+    <version>1.1-SNAPSHOT</version>
+
+    <name>native NIX64</name>
+
+    <packaging>so</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.fota.api</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <!--  trigger javah -->
+                    <javahOS>linux</javahOS>
+
+                    <compilerProvider>generic-classic</compilerProvider>
+
+                    <compilerExecutable>cc</compilerExecutable>
+                    <linkerExecutable>cc</linkerExecutable>
+
+                    <sources>
+                        <source>
+                            <directory>../src/main/c</directory>
+                            <fileNames>
+                                <fileName>fota.c</fileName>
+                                <fileName>native.c</fileName>
+                            </fileNames>
+                        </source>
+                    </sources>
+
+                    <linkerEndOptions>
+                        <linkerEndOption> -lpthread</linkerEndOption>
+                    </linkerEndOptions>
+                    <linkerStartOptions>
+                        <linkerStartOption>-shared</linkerStartOption>
+                    </linkerStartOptions>
+
+                </configuration>
+
+
+                <executions>
+                    <execution>
+                        <id>javah</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <javahOS>linux</javahOS>
+                            <javahProvider>default</javahProvider>
+                            <javahOutputDirectory>${project.build.directory}/custom-javah</javahOutputDirectory>
+                            <workingDirectory>${basedir}</workingDirectory>
+                            <javahOutputFileName>nativelib.h</javahOutputFileName>
+                            <javahClassNames>
+                                <javahClassName>org.kevoree.fota.Nativelib</javahClassName>
+                            </javahClassNames>
+                        </configuration>
+                        <goals>
+                            <goal>javah</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
