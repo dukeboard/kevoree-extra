@@ -39,10 +39,6 @@
                     <name>Linux</name>
                     <arch>x86</arch>
                 </os>
-                <property>
-                    <name>sun.arch.data.model</name>
-                    <value>32</value>
-                </property>
             </activation>
             <modules>
                 <module>nix32</module>
@@ -57,10 +53,6 @@
                     <name>Linux</name>
                     <arch>x64</arch>
                 </os>
-                <property>
-                    <name>sun.arch.data.model</name>
-                    <value>64</value>
-                </property>
             </activation>
             <modules>
                 <module>nix64</module>
