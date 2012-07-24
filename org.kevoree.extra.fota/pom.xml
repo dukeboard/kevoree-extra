@@ -6,6 +6,13 @@
   <version>1.1-SNAPSHOT</version>
   <name>Fota root</name>
 
+    <parent>
+        <artifactId>org.kevoree.extra.root</artifactId>
+        <groupId>org.kevoree.extra</groupId>
+        <version>1.0</version>
+        <relativePath>../org.kevoree.extra.root/pom.xml</relativePath>
+    </parent>
+
   <packaging>pom</packaging>
   <modules>
     <module>org.kevoree.fota.api</module>
@@ -23,54 +30,5 @@
     </pluginManagement>
   </build>
 
-
-    <repositories>
-        <repository>
-            <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/release</url>
-        </repository>
-        <repository>
-            <id>kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
-        </repository>
-        <repository>
-            <id>kevoree-libs-release-local-daum</id>
-            <url>http://maven.kevoree.org/daum/release</url>
-        </repository>
-        <repository>
-            <id>daum-snapshots</id>
-            <url>http://maven.kevoree.org/daum/snapshots</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>plugin.kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>plugin.daum-github</id>
-            <url>http://maven.kevoree.org/daum/release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>plugin.daum-snapshots</id>
-            <url>http://maven.kevoree.org/daum/snapshots</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <id>maven2.daumdeploy.release</id>
-            <url>http://maven.kevoree.org/archiva/repository/daum/release</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven2.daumdeploy.snapshots</id>
-            <url>http://maven.kevoree.org/archiva/repository/daum/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>
