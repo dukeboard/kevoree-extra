@@ -15,6 +15,15 @@
 
     <packaging>so</packaging>
 
+    <properties>
+        <platform>osx</platform>
+        <platform.jdk.include.dir>${java.home}/include</platform.jdk.include.dir>
+        <platform.javahOS>macosx</platform.javahOS>
+        <platform.define>__DARWIN__</platform.define>
+        <platform.shlib>dylib</platform.shlib>
+        <platform.jni>jnilib</platform.jni>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kevoree.extra</groupId>
@@ -49,6 +58,9 @@
 
                     <sources>
                         <source>
+                            <directory>${platform.jdk.include.dir}</directory>
+                        </source>
+                        <source>
                             <directory>../src/main/c</directory>
                             <fileNames>
                                 <fileName>fota.c</fileName>
@@ -57,11 +69,9 @@
                         </source>
                     </sources>
 
-                    <linkerEndOptions>
-                        <linkerEndOption> -lpthread</linkerEndOption>
-                    </linkerEndOptions>
+
                     <linkerStartOptions>
-                        <linkerStartOption>-shared</linkerStartOption>
+                        <linkerStartOption> -shared -fPIC -Wl -lpthread </linkerStartOption>
                     </linkerStartOptions>
 
                 </configuration>

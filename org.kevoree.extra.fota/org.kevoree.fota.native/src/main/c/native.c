@@ -71,7 +71,7 @@ JNIEXPORT jboolean JNICALL Java_org_kevoree_fota_Nativelib_register  (JNIEnv *en
             g_mid = (*env)->GetMethodID(env,g_clazz, "dispatchEvent", "(I)V");
             if (g_mid == NULL)
              {
-              printf( "Unable to get method ref \~");
+              printf( "Unable to get method ref");
 
              }
              return (jboolean)0;
