@@ -50,6 +50,7 @@
                                     <outputDirectory>src/main/resources/nix32</outputDirectory>
                                     <destFileName>native.so</destFileName>
                                 </artifactItem>
+                                <!--
                                 <artifactItem>
                                     <groupId>org.kevoree.extra</groupId>
                                     <artifactId>org.kevoree.extra.fota.native.osx</artifactId>
@@ -58,7 +59,7 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>src/main/resources/osx</outputDirectory>
                                     <destFileName>native.so</destFileName>
-                                </artifactItem>
+                                </artifactItem>   -->
                                 <artifactItem>
                                     <groupId>org.kevoree.extra</groupId>
                                     <artifactId>org.kevoree.extra.fota.native.nix64</artifactId>
