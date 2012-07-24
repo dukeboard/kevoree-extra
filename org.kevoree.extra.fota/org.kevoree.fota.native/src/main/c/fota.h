@@ -69,6 +69,8 @@ typedef struct _target
  unsigned char *intel_hex_array;
 } Target;
 
+int parseHex(char h,char l);
+int HexToDec (char *str);
 struct file_buffer_t *readFile (const char *filename);
 void *flash_firmware(Target *targ);
 unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_hex_intel);
