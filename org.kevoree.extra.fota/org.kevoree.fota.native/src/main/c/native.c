@@ -89,12 +89,17 @@ JNIEXPORT jint JNICALL Java_org_kevoree_fota_Nativelib_write_1on_1the_1air_1prog
    // convert
   const char *n_device = (*env)->GetStringUTFChars(env, device, 0);
   const char *filename = (*env)->GetStringUTFChars(env, path, 0);
+  //printf("Openning %s %s \n",n_device,filename);
   file = readFile ((const char*)filename);
   if (!file)
   {
      return FAIL_OPEN_FILE;
   }
-   return write_on_the_air_program(n_device,target,file->length,file->data);
+ //   printf("SIZE %d octets\n",file->length);
+  int rt =write_on_the_air_program(n_device,target,file->length,file->data);
+
+
+   return  rt;
 }
 
 

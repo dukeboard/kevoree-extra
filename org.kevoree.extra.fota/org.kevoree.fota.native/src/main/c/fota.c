@@ -461,6 +461,7 @@ int write_on_the_air_program(char *port_device,int target,int taille,unsigned ch
     }
 
 
+
     *quitter =ALIVE;
 
  RESTART:
@@ -481,13 +482,13 @@ int write_on_the_air_program(char *port_device,int target,int taille,unsigned ch
     do
     {
         boot_flag =  serialport_readbyte(fd);
-       // FlashEvent(EVENT_WAITING_BOOTLOADER);
+        FlashEvent(EVENT_WAITING_BOOTLOADER);
         usleep(1000);
     }while( boot_flag !=BOOTLOADER_STARTED && *quitter == ALIVE);
 
     if(serialport_writebyte(fd,BOOT_INTO_BOOTLOADER_FLAG) < 0)
     {
-     //   FlashEvent(ERROR_WRITE);
+        FlashEvent(ERROR_WRITE);
     }
     boot_flag =  serialport_readbyte(fd);
     if(boot_flag == BOOTLOADER_STARTED )

@@ -38,11 +38,12 @@ public class Fota implements IFota {
                 deviceport = Helpers.getPortIdentifiers().get(0);
             }
         }
+
+        this.deviceport = deviceport;
+        this.devicetype = Integer.parseInt(Constants.boards.get(type.toString()).toString());
         nativelib = new Nativelib(this);
         // register callback
         nativelib.register();
-        this.deviceport = deviceport;
-        this.devicetype = Integer.parseInt(Constants.boards.get(type.toString()).toString());
     }
 
     /**
@@ -74,7 +75,9 @@ public class Fota implements IFota {
     @Override
     public void close()
     {
+        finished =true;
         nativelib.close_flash();
+        nativelib= null;
     }
 
     public void fireFlashEvent (FotaEvent evt)
@@ -101,16 +104,16 @@ public class Fota implements IFota {
         {
             finished=false;
             start= System.currentTimeMillis();
-
             program_size = nativelib.write_on_the_air_program(deviceport,devicetype,path_hex_array);
-
             if(program_size < 0)
             {
+                System.out.println("ici");
                 throw new FotaException("Empty");
             }
         }catch (Exception e)
         {
             System.out.print("upload "+e);
+
         }
     }
 

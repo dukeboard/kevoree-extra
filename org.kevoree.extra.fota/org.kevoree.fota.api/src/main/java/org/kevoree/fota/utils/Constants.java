@@ -17,14 +17,24 @@ public final class Constants {
     public final static String programmerType[] = {"usbtiny"};
 
 
-
-    public final static int FINISH=3;
-    public final static int OK=0;
-    public final static int EVENT_WAITING_BOOTLOADER=2;
-    public final static int ERROR_WRITE=-2;
-    public final static int ERROR_READ=-3;
-    public final static int RE_SEND_EVENT=4;
-
+    public final static char BOOTLOADER_SAVE_FLAG= 'S'       ;
+    public final static char READY_BOOTLOADER_FLAG ='T'        ;
+    public final static int ALIVE= 0    ;
+    public final static int RE_SEND_FLAG= 7  ;
+    public final static int OK =0      ;
+    public final static int ERROR =-1     ;
+    public final static int ERROR_WRITE =-2   ;
+    public final static int ERROR_READ= -3    ;
+    public final static int FD_DISCONNECTED =-10    ;
+    public final static int ERROR_NOT_ENOUGH_FLASH =-11        ;
+    public final static int FAIL_TO_BOOT_INTO_BOOTLOADER= -12  ;
+    public final static int FAIL_OPEN_FILE= -13  ;
+    public final static int EXIT= 1                         ;
+    public final static int EVENT_WAITING_BOOTLOADER =2   ;
+    public final static int FINISH= 3          ;
+    public final static int RE_SEND_EVENT= 4    ;
+    public final static int BOOTLOADER_STARTED= 5   ;
+    public final static int BOOT_INTO_BOOTLOADER_FLAG= 6 ;
 
     public final static Map messages= new HashMap() {
         {

@@ -61,7 +61,7 @@
                         <linkerEndOption> -lpthread</linkerEndOption>
                     </linkerEndOptions>
                     <linkerStartOptions>
-                        <linkerStartOption>-shared</linkerStartOption>
+                        <linkerStartOption>-shared -static -lc</linkerStartOption>
                     </linkerStartOptions>
 
                 </configuration>
@@ -89,17 +89,18 @@
 
             </plugin>
 
-           <!--
+           <!--                 -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>install</phase>
                         <configuration>
                             <tasks>
-                                <copy todir="${project.build.directory}/custom-javah">
-                                    <fileset file="${project.build.directory}/eu.powet.fota.native.nux32.so"/>
+                                <copy tofile="../../org.kevoree.fota.api/src/main/resources/nix32/native.so">
+                                    <fileset file="${project.build.directory}/org.kevoree.extra.fota.native.nix32.so"/>
                                 </copy>
+
                             </tasks>
                         </configuration>
                         <goals>
@@ -109,7 +110,7 @@
                 </executions>
             </plugin>
 
-                    -->
+
         </plugins>
     </build>
 </project>
