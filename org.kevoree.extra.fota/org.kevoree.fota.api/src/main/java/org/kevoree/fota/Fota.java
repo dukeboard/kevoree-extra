@@ -5,6 +5,7 @@ import org.kevoree.fota.api.FotaEventListener;
 import org.kevoree.fota.api.IFota;
 import org.kevoree.fota.events.FotaEvent;
 import org.kevoree.fota.events.UploadedFotaEvent;
+import org.kevoree.fota.events.WaitingBLFotaEvent;
 import org.kevoree.fota.utils.Board;
 import org.kevoree.fota.utils.Constants;
 import org.kevoree.fota.utils.FotaException;
@@ -29,6 +30,8 @@ public class Fota implements IFota {
     private Nativelib nativelib;
     private boolean  finished=false;
     private double timeout=0;
+     private Thread monitoringprogress;
+
     public Fota(String deviceport,Board type) throws FotaException
     {
         if(deviceport.equals("*"))
@@ -77,7 +80,6 @@ public class Fota implements IFota {
     {
         finished =true;
         nativelib.close_flash();
-        nativelib= null;
     }
 
     public void fireFlashEvent (FotaEvent evt)
@@ -90,7 +92,10 @@ public class Fota implements IFota {
                 ((FotaEventListener) listeners[i + 1]).completedEvent(evt);
                 finished=true;
             }
-            else
+            else if(evt instanceof WaitingBLFotaEvent)
+            {
+                // todo
+            }else
             {
                 ((FotaEventListener) listeners[i + 1]).progressEvent(evt);
             }
@@ -107,13 +112,11 @@ public class Fota implements IFota {
             program_size = nativelib.write_on_the_air_program(deviceport,devicetype,path_hex_array);
             if(program_size < 0)
             {
-                System.out.println("ici");
-                throw new FotaException("Empty");
+                throw new FotaException("The hex file is empty "+path_hex_array);
             }
         }catch (Exception e)
         {
             System.out.print("upload "+e);
-
         }
     }
 
@@ -130,6 +133,7 @@ public class Fota implements IFota {
     public long getDuree() {
         return       (  duree = System.currentTimeMillis() - start)  / 1000;
     }
+
 
 
 }

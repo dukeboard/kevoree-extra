@@ -17,6 +17,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
 
 
+
         try
         {
             Fota fota = new Fota("*", Board.ATMEGA328);

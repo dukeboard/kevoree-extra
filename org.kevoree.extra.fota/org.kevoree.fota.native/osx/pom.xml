@@ -97,6 +97,27 @@
                     </execution>
                 </executions>
 
+
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <phase>install</phase>
+                            <configuration>
+                                <tasks>
+                                    <copy tofile="../../org.kevoree.fota.api/src/main/resources/osx/native.so">
+                                        <fileset file="${project.build.directory}/org.kevoree.extra.fota.native.osx.so"/>
+                                    </copy>
+
+                                </tasks>
+                            </configuration>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
             </plugin>
 
         </plugins>

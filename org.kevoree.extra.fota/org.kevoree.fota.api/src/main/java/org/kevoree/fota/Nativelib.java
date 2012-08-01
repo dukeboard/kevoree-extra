@@ -14,6 +14,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.EventObject;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,15 +31,14 @@ public class Nativelib extends EventObject implements FotaEvent {
     public native int write_on_the_air_program(String port_device,int target,String path_hex_file);
     public native boolean register();
     public native void close_flash();
-
     private Fota fota;
-    private int size_uploaded;
-
+    private int size_uploaded=-1;
+    private double last_progress=0;
 
     public Nativelib(Fota o) throws FotaException {
         super(o);
         fota = o;
-       // configureCL();
+        configureCL();
     }
     /**
      * method call from JNI C
@@ -54,7 +54,7 @@ public class Nativelib extends EventObject implements FotaEvent {
                 fota.close();
             } else if(evt ==  Constants.RE_SEND_EVENT)
             {
-                logger.warn("RE_SEND_EVENT ");
+                logger.debug("RE_SEND_EVENT ");
             }else if(evt ==  Constants.FAIL_OPEN_FILE)
             {
                 System.out.println("FAIL_OPEN_FILE ");
@@ -71,7 +71,20 @@ public class Nativelib extends EventObject implements FotaEvent {
             }
             else if(evt > 0)
             {
+                if(evt > size_uploaded)
+                {
+                    last_progress = System.currentTimeMillis();
+                }
+
+                double duree = ( System.currentTimeMillis() - last_progress)  / 1000;
+
+                if(duree> 2)
+                {
+                    logger.error("The bootloader is not responding");
+                    fota.close();
+                }
                 this.size_uploaded = evt;
+
                 fota.fireFlashEvent(this);
             }
         }catch (FotaException e)
@@ -125,7 +138,7 @@ public class Nativelib extends EventObject implements FotaEvent {
         usrPathsField.set(null, newPaths);
     }
 
-    public  static String configureCL()
+    public static String configureCL()
     {
         try
         {
@@ -136,16 +149,20 @@ public class Nativelib extends EventObject implements FotaEvent {
             }
             folder.mkdirs();
 
-               addLibraryPath(folder.getAbsolutePath());
-            String absolutePath = copyFileFromStream(getPath("native.so"), folder.getAbsolutePath(), "libnative" + getExtension());
+            addLibraryPath(folder.getAbsolutePath());
+            //http://developer.android.com/guide/practices/jni.html
+            //http://phani-bandanakanti.blogspot.fr/
+            // load the librairy with a different name - Bad approach :-)
+            String r = ""+new Random().nextInt(800);
+            String absolutePath = copyFileFromStream(getPath("native.so"), folder.getAbsolutePath(),"libnative"+r+""+ getExtension());
 
-         //   System.load(absolutePath);
-              return absolutePath;
+            System.loadLibrary("native"+r);
+
+            return absolutePath;
         } catch (Exception e) {
-               e.printStackTrace();
-            return null;
+            e.printStackTrace();
+            return  null;
         }
-
     }
 
 

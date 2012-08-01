@@ -394,12 +394,11 @@ void *flash_firmware(Target *infos)
         {
             FlashEvent(ERROR_WRITE);
         }
-
-
-    close_flash();
-
-    FlashEvent(FINISH);
-
+        if(*quitter == ALIVE)
+        {
+               FlashEvent(FINISH);
+        }
+        close_flash();
       /*
     if(infos != NULL)
         free(infos);  */
