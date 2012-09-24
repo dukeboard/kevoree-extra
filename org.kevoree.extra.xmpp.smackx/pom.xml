@@ -7,8 +7,8 @@
     <artifactId>smackx</artifactId>
     <groupId>org.kevoree.extra.xmpp.lib</groupId>
     <version>3.2.2</version>
-    <packaging>bundle</packaging>
     <name>Kevoree :: Extra :: Xmpp :: Lib :: Smackx</name>
+    <packaging>bundle</packaging>
     <description>
         This bundle simply wraps ${project.artifactId}-${project.version}.jar.
     </description>
@@ -19,7 +19,7 @@
             <artifactId>smackx</artifactId>
             <version>3.2.2</version>
             <scope>system</scope>
-            <systemPath>/Users/gregory.nain/Sources/kevoree-extra/org.kevoree.extra.xmpp.smackx/smackx.jar</systemPath>
+            <systemPath>${basedir}/smackx.jar</systemPath>
         </dependency>
     </dependencies>
 
