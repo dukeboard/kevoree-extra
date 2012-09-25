@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>smack</artifactId>
+    <groupId>org.kevoree.extra.xmpp.lib</groupId>
+    <version>3.2.2</version>
+    <name>Kevoree :: Extra :: Xmpp :: Lib :: Smack</name>
+    <packaging>bundle</packaging>
+    <description>
+        This bundle simply wraps ${project.artifactId}-${project.version}.jar.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>jivesoftware</groupId>
+            <artifactId>smack</artifactId>
+            <version>3.2.2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/smack.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>2.3.5</version>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.jivesoftware.smack,org.jivesoftware.smack.*,org.xmlpull.*</Export-Package>
+                        <!--Import-Package>!org.jivesoftware.smack.*,!org.xmlpull.*,*</Import-Package-->
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+<distributionManagement>
+        <repository>
+            <id>maven2.kevoree.release</id>
+            <url>http://maven.kevoree.org/archiva/repository/release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven2.kevoree.snapshots</id>
+            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

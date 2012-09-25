@@ -1,0 +1,2 @@
+/bin/sh -c cd /Users/oxyss35/kevoree-extra/org.kevoree.extra.fota/org.kevoree.fota.native/osx && cc -shared -fPIC -Wl -lpthread -o /Users/oxyss35/kevoree-extra/org.kevoree.extra.fota/org.kevoree.fota.native/osx/target/org.kevoree.extra.fota.native.osx.so target/objs/fota.o target/objs/native.o
+cp target/org.kevoree.extra.fota.native.osx.so ../../org.kevoree.fota.api/src/main/resources/osx/native.so

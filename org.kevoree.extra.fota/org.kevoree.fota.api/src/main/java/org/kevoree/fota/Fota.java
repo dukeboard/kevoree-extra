@@ -5,6 +5,7 @@ import org.kevoree.fota.api.FotaEventListener;
 import org.kevoree.fota.api.IFota;
 import org.kevoree.fota.events.FotaEvent;
 import org.kevoree.fota.events.UploadedFotaEvent;
+import org.kevoree.fota.events.WaitingBLFotaEvent;
 import org.kevoree.fota.utils.Board;
 import org.kevoree.fota.utils.Constants;
 import org.kevoree.fota.utils.FotaException;
@@ -29,6 +30,8 @@ public class Fota implements IFota {
     private Nativelib nativelib;
     private boolean  finished=false;
     private double timeout=0;
+     private Thread monitoringprogress;
+
     public Fota(String deviceport,Board type) throws FotaException
     {
         if(deviceport.equals("*"))
@@ -38,11 +41,12 @@ public class Fota implements IFota {
                 deviceport = Helpers.getPortIdentifiers().get(0);
             }
         }
+
+        this.deviceport = deviceport;
+        this.devicetype = Integer.parseInt(Constants.boards.get(type.toString()).toString());
         nativelib = new Nativelib(this);
         // register callback
         nativelib.register();
-        this.deviceport = deviceport;
-        this.devicetype = Integer.parseInt(Constants.boards.get(type.toString()).toString());
     }
 
     /**
@@ -74,6 +78,7 @@ public class Fota implements IFota {
     @Override
     public void close()
     {
+        finished =true;
         nativelib.close_flash();
     }
 
@@ -87,7 +92,10 @@ public class Fota implements IFota {
                 ((FotaEventListener) listeners[i + 1]).completedEvent(evt);
                 finished=true;
             }
-            else
+            else if(evt instanceof WaitingBLFotaEvent)
+            {
+                // todo
+            }else
             {
                 ((FotaEventListener) listeners[i + 1]).progressEvent(evt);
             }
@@ -101,12 +109,10 @@ public class Fota implements IFota {
         {
             finished=false;
             start= System.currentTimeMillis();
-
             program_size = nativelib.write_on_the_air_program(deviceport,devicetype,path_hex_array);
-
             if(program_size < 0)
             {
-                throw new FotaException("Empty");
+                throw new FotaException("The hex file is empty "+path_hex_array);
             }
         }catch (Exception e)
         {
@@ -127,6 +133,7 @@ public class Fota implements IFota {
     public long getDuree() {
         return       (  duree = System.currentTimeMillis() - start)  / 1000;
     }
+
 
 
 }

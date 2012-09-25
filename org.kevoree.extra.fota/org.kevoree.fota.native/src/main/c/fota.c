@@ -10,6 +10,56 @@
 
 #define _POSIX_SOURCE 1 /* POSIX compliant source */
 
+struct file_buffer_t *readFile (const char *filename)
+{
+  static struct file_buffer_t *file;
+  FILE *fp;
+
+  /* Open file */
+  fp = fopen (filename, "rb");
+  if (!fp)
+    {
+      fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
+      return NULL;
+    }
+
+  /* Create a file buffer */
+  file = (struct file_buffer_t *)
+    malloc (sizeof (struct  file_buffer_t));
+  if (!file)
+    {
+      fprintf (stderr, "Error: memory allocation failed "
+	       "for \"%s\"\n", filename);
+      fclose (fp);
+      return NULL;
+    }
+
+  /* Copy file name */
+  strncpy (file->name, filename, sizeof (file->name));
+
+  /* Get file length */
+  fseek (fp, 0, SEEK_END);
+  file->length = ftell (fp);
+  file->offset = 0;
+  fseek (fp, 0, SEEK_SET);
+
+  /* Allocate memory for file data */
+  file->data = (unsigned char *)malloc (file->length);
+  if (!file->data)
+    {
+      fprintf (stderr, "Error: memory allocation failed "
+	       "for \"%s\"\n", filename);
+      fclose (fp);
+      free (file);
+      return NULL;
+    }
+
+  /* Read whole file data */
+  fread (file->data, 1, file->length, fp);
+  fclose (fp);
+
+  return file;
+}
 
 // EVENTS
 
@@ -23,16 +73,11 @@
  */
 static int fd =0;
 int shmid;
+
 // memory shared
 static int *quitter;
 
-
 void (*FlashEvent) (int evt);
-
-
-
-
-
 
 /**
  *  Assign function
@@ -43,55 +88,6 @@ int register_FlashEvent( void* fn){
     return 0;
 };
 
-
-int open_file(char *path,unsigned char *hex_intel){
-
-    FILE* file = NULL;
-    int ptr = 0;
-    int i=0;
-    file = fopen(path, "r");
-
-    if (file != NULL)
-    {
-        ptr = fgetc(file);
-
-        while (ptr != EOF)
-        {
-            hex_intel[i]= ptr;
-            ptr = fgetc(file);
-            i++;
-        }
-
-        fclose(file);
-    }
-
-    return i;
-
-}
-
-
-int HexToDec (char *str)
-{
-  int value;
-  if (sscanf (str, "%x", &value) == 1)
-    {
-      return value;
-    }
-  else
-    {
-      return ERROR;
-    }
-}
-
-
-int parseHex(char h,char l)
-{
-    static unsigned char buffer[2];
-    memset(buffer,0,sizeof(buffer));
-    buffer[0] = h;
-    buffer[1] = l;
-    return HexToDec(&buffer[0]);;
-}
 
 unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_hex_intel)
 {
@@ -215,7 +211,6 @@ void close_flash()
     }
      close(fd);
 }
-
 
 void *flash_firmware(Target *infos)
 {
@@ -399,15 +394,14 @@ void *flash_firmware(Target *infos)
         {
             FlashEvent(ERROR_WRITE);
         }
-
-
-    close_flash();
-
-    FlashEvent(FINISH);
-
-
+        if(*quitter == ALIVE)
+        {
+               FlashEvent(FINISH);
+        }
+        close_flash();
+      /*
     if(infos != NULL)
-        free(infos);
+        free(infos);  */
 
 
 
@@ -466,6 +460,7 @@ int write_on_the_air_program(char *port_device,int target,int taille,unsigned ch
     }
 
 
+
     *quitter =ALIVE;
 
  RESTART:
@@ -486,21 +481,21 @@ int write_on_the_air_program(char *port_device,int target,int taille,unsigned ch
     do
     {
         boot_flag =  serialport_readbyte(fd);
-       // FlashEvent(EVENT_WAITING_BOOTLOADER);
+        FlashEvent(EVENT_WAITING_BOOTLOADER);
         usleep(1000);
     }while( boot_flag !=BOOTLOADER_STARTED && *quitter == ALIVE);
 
     if(serialport_writebyte(fd,BOOT_INTO_BOOTLOADER_FLAG) < 0)
     {
-     //   FlashEvent(ERROR_WRITE);
+        FlashEvent(ERROR_WRITE);
     }
     boot_flag =  serialport_readbyte(fd);
     if(boot_flag == BOOTLOADER_STARTED )
     {
         close(fd);
-        usleep(1000);
+        usleep(2000);
         tentative++;
-        if(tentative > 5)
+        if(tentative > 10)
         {
              // return FAIL_TO_BOOT_INTO_BOOTLOADER;
         }
@@ -513,6 +508,29 @@ int write_on_the_air_program(char *port_device,int target,int taille,unsigned ch
     }
 
     return mytarget->last_memory_address;
+}
+
+int HexToDec (char *str)
+{
+  int value;
+  if (sscanf (str, "%x", &value) == 1)
+    {
+      return value;
+    }
+  else
+    {
+      return ERROR;
+    }
+}
+
+
+int parseHex(char h,char l)
+{
+    static unsigned char buffer[2];
+    memset(buffer,0,sizeof(buffer));
+    buffer[0] = h;
+    buffer[1] = l;
+    return HexToDec(&buffer[0]);;
 }
 
 uint8_t  serialport_readbyte( int fd)

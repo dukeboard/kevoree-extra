@@ -7,7 +7,7 @@
 
 
 
-#define JED_IPC_PRIVATE 240118281
+#define JED_IPC_PRIVATE 5185181
 
 #define BOOTLOADER_SAVE_FLAG 'S'
 #define READY_BOOTLOADER_FLAG 'T'
@@ -20,6 +20,7 @@
 #define FD_DISCONNECTED -10
 #define ERROR_NOT_ENOUGH_FLASH -11
 #define FAIL_TO_BOOT_INTO_BOOTLOADER -12
+#define FAIL_OPEN_FILE -13
 #define EXIT 1
 #define EVENT_WAITING_BOOTLOADER 2
 #define FINISH 3
@@ -49,6 +50,14 @@
 #define ATMEGA1280 1
 #define ATMEGA168 2
 
+struct file_buffer_t
+{
+  char name[256];
+  unsigned char *data;
+  long length;
+  long offset;
+};
+
 typedef struct _target
 {
  char port_device[MAX_SIZE_DEVICE_NAME];
@@ -60,7 +69,9 @@ typedef struct _target
  unsigned char *intel_hex_array;
 } Target;
 
-
+int parseHex(char h,char l);
+int HexToDec (char *str);
+struct file_buffer_t *readFile (const char *filename);
 void *flash_firmware(Target *targ);
 unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_hex_intel);
 int serialport_writebyte( int fd, char b);

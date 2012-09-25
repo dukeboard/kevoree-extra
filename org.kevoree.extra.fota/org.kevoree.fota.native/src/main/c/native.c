@@ -71,7 +71,7 @@ JNIEXPORT jboolean JNICALL Java_org_kevoree_fota_Nativelib_register  (JNIEnv *en
             g_mid = (*env)->GetMethodID(env,g_clazz, "dispatchEvent", "(I)V");
             if (g_mid == NULL)
              {
-              printf( "Unable to get method ref \~");
+              printf( "Unable to get method ref");
 
              }
              return (jboolean)0;
@@ -85,47 +85,21 @@ JNIEXPORT void JNICALL Java_org_kevoree_fota_Nativelib_close_1flash(JNIEnv * env
 
 JNIEXPORT jint JNICALL Java_org_kevoree_fota_Nativelib_write_1on_1the_1air_1program  (JNIEnv *env, jobject obj, jstring device, jint target, jstring path)
 {
-    // convert
-   const char *n_device = (*env)->GetStringUTFChars(env, device, 0);
-  const char *n_hex_path = (*env)->GetStringUTFChars(env, path, 0);
+   struct file_buffer_t *file;
+   // convert
+  const char *n_device = (*env)->GetStringUTFChars(env, device, 0);
+  const char *filename = (*env)->GetStringUTFChars(env, path, 0);
+  //printf("Openning %s %s \n",n_device,filename);
+  file = readFile ((const char*)filename);
+  if (!file)
+  {
+     return FAIL_OPEN_FILE;
+  }
+ //   printf("SIZE %d octets\n",file->length);
+  int rt =write_on_the_air_program(n_device,target,file->length,file->data);
 
-  int size_array= 2048;
-  file_intel_hex_array = (unsigned char *)malloc(sizeof(char)*size_array);
-      FILE* file = NULL;
-      int ptr = 0;
-      int size=0;
-      file = fopen(n_hex_path, "r");
 
-      if (file != NULL)
-      {
-          ptr = fgetc(file);
-
-          while (ptr != EOF)
-          {
-              file_intel_hex_array[size]= ptr;
-              ptr = fgetc(file);
-              size++;
-              if(size > size_array)
-              {
-                  unsigned char * tmp;
-                  size_array = size_array*2;
-                  tmp = (unsigned char *)malloc(sizeof(char)*size_array);
-                   // copy
-                   int j=0;
-                   for(j=0;j<size;j++)
-                   {
-                        tmp[j] =    file_intel_hex_array[j];
-                   }
-                   free(file_intel_hex_array);
-                   file_intel_hex_array = tmp;
-              }
-          }
-
-          fclose(file);
-      }
-  //   printf("Native reading file %d octets target : {%d} board {%s}\n",size,target,n_device);
-
-   return write_on_the_air_program(n_device,target,size,file_intel_hex_array);
+   return  rt;
 }
 
 
