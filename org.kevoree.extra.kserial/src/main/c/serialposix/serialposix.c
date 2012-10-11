@@ -7,7 +7,7 @@
 
 ChangeLog:
 - fix concurrent JVM (open the same file descriptor)   27 juin 2012 jed
-
+- fix  trigger event on one byte                       11 octobre 2012 jed
  */
 
 #include <ctype.h>
@@ -25,7 +25,7 @@ ChangeLog:
 
 
 #define _POSIX_SOURCE 1 /* POSIX compliant source */
-#define VERSION 1.5
+#define VERSION 1.7
 #define JED_IPC_PRIVATE 24011950
 #define BUFFER_SIZE 512
 #define OK 0
@@ -34,7 +34,7 @@ ChangeLog:
 #define EXIT 1
 
 #define FD_DISCONNECTED -10
-
+#define NOP_READ_MAX 25
 #define CLOSED_THREAD_READER -11
 #define CLOSED_THREAD_MONITEUR -12
 
@@ -190,21 +190,24 @@ int serialport_read(int fd, char *ptr){
 	char b[1];
 	int i=0;
 	int n;
+	int nop_count=0;
 	do {
 		n = read(fd, b, 1);
 		if( n==-1) {
 			usleep( 100*1000 );
+			nop_count++;
 			continue;
 		}
 		if( n==0 ) {
 			usleep( 10 * 1000 );
+            nop_count++;
 			continue;
 		}
 		if(b[0] != 10){
 			ptr[i] = b[0];
 			i++;
 		}
-	} while( (b[0] != '\n') && (isAlive(search_device(current_device)) == ALIVE) && (i < BUFFER_SIZE)); /* detect finish and protect overflow*/
+	} while(((b[0] != '\n') && (isAlive(search_device(current_device)) == ALIVE) && (i < BUFFER_SIZE)) && (i > 0 &&  nop_count > NOP_READ_MAX)); /* detect finish and protect overflow*/
 
 	return i;
 }

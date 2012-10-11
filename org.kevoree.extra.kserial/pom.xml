@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.kserial</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.7</version>
     <name>Kevoree :: Extra :: KSerial</name>
 
     <dependencies>
