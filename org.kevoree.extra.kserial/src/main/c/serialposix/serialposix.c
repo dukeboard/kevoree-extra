@@ -34,7 +34,7 @@ ChangeLog:
 #define EXIT 1
 
 #define FD_DISCONNECTED -10
-#define NOP_READ_MAX 25
+#define NOP_READ_MAX 10
 #define CLOSED_THREAD_READER -11
 #define CLOSED_THREAD_MONITEUR -12
 
@@ -207,7 +207,7 @@ int serialport_read(int fd, char *ptr){
 			ptr[i] = b[0];
 			i++;
 		}
-	} while(((b[0] != '\n') && (isAlive(search_device(current_device)) == ALIVE) && (i < BUFFER_SIZE)) && (i > 0 &&  nop_count > NOP_READ_MAX)); /* detect finish and protect overflow*/
+	} while(((b[0] != '\n') && (isAlive(search_device(current_device)) == ALIVE) && (i < BUFFER_SIZE)) && (i > 0 &&  nop_count < NOP_READ_MAX)); /* detect finish and protect overflow*/
 
 	return i;
 }

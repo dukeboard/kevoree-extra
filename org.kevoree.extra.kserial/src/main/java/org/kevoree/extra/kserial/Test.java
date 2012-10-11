@@ -3,6 +3,9 @@ package org.kevoree.extra.kserial;
 import org.kevoree.extra.kserial.SerialPort.*;
 import org.kevoree.extra.kserial.Utils.KHelpers;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class Test {
 
 
@@ -13,6 +16,8 @@ public class Test {
         final SerialPort serial = new SerialPort("*", 19200);
         serial.open();
 
+        OutputStream outputStream = serial.getOutputStream();
+        InputStream inputStream = serial.getInputStream();
 
         serial.addEventListener(new SerialPortEventListener()
         {
@@ -35,9 +40,19 @@ public class Test {
 
                 System.out.println("Concurrent VM open serial port");
 
-
             }
         });
+        /*
+        int count = 0;
+        while (true)
+        {
+            String  msg = "HELLO "+count+"\n";
+            serial.write(msg.getBytes());
+            count++;
+        }
+        */
+
+        Thread.sleep(100000);
 
 
 

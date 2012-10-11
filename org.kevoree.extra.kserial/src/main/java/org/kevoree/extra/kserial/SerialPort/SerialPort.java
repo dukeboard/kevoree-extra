@@ -4,6 +4,8 @@ import com.sun.jna.Memory;
 import com.sun.jna.ptr.PointerByReference;
 import org.kevoree.extra.kserial.CommPort;
 import org.kevoree.extra.kserial.Constants;
+import org.kevoree.extra.kserial.SerialInputStream;
+import org.kevoree.extra.kserial.SerialOutputStream;
 import org.kevoree.extra.kserial.Utils.ByteFIFO;
 import org.kevoree.extra.kserial.Utils.KHelpers;
 import org.kevoree.extra.kserial.jna.NativeLoader;
@@ -23,14 +25,22 @@ import java.io.*;
 
 public class SerialPort extends CommPort {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private SerialPortEvent SerialPortEvent;
     protected javax.swing.event.EventListenerList listenerList = new javax.swing.event.EventListenerList();
     private boolean exit = false;
     private int sizefifo_out = 1024;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private int sizefifo_in = 1024;
     private ByteFIFO fifo_out = new ByteFIFO(sizefifo_out);
+    private	ByteFIFO fifo_in = new ByteFIFO(sizefifo_in);
+    private SerialOutputStream outputStream = null;
+    private SerialInputStream inputStream = null;
 
-    public SerialPort (String portname, int bitrate) throws Exception {
+    public SerialPort (String portname, int bitrate) throws Exception
+    {
+        outputStream =  new SerialOutputStream(this);
+        inputStream = new SerialInputStream(this);
 
         if(portname.equals("*"))
         {
@@ -97,7 +107,7 @@ public class SerialPort extends CommPort {
     }
 
 
-    private void send(byte [] bs) throws SerialPortException {
+    private void writeNative(byte[] bs) throws SerialPortException {
         Memory mem = new Memory(Byte.SIZE * bs.length + 1);
         mem.clear();
 
@@ -108,28 +118,47 @@ public class SerialPort extends CommPort {
         }
         byte c = '\n';
         inipar.getPointer().setByte((bs.length + 1) * Byte.SIZE / 8, c);
-        if (NativeLoader.getInstance().serialport_write(getFd(), inipar) != 0)
+        int rt =   NativeLoader.getInstance().serialport_write(getFd(), inipar);
+        if (rt != 0)
         {
             logger.error("Warning fail to write store " + bs.length);
-            //   storeData(bs);
-            throw new SerialPortException("The serial port is closed");
+            throw new SerialPortException("The serial port is closed "+getFd());
+        }
+    }
+
+
+    public void pending(int time){
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e1)
+        {
+            // ignore
+        }
+    }
+    @Override
+    public void write (byte[] bs) throws SerialPortException {
+        try
+        {
+            if(fifo_out.getSize() > 0)
+            {
+                flush();
+            }
+            writeNative(bs);
+        }   catch (Exception e)
+        {
+            storeData(bs);
+            logger.warn("Failed to write "+new String(bs)+" "+bs.length+" octects on "+this.getPort_name());
+            pending(500);
+            flush();
         }
     }
 
     @Override
-    public void write (byte[] bs) throws SerialPortException {
-        if (this.getFd() > 0)
+    public void flush() throws SerialPortException
+    {
+        if(fifo_out.getSize() > 0)
         {
-            if(fifo_out.getSize() > 0)
-            {
-                send(fifo_out.removeAll());
-            }
-            send(bs);
-        } else
-        {
-            logger.error("The program has failed write "+new String(bs)+" "+bs.length+" octects on "+this.getPort_name());
-            // storeData(bs);
-            throw new SerialPortException("The serial port is closed");
+            writeNative(fifo_out.removeAll());
         }
     }
 
@@ -137,6 +166,39 @@ public class SerialPort extends CommPort {
         String path_tmpdir = System.getProperty("java.io.tmpdir");
         String name =this.getPort_name().replace("/","");
         return path_tmpdir+"/"+name+"lock";
+    }
+
+    public ByteFIFO getFifo_out() {
+        return fifo_out;
+    }
+
+    public void setFifo_out(ByteFIFO fifo_out) {
+        this.fifo_out = fifo_out;
+    }
+
+    public ByteFIFO getFifo_in() {
+        return fifo_in;
+    }
+
+    public void setFifo_in(ByteFIFO fifo_in) {
+        this.fifo_in = fifo_in;
+    }
+
+
+    public int getSizefifo_out() {
+        return sizefifo_out;
+    }
+
+    public void setSizefifo_out(int sizefifo_out) {
+        this.sizefifo_out = sizefifo_out;
+    }
+
+    public int getSizefifo_in() {
+        return sizefifo_in;
+    }
+
+    public void setSizefifo_in(int sizefifo_in) {
+        this.sizefifo_in = sizefifo_in;
     }
 
     @Override
@@ -277,12 +339,29 @@ public class SerialPort extends CommPort {
             listenerList = null;
             SerialPortEvent =null;
             fifo_out = null;
-          // TODO 
+            // TODO
             Thread.sleep(2000);
             NativeLoader.destroy();
         } catch (Exception e) {
             // ignore
         }
+    }
+
+    @Override
+    public InputStream getInputStream() throws SerialPortException {
+        return inputStream;
+    }
+
+    @Override
+    public OutputStream getOutputStream() throws SerialPortException {
+        return outputStream;
+    }
+
+    @Override
+    public void write(byte b) throws SerialPortException {
+        byte[] array = new byte[2];
+        array[0] = b;
+        write(array);
     }
 
 }

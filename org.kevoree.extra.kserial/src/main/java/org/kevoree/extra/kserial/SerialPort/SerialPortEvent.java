@@ -8,6 +8,8 @@ import org.kevoree.extra.kserial.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.EventObject;
 
 /**
@@ -20,8 +22,6 @@ import java.util.EventObject;
 public class SerialPortEvent extends EventObject  implements SerialEvent {
 
     private static final long serialVersionUID = 1L;
-    private int sizefifo= 1024;
-    private	ByteFIFO fifo_in = new ByteFIFO(sizefifo);
     private SerialPort serialPort;
     private int pthreadid;
     private int monitorid;
@@ -73,16 +73,16 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
         {
             try
             {
-                if(fifo_in.free() < taille)
+                if(serialPort.getFifo_in().free() < taille)
                 {
                     // full create buffer larger
-                    sizefifo = sizefifo+512;
-                    ByteFIFO tmp = new ByteFIFO(sizefifo);
-                    tmp.add(fifo_in.removeAll());
-                    fifo_in = tmp;
+                      serialPort.setSizefifo_in(serialPort.getSizefifo_in()+512);
+                    ByteFIFO tmp = new ByteFIFO(serialPort.getSizefifo_in());
+                    tmp.add(serialPort.getFifo_in().removeAll());
+                    serialPort.setFifo_in(tmp);
                 }
 
-                fifo_in.add(data.getByteArray(0, taille));
+                serialPort.getFifo_in().add(data.getByteArray(0, taille));
                 serialPort.fireSerialEvent(this);
 
             } catch (InterruptedException e)
@@ -93,11 +93,15 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
 
     }
 
-
     public int getSize(){
-        return fifo_in.getSize();
+        return serialPort.getFifo_in().getSize();
     }
     public byte[] read(){
-        return fifo_in.removeAll();
+        return serialPort.getFifo_in().removeAll();
     }
+
+    public InputStream getInputStream() throws SerialPortException {
+        return serialPort.getInputStream();
+    }
+
 }
