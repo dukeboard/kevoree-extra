@@ -100,6 +100,13 @@ public class SerialPortEvent extends EventObject  implements SerialEvent {
         return serialPort.getFifo_in().removeAll();
     }
 
+
+    public  byte readByte() throws InterruptedException
+    {
+        return serialPort.getFifo_in().remove();
+    }
+
+
     public InputStream getInputStream() throws SerialPortException {
         return serialPort.getInputStream();
     }
