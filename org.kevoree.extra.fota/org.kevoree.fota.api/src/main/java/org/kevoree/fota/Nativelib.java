@@ -34,11 +34,16 @@ public class Nativelib extends EventObject implements FotaEvent {
     private Fota fota;
     private int size_uploaded=-1;
     private double last_progress=0;
+    private static boolean  loaded =true;
 
     public Nativelib(Fota o) throws FotaException {
         super(o);
         fota = o;
-        configureCL();
+        if(loaded){
+            configureCL();
+            loaded = false;
+        }
+
     }
     /**
      * method call from JNI C
@@ -138,7 +143,7 @@ public class Nativelib extends EventObject implements FotaEvent {
         usrPathsField.set(null, newPaths);
     }
 
-    public static String configureCL()
+    public String configureCL()
     {
         try
         {
@@ -149,14 +154,28 @@ public class Nativelib extends EventObject implements FotaEvent {
             }
             folder.mkdirs();
 
-            addLibraryPath(folder.getAbsolutePath());
+         //   addLibraryPath(folder.getAbsolutePath());
             //http://developer.android.com/guide/practices/jni.html
             //http://phani-bandanakanti.blogspot.fr/
             // load the librairy with a different name - Bad approach :-)
             String r = ""+new Random().nextInt(800);
             String absolutePath = copyFileFromStream(getPath("native.so"), folder.getAbsolutePath(),"libnative"+r+""+ getExtension());
 
-            System.loadLibrary("native"+r);
+            if(getClass().getClassLoader() instanceof KevoreeJarClassLoader){
+
+                KevoreeJarClassLoader  classLoader = (KevoreeJarClassLoader) getClass().getClassLoader();
+                classLoader.addNativeMapping("nativeWrapperFOTA",absolutePath);
+                ClassLoader current = Thread.currentThread().getContextClassLoader();
+                Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+                System.loadLibrary("nativeWrapperFOTA");
+                Thread.currentThread().setContextClassLoader(current);
+
+            } else
+            {
+                System.err.println("Failback on System global load");
+                System.load(absolutePath);
+            }
+
 
             return absolutePath;
         } catch (Exception e) {
