@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.kevoree.extra</groupId>
         <artifactId>org.kevoree.extra.fota</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.2</version>
+		<relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.fota.native</artifactId>
-    <version>1.1-SNAPSHOT</version>
-
+    <version>1.2</version>
 
     <name>native ROOT</name>
     <packaging>pom</packaging>
@@ -29,8 +29,7 @@
         <modules>
             <module>win32</module>
         </modules>
-    </profile>    -->
-
+		</profile>    -->
         <profile>
             <id>nix32</id>
             <activation>
@@ -44,7 +43,6 @@
                 <module>nix32</module>
             </modules>
         </profile>
-
         <profile>
             <id>nix64</id>
             <activation>
@@ -65,13 +63,10 @@
                     <family>mac</family>
                 </os>
             </activation>
-
-
             <modules>
                 <module>osx</module>
             </modules>
         </profile>
-
     </profiles>
 
 </project>
