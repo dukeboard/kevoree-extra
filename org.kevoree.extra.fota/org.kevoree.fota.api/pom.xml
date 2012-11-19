@@ -4,7 +4,8 @@
     <parent>
         <groupId>org.kevoree.extra</groupId>
         <artifactId>org.kevoree.extra.fota</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.2</version>
+		<relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.kevoree.extra</groupId>

@@ -4,12 +4,13 @@
     <parent>
         <groupId>org.kevoree.extra</groupId>
         <artifactId>org.kevoree.extra.fota.native</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.2</version>
+		<relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.fota.native.nix32</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2</version>
 
     <name>native NIX32</name>
 
@@ -19,7 +20,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.fota.api</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.2</version>
         </dependency>
     </dependencies>
 
