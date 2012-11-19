@@ -30,7 +30,7 @@ public class Fota implements IFota {
     private Nativelib nativelib;
     private boolean  finished=false;
     private double timeout=0;
-     private Thread monitoringprogress;
+    private Thread monitoringprogress;
 
     public Fota(String deviceport,Board type) throws FotaException
     {
@@ -80,6 +80,12 @@ public class Fota implements IFota {
     {
         finished =true;
         nativelib.close_flash();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e)
+        {
+            // ignore
+        }
     }
 
     public void fireFlashEvent (FotaEvent evt)

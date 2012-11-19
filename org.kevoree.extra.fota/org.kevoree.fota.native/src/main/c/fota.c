@@ -107,7 +107,7 @@ unsigned char * parse_intel_hex(int taille,int *last_memory, unsigned char *src_
     {
         destination_intel_hex_array[i] = 255; // FF
     }
-    // clean 
+    // clean
     memset(page,0,sizeof(page));
 
     // cleaning step
@@ -250,6 +250,13 @@ void *flash_firmware(Target *infos)
         break;
     }
 
+    if(infos->last_memory_address >flash_size )
+    {
+        fprintf(stderr,"The is size is too larger last address %d/%d \n",infos->last_memory_address,flash_size);
+
+        return ERROR;
+    }
+
          // create memory shared
          shmid = shmget(JED_IPC_PRIVATE,sizeof(int), 0666 | IPC_CREAT );
          if(shmid < 0)
@@ -272,6 +279,8 @@ void *flash_firmware(Target *infos)
                 FlashEvent(ERROR);
                 close_flash();
         }
+
+
 
         current_memory_address = 0;
 

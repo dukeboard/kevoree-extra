@@ -95,7 +95,7 @@ JNIEXPORT jint JNICALL Java_org_kevoree_fota_Nativelib_write_1on_1the_1air_1prog
   {
      return FAIL_OPEN_FILE;
   }
- //   printf("SIZE %d octets\n",file->length);
+    fprintf(stderr,"hex size %d octets\n",file->length);
   int rt =write_on_the_air_program(n_device,target,file->length,file->data);
 
 
