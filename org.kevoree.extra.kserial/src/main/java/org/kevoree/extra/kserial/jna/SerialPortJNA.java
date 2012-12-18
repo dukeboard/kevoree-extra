@@ -14,6 +14,7 @@ public interface SerialPortJNA extends Library
 	int register_SerialEvent(SerialEvent callback);
 	int reader_serial(int fd);
 	int serialport_write(int fd,PointerByReference inipar);
+    int serialport_writebyte(int fd,byte b);
 
     int verify_fd(String devicename);
 	int upload_program(int fd, Pointer hex_program);

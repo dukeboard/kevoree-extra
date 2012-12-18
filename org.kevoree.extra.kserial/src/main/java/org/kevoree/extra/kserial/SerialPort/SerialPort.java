@@ -107,6 +107,17 @@ public class SerialPort extends CommPort {
     }
 
 
+    public void writeBytes(byte[] byteArray) {
+        for(int i = 0 ; i < byteArray.length ; i++) {
+            writeByte(byteArray[i]);
+        }
+    }
+
+    public int writeByte(byte b) {
+       return NativeLoader.getInstance().serialport_writebyte(getFd(), b);
+    }
+
+
     private void writeNative(byte[] bs) throws SerialPortException {
         Memory mem = new Memory(Byte.SIZE * bs.length + 1);
         mem.clear();
