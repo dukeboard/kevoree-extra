@@ -107,10 +107,12 @@ public class SerialPort extends CommPort {
     }
 
 
-    public void writeBytes(byte[] byteArray) {
+    public int writeBytes(byte[] byteArray) {
+        int wrote = 0;
         for(int i = 0 ; i < byteArray.length ; i++) {
-            writeByte(byteArray[i]);
+            wrote += writeByte(byteArray[i]);
         }
+        return wrote;
     }
 
     public int writeByte(byte b) {

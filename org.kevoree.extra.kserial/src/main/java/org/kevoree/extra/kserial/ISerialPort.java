@@ -20,6 +20,8 @@ public interface ISerialPort
 
     public void write(byte b) throws SerialPortException;
     public void write(byte[] data) throws SerialPortException;
+    public int writeBytes(byte[] byteArray);
+    public int writeByte(byte b);
     public void flush() throws SerialPortException;
     public void addEventListener (SerialPortEventListener listener);
     public void removeEventListener (SerialPortEventListener listener);
