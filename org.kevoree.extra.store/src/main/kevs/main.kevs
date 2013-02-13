@@ -1,0 +1,20 @@
+//merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.api/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.spray/{kevoree.version}"
+merge "mvn:org.kevoree.extra/org.kevoree.extra.store/1.0.0-SNAPSHOT"
+
+
+addNode node0 : PJavaSENode {logLevel="DEBUG"}
+addComponent webSrv@node0 : SprayWebServer
+addComponent storeMainPage@node0 : StoreEntryPoint { urlpattern="/",folder='{basedir}/src/main/resources/', webSocketLocation="http://localhost:8093"}
+addChannel req : defMSG
+addChannel res : defMSG
+bind webSrv.handler@node0 => req
+bind storeMainPage.request@node0 => req
+bind storeMainPage.content@node0 => res
+bind webSrv.response@node0 => res
+
+addGroup sync : NanoRestGroup
+addToGroup sync node0

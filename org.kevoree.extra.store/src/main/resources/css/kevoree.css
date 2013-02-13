@@ -1,0 +1,77 @@
+html, body {
+    height: 100%;
+}
+body {
+    padding-top: 60px;
+}
+
+#main {
+    overflow: auto;
+    padding-bottom: 60px; /* this needs to be bigger than footer height*/
+}
+
+.wrapper {
+    min-height: 100%;
+}
+.push {
+    height: 80px;
+}
+
+.tutorial {
+    padding: 20px 40px;
+    line-height: 150%;
+}
+
+.footer {
+    /*
+    background: #FAFAFA url("{urlpattern}img/pattern/classy_fabric.png") repeat-x bottom left;
+    color: #777;
+    padding: 20px 20px 10px 20px;
+    box-shadow: inset 0 15px 10px rgba(0, 0, 0, 0.6);
+    -webkit-box-shadow: inset 0 15px 10px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: inset 0 15px 10px rgba(0, 0, 0, 0.6);  */
+
+    position: relative;
+    margin-top: -60px; /* negative value of footer height */
+    height: 60px;
+    background: #222;
+    color: #EEE;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    clear: both;
+    text-align: center;
+}
+
+.footer h3 {
+    text-transform: uppercase;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    line-height: 1.2em;
+    color: #626262;
+}
+
+
+.footer img {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin: 0 2px;
+}
+
+
+.hero-unit h1 {
+    margin-bottom: 0;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -1px;
+    color: inherit;
+}
+
+.hero-unit p {
+    font-size: 16px;
+    font-weight: 200;
+    line-height: 28px;
+    color: inherit;
+}
