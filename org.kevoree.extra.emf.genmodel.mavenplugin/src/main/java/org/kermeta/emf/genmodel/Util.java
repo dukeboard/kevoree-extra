@@ -13,10 +13,7 @@ import java.util.Collections;
 import org.apache.maven.plugin.logging.Log;
 import org.eclipse.emf.codegen.ecore.generator.Generator;
 import org.eclipse.emf.codegen.ecore.generator.GeneratorAdapterFactory;
-import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
-import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory;
-import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage;
-import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
+import org.eclipse.emf.codegen.ecore.genmodel.*;
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter;
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenModelGeneratorAdapterFactory;
 import org.eclipse.emf.common.util.BasicMonitor;
@@ -76,7 +73,12 @@ public class Util {
 
         } else {
             if (genmodel == null) {
-                genmodel = new File("outputfileName");
+                try {
+                    genmodel = File.createTempFile("/tmp",ecore.getName() + ".genmodel");
+
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             }
 
             URI genModelURI = URI.createFileURI(genmodel.getAbsolutePath());
@@ -86,6 +88,7 @@ public class Util {
             genModelResource.getContents().add(genModelModel);
             resourceSet.getResources().add(genModelResource);
             genModelModel.setModelDirectory("/" + outputfileName);
+            genModelModel.setComplianceLevel(GenJDKLevel.JDK60_LITERAL);
             genModelModel.getForeignModel().add(ecore.getAbsolutePath());
             genModelModel.initialize(Collections.singleton(ePackage));
             genModelModel.setModelName(genModelURI.trimFileExtension().lastSegment());
