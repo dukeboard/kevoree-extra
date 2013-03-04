@@ -5,7 +5,7 @@
     <groupId>org.kevoree.extra</groupId>
     <artifactId>org.kevoree.extra.emf.genmodel.mavenplugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>2.7.1</version>
+    <version>2.7.3</version>
     <name>Kevoree :: Extra :: GenModelPlugin</name>
 
     <parent>
