@@ -52,6 +52,7 @@
         <module>../org.kevoree.extra.kserial</module>
         <module>../org.kevoree.extra.freePastry</module>
         <module>../org.kevoree.extra.voldemort</module>
+        <module>../org.kevoree.extra.java_websocket</module>
     </modules>
 
     <distributionManagement>
