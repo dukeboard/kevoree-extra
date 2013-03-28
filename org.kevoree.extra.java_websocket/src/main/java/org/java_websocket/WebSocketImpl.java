@@ -3,6 +3,7 @@ package org.java_websocket;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 import java.nio.channels.NotYetConnectedException;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft.CloseHandshakeType;
 import org.java_websocket.drafts.Draft.HandshakeState;
@@ -443,16 +445,17 @@ public class WebSocketImpl implements WebSocket {
 		if( readystate == READYSTATE.CLOSED ) {
 			return;
 		}
-
 		if( key != null ) {
 			// key.attach( null ); //see issue #114
 			key.cancel();
 		}
-		try {
-			channel.close();
-		} catch ( IOException e ) {
-			wsl.onWebsocketError( this, e );
-		}
+		if (channel != null) {
+            try {
+                channel.close();
+            } catch ( IOException e ) {
+                wsl.onWebsocketError( this, e );
+            }
+        }
 		try {
 			this.wsl.onWebsocketClose( this, code, message, remote );
 		} catch ( RuntimeException e ) {
@@ -465,6 +468,37 @@ public class WebSocketImpl implements WebSocket {
 		readystate = READYSTATE.CLOSED;
 
 	}
+
+    public static void main(String[] args) {
+        WebSocketClient client = new WebSocketClient(URI.create("ws://localhost:8748")) {
+
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onMessage(String message) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
+        try {
+            boolean res = client.connectBlocking();
+            System.out.println("result: "+res);
+        } catch (InterruptedException e) {
+            System.out.println("EXCEPTION §§M%DZMDZMDZ");
+        }
+    }
 
 	protected void closeConnection( int code, boolean remote ) {
 		closeConnection( code, "", remote );
