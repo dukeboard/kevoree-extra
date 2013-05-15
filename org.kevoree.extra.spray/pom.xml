@@ -12,7 +12,7 @@
 
     <artifactId>org.kevoree.extra.spray</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.2</version>
+    <version>0.9.4</version>
     <name>Kevoree :: Extra :: Spray</name>
 
     <dependencies>
