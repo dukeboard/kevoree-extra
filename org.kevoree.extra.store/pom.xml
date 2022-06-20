@@ -13,7 +13,7 @@
     <name>Kevoree :: Extra :: Store</name>
 
     <properties>
-        <kotlin.version>0.5.1</kotlin.version>
+        <kotlin.version>1.6.0</kotlin.version>
         <kevoree.version>2.0.0-SNAPSHOT</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
